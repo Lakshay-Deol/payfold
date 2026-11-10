@@ -6,9 +6,9 @@
   "license": "Apache-2.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
-    "build": "next build",
-    "start": "next dev",
+    "dev": "next dev --webpack",
+    "build": "next build --webpack",
+    "start": "next start",
     "test": "ava",
     "phala:test": "phala cvms create --name payfold --compose ./docker-compose.yaml --env-file ./.env.development.local",
     "docker:test": "docker build -t payfold . && docker run -p 3000:3000 --env-file .env.development.local --rm -e PORT=3000 payfold",

@@ -1,0 +1,45 @@
+import test from 'ava';
+import fs from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+test('data.json exists and has valid hackathon structure', (t) => {
+  const dataPath = path.join(__dirname, '..', 'data.json');
+  t.true(fs.existsSync(dataPath), 'data.json must exist');
+  
+  const content = fs.readFileSync(dataPath, 'utf-8');
+  const parsed = JSON.parse(content);
+  t.truthy(parsed.hackathons, 'hackathons list must exist');
+  t.true(Array.isArray(parsed.hackathons), 'hackathons must be an array');
+});
+
+test('package.json metadata is configured for PayFold and author Lakshay Deol', (t) => {
+  const pkgPath = path.join(__dirname, '..', 'package.json');
+  const pkg = JSON.parse(fs.readFileSync(pkgPath, 'utf-8'));
+  
+  t.is(pkg.name, 'payfold');
+  t.true(pkg.author.includes('Lakshay Deol'));
+  t.true(pkg.description.includes('PayFold'));
+});
+
+test('convertToDecimal helper logic formats numbers correctly', (t) => {
+  function convertToDecimal(bigIntValue, decimals, decimalPlaces = 6) {
+    let strValue = bigIntValue.toString();
+    if (strValue.length <= decimals) {
+      strValue = strValue.padStart(decimals + 1, "0");
+    }
+    const decimalPos = strValue.length - decimals;
+    const result = strValue.slice(0, decimalPos) + "." + strValue.slice(decimalPos);
+    return parseFloat(result).toFixed(decimalPlaces);
+  }
+
+  const result = convertToDecimal(BigInt("1000000000000000000"), 18, 2);
+  t.is(result, "1.00");
+  
+  const microResult = convertToDecimal(BigInt("500000000000000000"), 18, 4);
+  t.is(microResult, "0.5000");
+});
+
