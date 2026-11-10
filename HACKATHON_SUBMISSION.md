@@ -14,13 +14,14 @@
 ## 2. The Problem & Solution
 - **The Problem**: Hackathons, grant programs, and DAO bounties lose weeks manually collecting winner wallet addresses through Google Forms and spreadsheets, chasing email threads, verifying identities, and executing individual wallet transfers.
 - **The Solution**: PayFold automates the entire payout lifecycle. The organizer announces the winner and places prize funds in escrow. An AI agent emails the winner, intelligently extracts their wallet address from natural language replies, and triggers a NEAR Chain Signature (MPC) smart contract call to release funds on Aurora/Ethereum.
+- **Brand & Interface**: Featuring the official geometric PayFold card-fold emblem, high-performance scroll-reveal transitions, and clean non-custodial architecture.
 - **NEAR's Concrete Role**:
   - **NEAR Chain Signatures (MPC)**: Deterministically derives hackathon escrow addresses and executes cross-chain transfers without managing hot private keys.
   - **Phala Cloud / TEE Integration**: Runs autonomous agent logic inside a confidential virtual machine (DStack / TDX) ensuring tamper-proof payout decisions.
 
 ## 3. Machine-Readable "Do X - See Y" Verification
 1. **Do**: `yarn test`
-   - **See**: 6 tests passing across data schema, decimal precision, AI providers, and email simulation.
+   - **See**: 7 tests passing across data schema, decimal precision, branding assets, AI providers, and email simulation.
 2. **Do**: `yarn build`
    - **See**: Next.js production build completes with all static and dynamic routes compiled.
 3. **Do**: `yarn dev`
