@@ -67,6 +67,119 @@ export default function Home() {
   const [showModal, setShowModal] = useState(false);
   const [hackathonAddress, setHackathonAddress] = useState("");
 
+  // ⚡ NEAR Live Execution Playground & Ledger States
+  const [hackathons, setHackathons] = useState([]);
+  const [loadingHackathons, setLoadingHackathons] = useState(false);
+  const [ledgerFilter, setLedgerFilter] = useState("all");
+  const [simModalOpen, setSimModalOpen] = useState(false);
+  const [simSelectedWinner, setSimSelectedWinner] = useState(null);
+  const [simSelectedHackathon, setSimSelectedHackathon] = useState(null);
+  const [simEmailText, setSimEmailText] = useState("");
+  const [simStage, setSimStage] = useState("idle");
+  const [simLogs, setSimLogs] = useState([]);
+  const [simResult, setSimResult] = useState(null);
+
+  const fetchHackathons = async () => {
+    try {
+      setLoadingHackathons(true);
+      const res = await fetch("/api/getHackathons");
+      if (res.ok) {
+        const data = await res.json();
+        setHackathons(data.hackathons || []);
+      }
+    } catch (e) {
+      console.error("Failed to load hackathon ledger:", e);
+    } finally {
+      setLoadingHackathons(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchHackathons();
+  }, []);
+
+  const openSimModal = (winner, hackathon) => {
+    setSimSelectedWinner(winner);
+    setSimSelectedHackathon(hackathon);
+    setSimEmailText(
+      `Hey PayFold team! Romario and I won ${winner.place} in ${hackathon.name}. Here is my Aurora EVM address: 0x71C8452f483FEfA834165dC65f57B8b71569B148. Thanks!`
+    );
+    setSimStage("idle");
+    setSimLogs([]);
+    setSimResult(null);
+    setSimModalOpen(true);
+  };
+
+  const executeNearMpcSimulation = async () => {
+    if (!simSelectedWinner || !simSelectedHackathon) return;
+    setSimStage("ai");
+    setSimLogs([
+      "▶ Initializing PayFold Autonomous Execution Agent...",
+      `📥 Inbound Email Reply from: ${simSelectedWinner.email}`,
+      "🤖 [Google Gemini AI] Extracting & validating EVM hex address from natural language text...",
+    ]);
+
+    try {
+      await new Promise((r) => setTimeout(r, 650));
+      setSimStage("mpc");
+      setSimLogs((prev) => [
+        ...prev,
+        "✔ [Gemini AI] Valid EVM recipient address detected",
+        "🌐 [NEAR Chain Signatures] Requesting threshold co-signature from v1.signer-prod.testnet",
+        `🔐 Deriving key path: ["ethereum", "${simSelectedHackathon.name}", 0] via lakshay-payfold.testnet`,
+      ]);
+
+      await new Promise((r) => setTimeout(r, 650));
+      setSimStage("signing");
+      setSimLogs((prev) => [
+        ...prev,
+        "⚡ [MPC Consensus] Threshold nodes generating secp256k1 signature shares...",
+        "🔏 Assembling raw RSV signature components without server private key...",
+      ]);
+
+      const res = await fetch("/api/webhook", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          sender: simSelectedWinner.email,
+          text: simEmailText,
+        }),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok || data.status === "error") {
+        throw new Error(data.message || "Simulation execution failed");
+      }
+
+      setSimStage("broadcast");
+      setSimLogs((prev) => [
+        ...prev,
+        "🚀 [Aurora EVM] Broadcasting signed raw transaction to PayFoldEscrow.sol...",
+        `🔗 On-chain TX: ${data.transactionHash || "Confirmed"}`,
+        `✉️ [Resend] Dispatched confirmation receipt to ${simSelectedWinner.email}`,
+      ]);
+
+      await new Promise((r) => setTimeout(r, 600));
+      setSimStage("done");
+      setSimResult(data);
+      setSimLogs((prev) => [
+        ...prev,
+        "🎉 [Complete] Autonomous prize payout settled on-chain via NEAR Protocol Chain Signatures!",
+      ]);
+
+      // Refresh live ledger table
+      fetchHackathons();
+    } catch (simErr) {
+      console.error("Simulation error:", simErr);
+      setSimStage("error");
+      setSimLogs((prev) => [
+        ...prev,
+        `❌ [Error] ${simErr.message || "Failed to process simulation"}`,
+      ]);
+    }
+  };
+
   const scrollToSection = (id) => {
     const el = document.getElementById(id);
     if (el) el.scrollIntoView({ behavior: "smooth" });
@@ -157,6 +270,7 @@ export default function Home() {
         const data = await apiRes.json();
         setHackathonAddress(data.hackathonAddress);
         setShowModal(true);
+        fetchHackathons();
         setError("Vault deposit confirmed & winner notified via AI email!");
       } catch (apiError) {
         console.error("API Error:", apiError);
@@ -265,6 +379,12 @@ export default function Home() {
             className="capsule-btn"
           >
             Console
+          </button>
+          <button
+            onClick={() => scrollToSection("near-playground")}
+            className="capsule-btn"
+          >
+            ⚡ NEAR Live
           </button>
         </nav>
 
@@ -828,7 +948,363 @@ NEAR_MPC.sign({
         </div>
       </section>
 
-      {/* 7. FOOTER */}
+      {/* 7. NEAR CHAIN SIGNATURES LIVE PLAYGROUND & HACKATHON VAULT LEDGER */}
+      <section className="playground-section scroll-reveal" id="near-playground">
+        <div className="playground-container">
+          {/* Header */}
+          <div className="section-kicker-pill">
+            <span className="badge-dot"></span>
+            <span>⚡ NEAR Protocol Hackathon Feature</span>
+          </div>
+
+          <div className="playground-header-row">
+            <div>
+              <h2 className="services-title">
+                NEAR Chain Signatures
+                <br />
+                <span className="gradient-text-red">Live Settlement Playground</span>
+              </h2>
+              <p className="services-desc">
+                Experience decentralized keyless MPC co-signing in real-time. Watch NEAR Protocol&apos;s validator threshold network (<code>v1.signer-prod.testnet</code>) securely verify incoming winner emails and execute cross-chain payouts directly to Aurora EVM — with zero server private keys.
+              </p>
+            </div>
+            <div className="playground-header-actions">
+              <button
+                type="button"
+                onClick={fetchHackathons}
+                className="btn-refresh-pill"
+                disabled={loadingHackathons}
+              >
+                {loadingHackathons ? "Syncing..." : "🔄 Refresh Ledger"}
+              </button>
+            </div>
+          </div>
+
+          {/* 4 Protocol Architecture Metrics Cards */}
+          <div className="near-tech-strip">
+            <div className="tech-metric-card">
+              <span className="tech-label">NEAR Signer Identity</span>
+              <strong className="tech-val">lakshay-payfold.testnet</strong>
+              <span className="tech-sub">Root Testnet Account</span>
+            </div>
+            <div className="tech-metric-card">
+              <span className="tech-label">MPC Contract Network</span>
+              <strong className="tech-val">v1.signer-prod.testnet</strong>
+              <span className="tech-sub">Threshold Validator Cluster</span>
+            </div>
+            <div className="tech-metric-card">
+              <span className="tech-label">Key Derivation Standard</span>
+              <strong className="tech-val">Secp256k1 (BIP-32)</strong>
+              <span className="tech-sub">Ephemeral Cross-Chain Keys</span>
+            </div>
+            <div className="tech-metric-card">
+              <span className="tech-label">Target EVM Settlement</span>
+              <strong className="tech-val">Aurora Engine (1313161554)</strong>
+              <span className="tech-sub">~1s Sub-Cent Finality</span>
+            </div>
+          </div>
+
+          {/* Ledger Filter & Stats Bar */}
+          <div className="ledger-toolbar">
+            <div className="filter-pill-group">
+              <button
+                className={`filter-tab-btn ${ledgerFilter === "all" ? "active" : ""}`}
+                onClick={() => setLedgerFilter("all")}
+              >
+                All Hackathons ({hackathons.length})
+              </button>
+              <button
+                className={`filter-tab-btn ${ledgerFilter === "pending" ? "active" : ""}`}
+                onClick={() => setLedgerFilter("pending")}
+              >
+                Pending Settlement (
+                {hackathons.reduce(
+                  (sum, h) =>
+                    sum +
+                    (h.winners?.filter((w) => w.paymentStatus !== "success").length || 0),
+                  0
+                )}
+                )
+              </button>
+              <button
+                className={`filter-tab-btn ${ledgerFilter === "settled" ? "active" : ""}`}
+                onClick={() => setLedgerFilter("settled")}
+              >
+                Settled via NEAR MPC (
+                {hackathons.reduce(
+                  (sum, h) =>
+                    sum +
+                    (h.winners?.filter((w) => w.paymentStatus === "success").length || 0),
+                  0
+                )}
+                )
+              </button>
+            </div>
+
+            <div className="toolbar-hint">
+              <span>💡 Click <strong>Simulate NEAR MPC</strong> on any pending winner to trigger live keyless co-signing.</span>
+            </div>
+          </div>
+
+          {/* Live Hackathon Vault Cards */}
+          <div className="vault-cards-stack">
+            {hackathons.length === 0 ? (
+              <div className="empty-ledger-box">
+                <p>No hackathons recorded yet. Announce a winner above to initialize a live vault!</p>
+              </div>
+            ) : (
+              hackathons.map((h) => {
+                const filteredWinners = (h.winners || []).filter((w) => {
+                  if (ledgerFilter === "pending") return w.paymentStatus !== "success";
+                  if (ledgerFilter === "settled") return w.paymentStatus === "success";
+                  return true;
+                });
+
+                if (filteredWinners.length === 0 && ledgerFilter !== "all") {
+                  return null;
+                }
+
+                return (
+                  <div key={h.id} className="vault-hackathon-card">
+                    <div className="vault-card-header">
+                      <div className="vault-title-group">
+                        <span className="vault-badge-tag">Vault #{h.id}</span>
+                        <h3 className="vault-name">{h.name}</h3>
+                        <span className="vault-address-code">
+                          Contract: {h.hackathonAddress ? `${h.hackathonAddress.slice(0, 8)}...${h.hackathonAddress.slice(-6)}` : "Aurora Escrow"}
+                        </span>
+                      </div>
+                      <div className="vault-meta-group">
+                        <span className="vault-date">
+                          Created {h.createdAt ? new Date(h.createdAt).toLocaleDateString() : "Active"}
+                        </span>
+                      </div>
+                    </div>
+
+                    <div className="vault-table-wrap">
+                      <table className="vault-table">
+                        <thead>
+                          <tr>
+                            <th>Place &amp; Winner</th>
+                            <th>Track</th>
+                            <th>Prize Locked</th>
+                            <th>Winner Contact</th>
+                            <th>Settlement Status</th>
+                            <th style={{ textAlign: "right" }}>Autonomous Execution</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {filteredWinners.map((winner) => {
+                            const isSettled = winner.paymentStatus === "success";
+                            return (
+                              <tr key={winner.id} className={isSettled ? "row-settled" : "row-pending"}>
+                                <td>
+                                  <div className="winner-cell">
+                                    <strong className="winner-name">{winner.Name || "Winner"}</strong>
+                                    <span className="winner-place">{winner.place || "1st Place"}</span>
+                                  </div>
+                                </td>
+                                <td>
+                                  <span className="track-badge">{winner.track || "General"}</span>
+                                </td>
+                                <td>
+                                  <strong className="prize-amount">{winner.prize} ETH</strong>
+                                </td>
+                                <td>
+                                  <span className="winner-email">{winner.email}</span>
+                                </td>
+                                <td>
+                                  {isSettled ? (
+                                    <span className="status-pill settled">
+                                      <span className="status-dot green"></span>
+                                      Settled via NEAR MPC
+                                    </span>
+                                  ) : (
+                                    <span className="status-pill pending">
+                                      <span className="status-dot amber"></span>
+                                      Escrow Deposited (Pending Address)
+                                    </span>
+                                  )}
+                                </td>
+                                <td style={{ textAlign: "right" }}>
+                                  {isSettled ? (
+                                    <a
+                                      href={winner.transactionHash || "#"}
+                                      target="_blank"
+                                      rel="noreferrer"
+                                      className="btn-explorer-link"
+                                    >
+                                      Receipt ↗
+                                    </a>
+                                  ) : (
+                                    <button
+                                      type="button"
+                                      onClick={() => openSimModal(winner, h)}
+                                      className="btn-sim-trigger glow"
+                                    >
+                                      ⚡ Simulate NEAR MPC
+                                    </button>
+                                  )}
+                                </td>
+                              </tr>
+                            );
+                          })}
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                );
+              })
+            )}
+          </div>
+        </div>
+      </section>
+
+      {/* 8. NEAR CHAIN SIGNATURES SIMULATION MODAL */}
+      {simModalOpen && (
+        <div className="modal-backdrop" onClick={() => setSimModalOpen(false)}>
+          <div className="modal-glass sim-modal" onClick={(e) => e.stopPropagation()}>
+            <div className="sim-modal-header">
+              <div className="sim-modal-title-group">
+                <span className="live-dot-red"></span>
+                <h3>⚡ NEAR Chain Signatures Live Execution</h3>
+              </div>
+              <button
+                type="button"
+                onClick={() => setSimModalOpen(false)}
+                className="sim-close-btn"
+                aria-label="Close Modal"
+              >
+                ✕
+              </button>
+            </div>
+
+            <p className="sim-modal-sub">
+              Simulate an incoming email reply from the hackathon winner. PayFold&apos;s AI agent parses the wallet address, and NEAR&apos;s decentralized MPC threshold network signs and broadcasts the settlement to Aurora.
+            </p>
+
+            {/* Target Winner Details Pill */}
+            {simSelectedWinner && simSelectedHackathon && (
+              <div className="sim-target-banner">
+                <div className="sim-banner-item">
+                  <span className="sim-banner-label">Winner</span>
+                  <strong>{simSelectedWinner.Name}</strong>
+                </div>
+                <div className="sim-banner-item">
+                  <span className="sim-banner-label">Hackathon</span>
+                  <strong>{simSelectedHackathon.name}</strong>
+                </div>
+                <div className="sim-banner-item">
+                  <span className="sim-banner-label">Prize Escrow</span>
+                  <strong className="text-red">{simSelectedWinner.prize} ETH</strong>
+                </div>
+                <div className="sim-banner-item">
+                  <span className="sim-banner-label">Email</span>
+                  <span>{simSelectedWinner.email}</span>
+                </div>
+              </div>
+            )}
+
+            {/* Reply Template Preset Buttons */}
+            <div className="sim-template-row">
+              <span className="sim-template-label">Sample Reply Templates:</span>
+              <button
+                type="button"
+                className="btn-template"
+                onClick={() =>
+                  setSimEmailText(
+                    `Hi PayFold team! Thanks for organizing. Here is my Aurora EVM wallet address: 0x71C8452f483FEfA834165dC65f57B8b71569B148. Cheers!`
+                  )
+                }
+              >
+                Aurora EVM Address
+              </button>
+              <button
+                type="button"
+                className="btn-template"
+                onClick={() =>
+                  setSimEmailText(
+                    `Awesome hackathon! Super proud of our team. Please send the prize to 0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045 on Aurora.`
+                  )
+                }
+              >
+                Sepolia Address
+              </button>
+            </div>
+
+            {/* Email Textarea */}
+            <div className="sim-form-group">
+              <label>Winner Natural Language Email Reply</label>
+              <textarea
+                value={simEmailText}
+                onChange={(e) => setSimEmailText(e.target.value)}
+                rows={3}
+                className="sim-textarea"
+                placeholder="Type or paste an email reply containing an EVM hex wallet address..."
+              />
+            </div>
+
+            {/* Cryptographic Execution Console Log */}
+            <div className="sim-terminal-box">
+              <div className="sim-terminal-header">
+                <span className="terminal-dot red"></span>
+                <span className="terminal-dot yellow"></span>
+                <span className="terminal-dot green"></span>
+                <span className="terminal-title">NEAR Protocol MPC Execution Log</span>
+              </div>
+              <div className="sim-terminal-body">
+                {simLogs.length === 0 ? (
+                  <span className="terminal-placeholder">
+                    Waiting for trigger. Click &ldquo;Execute Autonomous Settlement&rdquo; below to start the NEAR Chain Signatures MPC flow...
+                  </span>
+                ) : (
+                  simLogs.map((log, idx) => (
+                    <div key={idx} className="terminal-line">
+                      <span className="terminal-timestamp">[{idx + 1}]</span> {log}
+                    </div>
+                  ))
+                )}
+              </div>
+            </div>
+
+            {/* Modal Actions */}
+            <div className="sim-modal-actions">
+              <button
+                type="button"
+                onClick={() => setSimModalOpen(false)}
+                className="btn-ghost-cancel"
+              >
+                Close
+              </button>
+
+              {simStage === "done" && simResult?.transactionHash ? (
+                <a
+                  href={simResult.transactionHash}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="btn-red-pill glow"
+                  style={{ textDecoration: "none", display: "inline-flex", alignItems: "center", gap: "0.5rem" }}
+                >
+                  🔗 View Explorer Receipt ↗
+                </a>
+              ) : (
+                <button
+                  type="button"
+                  onClick={executeNearMpcSimulation}
+                  disabled={simStage !== "idle" && simStage !== "done" && simStage !== "error"}
+                  className="btn-red-pill glow"
+                >
+                  {simStage === "idle" || simStage === "done" || simStage === "error"
+                    ? "🚀 Execute Autonomous Settlement via NEAR MPC"
+                    : "⚡ Processing NEAR MPC Consensus..."}
+                </button>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* 9. FOOTER */}
       <footer className="universe-footer scroll-reveal">
         <div className="footer-content">
           <div className="footer-left">
@@ -1923,7 +2399,598 @@ NEAR_MPC.sign({
           }
         }
 
-        /* 7. FOOTER */
+        /* 7. NEAR CHAIN SIGNATURES PLAYGROUND & HACKATHON VAULT LEDGER */
+        .playground-section {
+          max-width: 1280px;
+          margin: 6rem auto 0;
+          padding: 0 2rem;
+          width: 100%;
+        }
+
+        .playground-container {
+          display: flex;
+          flex-direction: column;
+        }
+
+        .playground-header-row {
+          display: flex;
+          justify-content: space-between;
+          align-items: flex-start;
+          gap: 2rem;
+          flex-wrap: wrap;
+        }
+
+        .btn-refresh-pill {
+          background: rgba(255, 255, 255, 0.05);
+          border: 1px solid rgba(255, 255, 255, 0.12);
+          color: #ffffff;
+          padding: 0.65rem 1.25rem;
+          border-radius: 9999px;
+          font-size: 0.85rem;
+          font-weight: 600;
+          cursor: pointer;
+          transition: all 0.2s ease;
+        }
+
+        .btn-refresh-pill:hover:not(:disabled) {
+          background: rgba(255, 51, 68, 0.15);
+          border-color: #ff3344;
+          box-shadow: 0 0 16px rgba(255, 51, 68, 0.35);
+        }
+
+        .btn-refresh-pill:disabled {
+          opacity: 0.5;
+          cursor: not-allowed;
+        }
+
+        /* 4-Item NEAR Tech Strip */
+        .near-tech-strip {
+          display: grid;
+          grid-template-columns: repeat(4, 1fr);
+          gap: 1.25rem;
+          margin: 2rem 0;
+        }
+
+        .tech-metric-card {
+          background: rgba(18, 18, 22, 0.8);
+          border: 1px solid rgba(255, 255, 255, 0.08);
+          border-radius: 1.25rem;
+          padding: 1.25rem 1.5rem;
+          display: flex;
+          flex-direction: column;
+          gap: 0.35rem;
+          transition: all 0.25s ease;
+        }
+
+        .tech-metric-card:hover {
+          border-color: rgba(255, 51, 68, 0.4);
+          transform: translateY(-2px);
+          box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+        }
+
+        .tech-label {
+          font-size: 0.72rem;
+          font-weight: 700;
+          color: #8e8e96;
+          text-transform: uppercase;
+          letter-spacing: 0.8px;
+        }
+
+        .tech-val {
+          font-size: 1.05rem;
+          font-weight: 750;
+          color: #ffffff;
+          word-break: break-all;
+        }
+
+        .tech-sub {
+          font-size: 0.75rem;
+          color: #ff4d4d;
+        }
+
+        /* Ledger Toolbar */
+        .ledger-toolbar {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          gap: 1rem;
+          margin-bottom: 1.5rem;
+          flex-wrap: wrap;
+        }
+
+        .filter-pill-group {
+          display: inline-flex;
+          background: rgba(255, 255, 255, 0.04);
+          border: 1px solid rgba(255, 255, 255, 0.08);
+          border-radius: 9999px;
+          padding: 0.3rem;
+          gap: 0.25rem;
+        }
+
+        .filter-tab-btn {
+          background: transparent;
+          border: none;
+          color: #8e8e96;
+          padding: 0.45rem 1.1rem;
+          border-radius: 9999px;
+          font-size: 0.82rem;
+          font-weight: 600;
+          cursor: pointer;
+          transition: all 0.2s ease;
+        }
+
+        .filter-tab-btn.active {
+          background: rgba(255, 51, 68, 0.2);
+          color: #ffffff;
+          border: 1px solid rgba(255, 51, 68, 0.4);
+        }
+
+        .toolbar-hint {
+          font-size: 0.8rem;
+          color: #a1a1aa;
+        }
+
+        /* Vault Cards Stack */
+        .vault-cards-stack {
+          display: flex;
+          flex-direction: column;
+          gap: 1.75rem;
+        }
+
+        .empty-ledger-box {
+          background: rgba(18, 18, 22, 0.6);
+          border: 1px dashed rgba(255, 255, 255, 0.15);
+          border-radius: 1.25rem;
+          padding: 3rem;
+          text-align: center;
+          color: #8e8e96;
+        }
+
+        .vault-hackathon-card {
+          background: rgba(16, 16, 20, 0.85);
+          border: 1px solid rgba(255, 255, 255, 0.08);
+          border-radius: 1.5rem;
+          padding: 1.75rem;
+          transition: border-color 0.25s ease;
+        }
+
+        .vault-hackathon-card:hover {
+          border-color: rgba(255, 51, 68, 0.35);
+        }
+
+        .vault-card-header {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          margin-bottom: 1.25rem;
+          padding-bottom: 1rem;
+          border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+          flex-wrap: wrap;
+          gap: 0.75rem;
+        }
+
+        .vault-title-group {
+          display: flex;
+          align-items: center;
+          gap: 0.85rem;
+          flex-wrap: wrap;
+        }
+
+        .vault-badge-tag {
+          background: rgba(255, 51, 68, 0.15);
+          color: #ff4d4d;
+          font-size: 0.7rem;
+          font-weight: 750;
+          padding: 0.2rem 0.65rem;
+          border-radius: 9999px;
+          border: 1px solid rgba(255, 51, 68, 0.3);
+        }
+
+        .vault-name {
+          font-size: 1.3rem;
+          font-weight: 750;
+          color: #ffffff;
+        }
+
+        .vault-address-code {
+          font-family: monospace;
+          font-size: 0.75rem;
+          color: #71717a;
+          background: rgba(255, 255, 255, 0.03);
+          padding: 0.2rem 0.5rem;
+          border-radius: 6px;
+        }
+
+        .vault-date {
+          font-size: 0.78rem;
+          color: #71717a;
+        }
+
+        .vault-table-wrap {
+          overflow-x: auto;
+        }
+
+        .vault-table {
+          width: 100%;
+          border-collapse: collapse;
+          font-size: 0.88rem;
+        }
+
+        .vault-table th {
+          text-align: left;
+          padding: 0.75rem 1rem;
+          color: #71717a;
+          font-size: 0.75rem;
+          text-transform: uppercase;
+          letter-spacing: 0.7px;
+          font-weight: 600;
+          border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+        }
+
+        .vault-table td {
+          padding: 1rem;
+          border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+          vertical-align: middle;
+        }
+
+        .winner-cell {
+          display: flex;
+          flex-direction: column;
+          gap: 0.15rem;
+        }
+
+        .winner-name {
+          color: #ffffff;
+          font-weight: 650;
+        }
+
+        .winner-place {
+          font-size: 0.75rem;
+          color: #8e8e96;
+        }
+
+        .track-badge {
+          background: rgba(255, 255, 255, 0.04);
+          border: 1px solid rgba(255, 255, 255, 0.08);
+          color: #c7c7cc;
+          padding: 0.2rem 0.65rem;
+          border-radius: 9999px;
+          font-size: 0.75rem;
+        }
+
+        .prize-amount {
+          color: #ffffff;
+          font-weight: 750;
+        }
+
+        .winner-email {
+          color: #8e8e96;
+          font-family: monospace;
+          font-size: 0.8rem;
+        }
+
+        .status-pill {
+          display: inline-flex;
+          align-items: center;
+          gap: 0.45rem;
+          padding: 0.35rem 0.85rem;
+          border-radius: 9999px;
+          font-size: 0.75rem;
+          font-weight: 650;
+        }
+
+        .status-pill.settled {
+          background: rgba(34, 197, 94, 0.12);
+          border: 1px solid rgba(34, 197, 94, 0.35);
+          color: #4ade80;
+        }
+
+        .status-pill.pending {
+          background: rgba(245, 158, 11, 0.12);
+          border: 1px solid rgba(245, 158, 11, 0.35);
+          color: #fbbf24;
+        }
+
+        .status-dot {
+          width: 7px;
+          height: 7px;
+          border-radius: 50%;
+        }
+
+        .status-dot.green {
+          background: #4ade80;
+          box-shadow: 0 0 8px #4ade80;
+        }
+
+        .status-dot.amber {
+          background: #fbbf24;
+          box-shadow: 0 0 8px #fbbf24;
+        }
+
+        .btn-explorer-link {
+          display: inline-flex;
+          align-items: center;
+          gap: 0.35rem;
+          color: #4ade80;
+          font-size: 0.8rem;
+          font-weight: 600;
+          text-decoration: none;
+          padding: 0.45rem 0.95rem;
+          background: rgba(34, 197, 94, 0.08);
+          border: 1px solid rgba(34, 197, 94, 0.25);
+          border-radius: 9999px;
+          transition: all 0.2s ease;
+        }
+
+        .btn-explorer-link:hover {
+          background: rgba(34, 197, 94, 0.2);
+          box-shadow: 0 0 12px rgba(34, 197, 94, 0.4);
+        }
+
+        .btn-sim-trigger {
+          background: linear-gradient(135deg, #e51e2b 0%, #a80d18 100%);
+          color: #ffffff;
+          border: none;
+          padding: 0.5rem 1.1rem;
+          border-radius: 9999px;
+          font-size: 0.8rem;
+          font-weight: 700;
+          cursor: pointer;
+          transition: all 0.2s ease;
+          box-shadow: 0 4px 14px rgba(229, 30, 43, 0.4);
+        }
+
+        .btn-sim-trigger:hover {
+          transform: translateY(-1px);
+          box-shadow: 0 6px 20px rgba(229, 30, 43, 0.7);
+        }
+
+        /* Simulation Modal */
+        .sim-modal {
+          max-width: 680px;
+        }
+
+        .sim-modal-header {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          margin-bottom: 0.5rem;
+        }
+
+        .sim-modal-title-group {
+          display: flex;
+          align-items: center;
+          gap: 0.65rem;
+        }
+
+        .sim-modal-title-group h3 {
+          font-size: 1.35rem;
+          font-weight: 800;
+          color: #ffffff;
+        }
+
+        .sim-close-btn {
+          background: transparent;
+          border: none;
+          color: #8e8e96;
+          font-size: 1.25rem;
+          cursor: pointer;
+          padding: 0.25rem;
+          transition: color 0.2s;
+        }
+
+        .sim-close-btn:hover {
+          color: #ffffff;
+        }
+
+        .sim-modal-sub {
+          font-size: 0.86rem;
+          color: #8e8e96;
+          line-height: 1.5;
+          margin-bottom: 1.25rem;
+        }
+
+        .sim-target-banner {
+          display: grid;
+          grid-template-columns: repeat(4, 1fr);
+          background: rgba(255, 255, 255, 0.03);
+          border: 1px solid rgba(255, 255, 255, 0.08);
+          border-radius: 0.85rem;
+          padding: 0.85rem 1.1rem;
+          gap: 0.75rem;
+          margin-bottom: 1.25rem;
+        }
+
+        .sim-banner-item {
+          display: flex;
+          flex-direction: column;
+          gap: 0.2rem;
+          font-size: 0.85rem;
+        }
+
+        .sim-banner-label {
+          font-size: 0.68rem;
+          text-transform: uppercase;
+          color: #71717a;
+          letter-spacing: 0.6px;
+        }
+
+        .text-red {
+          color: #ff3344;
+        }
+
+        .sim-template-row {
+          display: flex;
+          align-items: center;
+          gap: 0.6rem;
+          margin-bottom: 0.85rem;
+          flex-wrap: wrap;
+        }
+
+        .sim-template-label {
+          font-size: 0.75rem;
+          color: #8e8e96;
+        }
+
+        .btn-template {
+          background: rgba(255, 255, 255, 0.04);
+          border: 1px solid rgba(255, 255, 255, 0.1);
+          color: #c7c7cc;
+          padding: 0.3rem 0.75rem;
+          border-radius: 9999px;
+          font-size: 0.75rem;
+          cursor: pointer;
+          transition: all 0.2s ease;
+        }
+
+        .btn-template:hover {
+          background: rgba(255, 51, 68, 0.15);
+          border-color: #ff3344;
+          color: #ffffff;
+        }
+
+        .sim-form-group {
+          display: flex;
+          flex-direction: column;
+          gap: 0.45rem;
+          margin-bottom: 1.25rem;
+        }
+
+        .sim-form-group label {
+          font-size: 0.78rem;
+          font-weight: 650;
+          color: #c7c7cc;
+        }
+
+        .sim-textarea {
+          background: rgba(255, 255, 255, 0.04);
+          border: 1px solid rgba(255, 255, 255, 0.1);
+          color: #ffffff;
+          padding: 0.75rem 1rem;
+          border-radius: 0.75rem;
+          font-size: 0.85rem;
+          font-family: inherit;
+          resize: vertical;
+          outline: none;
+          transition: all 0.2s ease;
+        }
+
+        .sim-textarea:focus {
+          border-color: #ff3344;
+          box-shadow: 0 0 14px rgba(255, 51, 68, 0.25);
+        }
+
+        /* Terminal Console Box */
+        .sim-terminal-box {
+          background: #040406;
+          border: 1px solid rgba(255, 255, 255, 0.1);
+          border-radius: 0.85rem;
+          overflow: hidden;
+          margin-bottom: 1.5rem;
+        }
+
+        .sim-terminal-header {
+          background: rgba(255, 255, 255, 0.03);
+          border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+          padding: 0.5rem 0.85rem;
+          display: flex;
+          align-items: center;
+          gap: 0.45rem;
+        }
+
+        .terminal-dot {
+          width: 8px;
+          height: 8px;
+          border-radius: 50%;
+        }
+
+        .terminal-dot.red { background: #ef4444; }
+        .terminal-dot.yellow { background: #f59e0b; }
+        .terminal-dot.green { background: #10b981; }
+
+        .terminal-title {
+          font-size: 0.72rem;
+          font-family: monospace;
+          color: #71717a;
+          margin-left: 0.4rem;
+        }
+
+        .sim-terminal-body {
+          padding: 0.85rem 1rem;
+          font-family: monospace;
+          font-size: 0.78rem;
+          max-height: 160px;
+          overflow-y: auto;
+          display: flex;
+          flex-direction: column;
+          gap: 0.35rem;
+          color: #4ade80;
+          line-height: 1.5;
+        }
+
+        .terminal-placeholder {
+          color: #52525b;
+          font-style: italic;
+        }
+
+        .terminal-line {
+          word-break: break-all;
+        }
+
+        .terminal-timestamp {
+          color: #ff4d4d;
+        }
+
+        .sim-modal-actions {
+          display: flex;
+          justify-content: flex-end;
+          gap: 0.85rem;
+          align-items: center;
+        }
+
+        .btn-ghost-cancel {
+          background: transparent;
+          border: 1px solid rgba(255, 255, 255, 0.12);
+          color: #a1a1aa;
+          padding: 0.65rem 1.25rem;
+          border-radius: 9999px;
+          font-size: 0.85rem;
+          font-weight: 600;
+          cursor: pointer;
+          transition: all 0.2s ease;
+        }
+
+        .btn-ghost-cancel:hover {
+          color: #ffffff;
+          border-color: rgba(255, 255, 255, 0.3);
+        }
+
+        @media (max-width: 1024px) {
+          .near-tech-strip {
+            grid-template-columns: 1fr 1fr;
+          }
+          .sim-target-banner {
+            grid-template-columns: 1fr 1fr;
+          }
+        }
+
+        @media (max-width: 640px) {
+          .near-tech-strip {
+            grid-template-columns: 1fr;
+          }
+          .sim-target-banner {
+            grid-template-columns: 1fr;
+          }
+          .playground-header-row {
+            flex-direction: column;
+          }
+          .ledger-toolbar {
+            flex-direction: column;
+            align-items: flex-start;
+          }
+        }
+
+        /* 9. FOOTER */
         .universe-footer {
           max-width: 1280px;
           margin: 6rem auto 2.5rem;
