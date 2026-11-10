@@ -50,3 +50,4 @@ const artifactPath = path.join(__dirname, '..', 'contracts', 'PayFoldEscrow.json
 fs.writeFileSync(artifactPath, JSON.stringify(artifact, null, 2), 'utf8');
 console.log('Compilation successful! Artifact saved to:', artifactPath);
 console.log('ABI methods:', artifact.abi.filter(item => item.type === 'function').map(f => f.name));
+
