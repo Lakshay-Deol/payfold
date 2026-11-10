@@ -24,8 +24,45 @@ const CONTRACT_ABI = [
   },
 ];
 
+const TOUR_STEPS = [
+  {
+    step: 1,
+    badge: "STEP 01 • ESCROW DEPOSIT",
+    title: "Lock Prize Funds in Trustless Vault",
+    desc: "Organizers deposit prize tokens directly into the on-chain PayFoldEscrow contract on Aurora or Sepolia. Funds remain cryptographically locked with zero counterparty risk.",
+    highlight: "Aurora & Sepolia EVM Escrow",
+    icon: "🔒",
+  },
+  {
+    step: 2,
+    badge: "STEP 02 • AUTONOMOUS AI OUTREACH",
+    title: "AI Emails Winner & Extracts Address",
+    desc: "No Google forms or Discord DMs. Google Gemini AI contacts the winner via personalized email, verifies their identity, and extracts their EVM address directly from their natural language reply.",
+    highlight: "Google Gemini 1.5 Flash + Resend",
+    icon: "⚡",
+  },
+  {
+    step: 3,
+    badge: "STEP 03 • NEAR CHAIN SIGNATURES",
+    title: "Keyless Threshold MPC Co-Signing",
+    desc: "Zero private keys exist on server disk. The decentralized NEAR validator threshold network (v1.signer-prod) co-signs the release transaction directly from lakshay-payfold.testnet.",
+    highlight: "NEAR MPC (v1.signer-prod.testnet)",
+    icon: "🌐",
+  },
+  {
+    step: 4,
+    badge: "STEP 04 • INSTANT ON-CHAIN RELEASE",
+    title: "Sub-Second Payout Settlement",
+    desc: "The signed transaction is broadcast to Aurora, instantly transferring prize tokens to the winner's wallet with ~1s finality. Organizers and winners receive real-time receipts.",
+    highlight: "Sub-Cent Gas & Instant Settlement",
+    icon: "🚀",
+  },
+];
+
 export default function Home() {
   const [mounted, setMounted] = useState(false);
+  const [showTour, setShowTour] = useState(false);
+  const [tourStep, setTourStep] = useState(1);
   const { address, isConnected } = useAccount();
   const chainId = useChainId();
   const currentChain =
@@ -33,6 +70,23 @@ export default function Home() {
 
   useEffect(() => {
     setMounted(true);
+
+    const handleScrollReveal = () => {
+      const reveals = document.querySelectorAll(".scroll-reveal");
+      const windowHeight = window.innerHeight;
+      reveals.forEach((el) => {
+        const top = el.getBoundingClientRect().top;
+        if (top < windowHeight - 50) {
+          el.classList.add("revealed");
+        }
+      });
+    };
+
+    window.addEventListener("scroll", handleScrollReveal, { passive: true });
+    // Trigger initial check
+    setTimeout(handleScrollReveal, 100);
+
+    return () => window.removeEventListener("scroll", handleScrollReveal);
   }, []);
 
   const formRef = useRef(null);
@@ -171,7 +225,8 @@ export default function Home() {
           name="description"
           content="Autonomous Web3 hackathon prize payouts powered by NEAR Chain Signatures, Google Gemini & Aurora"
         />
-        <link rel="icon" href="/favicon.ico" />
+        <link rel="icon" href="/logo.png" />
+        <link rel="apple-touch-icon" href="/logo.png" />
       </Head>
 
       {/* Bioluminescent Volumetric Ambient Glows */}
@@ -179,11 +234,101 @@ export default function Home() {
       <div className="ambient-glow glow-jelly"></div>
       <div className="ambient-glow glow-mid"></div>
 
+      {/* Onboarding / Walkthrough Modal */}
+      {showTour && (
+        <div className="modal-backdrop" onClick={() => setShowTour(false)}>
+          <div className="modal-glass tour-modal" onClick={(e) => e.stopPropagation()}>
+            <div className="tour-top-bar">
+              <div className="tour-brand-group">
+                <img src="/logo.png" alt="PayFold" className="tour-logo" />
+                <span className="tour-brand-name">PayFold Onboarding Walkthrough</span>
+              </div>
+              <button
+                onClick={() => setShowTour(false)}
+                className="tour-close-btn"
+                aria-label="Close tour"
+              >
+                ✕
+              </button>
+            </div>
+
+            {/* Step Indicator Progress Bar */}
+            <div className="tour-progress-track">
+              <div
+                className="tour-progress-bar"
+                style={{ width: `${(tourStep / 4) * 100}%` }}
+              ></div>
+            </div>
+
+            <div className="tour-step-indicators">
+              {[1, 2, 3, 4].map((s) => (
+                <button
+                  key={s}
+                  onClick={() => setTourStep(s)}
+                  className={`tour-dot-btn ${
+                    tourStep === s ? "active" : tourStep > s ? "completed" : ""
+                  }`}
+                >
+                  Step {s}
+                </button>
+              ))}
+            </div>
+
+            {/* Tour Step Content */}
+            <div className="tour-body-card">
+              <div className="tour-icon-row">
+                <span className="tour-step-icon">{TOUR_STEPS[tourStep - 1].icon}</span>
+                <span className="tour-step-badge">{TOUR_STEPS[tourStep - 1].badge}</span>
+              </div>
+              <h3 className="tour-step-title">{TOUR_STEPS[tourStep - 1].title}</h3>
+              <p className="tour-step-desc">{TOUR_STEPS[tourStep - 1].desc}</p>
+              <div className="tour-step-highlight">
+                <span className="highlight-spark">⚡</span>
+                <span>{TOUR_STEPS[tourStep - 1].highlight}</span>
+              </div>
+            </div>
+
+            {/* Tour Action Buttons */}
+            <div className="tour-nav-buttons">
+              <button
+                onClick={() => setTourStep((prev) => Math.max(1, prev - 1))}
+                disabled={tourStep === 1}
+                className="btn-tour-secondary"
+              >
+                Back
+              </button>
+              {tourStep < 4 ? (
+                <button
+                  onClick={() => setTourStep((prev) => Math.min(4, prev + 1))}
+                  className="btn-tour-primary"
+                >
+                  Next Step ↗
+                </button>
+              ) : (
+                <button
+                  onClick={() => {
+                    setShowTour(false);
+                    setActiveTab("console");
+                    scrollToSection("services-console");
+                  }}
+                  className="btn-tour-primary finish"
+                >
+                  Launch Console 🚀
+                </button>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Success Modal */}
       {showModal && (
         <div className="modal-backdrop">
           <div className="modal-glass">
-            <div className="modal-pill">NEAR MPC ESCROW INITIALIZED</div>
+            <div className="modal-header-brand">
+              <img src="/logo.png" alt="PayFold" className="modal-logo-img" />
+              <div className="modal-pill">NEAR MPC ESCROW INITIALIZED</div>
+            </div>
             <h3 className="modal-title">Vault Active On-Chain</h3>
             <p className="modal-text">
               Your prize deposit has been locked into the escrow contract. The
@@ -208,12 +353,14 @@ export default function Home() {
         </div>
       )}
 
-      {/* 1. TOP NAVBAR (Matching Screenshot) */}
+      {/* 1. TOP NAVBAR */}
       <header className="top-nav">
-        <div className="nav-brand">
-          <div className="brand-symbol">
-            <div className="symbol-core"></div>
-          </div>
+        <div
+          className="nav-brand"
+          onClick={() => scrollToSection("hero")}
+          style={{ cursor: "pointer" }}
+        >
+          <img src="/logo.png" alt="PayFold Logo" className="brand-logo-img" />
           <span className="brand-title">PayFold</span>
         </div>
 
@@ -229,19 +376,22 @@ export default function Home() {
             onClick={() => scrollToSection("statement")}
             className="capsule-btn"
           >
-            Services
+            Benefits
           </button>
           <button
             onClick={() => scrollToSection("proof")}
             className="capsule-btn"
           >
-            Works
+            Architecture
           </button>
           <button
-            onClick={() => scrollToSection("statement")}
-            className="capsule-btn"
+            onClick={() => {
+              setTourStep(1);
+              setShowTour(true);
+            }}
+            className="capsule-btn tour-btn"
           >
-            About
+            ✨ Tour
           </button>
           <button
             onClick={() => scrollToSection("services-console")}
@@ -253,6 +403,15 @@ export default function Home() {
 
         {/* Right CTA / Wallet */}
         <div className="nav-actions">
+          <button
+            onClick={() => {
+              setTourStep(1);
+              setShowTour(true);
+            }}
+            className="btn-tour-pill"
+          >
+            Walkthrough
+          </button>
           {mounted ? (
             <ConnectButton />
           ) : (
@@ -294,10 +453,13 @@ export default function Home() {
             {/* CTA Button Row */}
             <div className="hero-cta-group">
               <button
-                onClick={() => scrollToSection("services-console")}
+                onClick={() => {
+                  setTourStep(1);
+                  setShowTour(true);
+                }}
                 className="btn-ghost-pill"
               >
-                Explore Services
+                ✨ View Walkthrough
               </button>
               <button
                 onClick={() => {
@@ -306,276 +468,215 @@ export default function Home() {
                 }}
                 className="btn-red-pill glow"
               >
-                View Pricing Plans
+                Announce Winner
               </button>
             </div>
 
-            {/* 3 Stat Cards in a Row (Matching Screenshot) */}
+            {/* 3 Real Technical Metric Cards */}
             <div className="stat-cards-triad">
-              {/* Card 1: Happy people */}
               <div className="hero-stat-card">
-                <span className="card-kicker">Happy winners</span>
+                <span className="card-kicker">Key Security</span>
                 <div className="stat-flex">
-                  <span className="big-stat-val">3M+</span>
-                  <div className="avatar-stack">
-                    <span className="mini-avatar a1"></span>
-                    <span className="mini-avatar a2"></span>
-                    <span className="mini-avatar a3"></span>
-                  </div>
-                </div>
-              </div>
-
-              {/* Card 2: ROI improvement */}
-              <div className="hero-stat-card">
-                <span className="card-kicker">ROI improvement</span>
-                <div className="stat-flex">
-                  <span className="big-stat-val">95%</span>
+                  <span className="big-stat-val">0</span>
                   <span className="stat-micro-note">
-                    time saved on manual winner outreach
+                    server private keys stored on disk
                   </span>
                 </div>
               </div>
 
-              {/* Card 3: Client retention */}
               <div className="hero-stat-card">
-                <span className="card-kicker">Client retention</span>
+                <span className="card-kicker">MPC Network</span>
                 <div className="stat-flex">
-                  <span className="big-stat-val">88%</span>
+                  <span className="big-stat-val">100%</span>
                   <span className="stat-micro-note">
-                    re-used across subsequent seasons
+                    decentralized NEAR validator threshold
+                  </span>
+                </div>
+              </div>
+
+              <div className="hero-stat-card">
+                <span className="card-kicker">Aurora Finality</span>
+                <div className="stat-flex">
+                  <span className="big-stat-val">~1s</span>
+                  <span className="stat-micro-note">
+                    instant cross-chain prize release
                   </span>
                 </div>
               </div>
             </div>
           </div>
 
-          {/* Right Column: Bioluminescent Glowing Jellyfish & Floating Cards */}
+          {/* Right Column: Bioluminescent Animated PayFold Vault Folder & Payout Stream */}
           <div className="hero-right">
-            <div className="jellyfish-stage">
-              {/* Animated Bioluminescent Jellyfish Creature */}
-              <div className="jellyfish-creature">
+            <div className="payout-stage">
+              {/* Animated PayFold Vault Folder with Payout Assets */}
+              <div className="payout-creature">
                 <svg
-                  viewBox="0 0 360 480"
-                  className="jellyfish-svg"
+                  viewBox="0 0 420 500"
+                  className="payout-svg"
                   fill="none"
                   xmlns="http://www.w3.org/2000/svg"
                 >
                   <defs>
-                    <radialGradient
-                      id="jellyCap"
-                      cx="50%"
-                      cy="30%"
-                      r="65%"
-                      fx="50%"
-                      fy="20%"
-                    >
-                      <stop offset="0%" stopColor="#ff4d4d" stopOpacity="0.95" />
-                      <stop offset="35%" stopColor="#e51e2b" stopOpacity="0.75" />
-                      <stop offset="70%" stopColor="#990b14" stopOpacity="0.45" />
-                      <stop offset="100%" stopColor="#2a0005" stopOpacity="0" />
-                    </radialGradient>
-                    <radialGradient
-                      id="innerCore"
-                      cx="50%"
-                      cy="45%"
-                      r="35%"
-                    >
-                      <stop offset="0%" stopColor="#ffffff" stopOpacity="0.9" />
-                      <stop offset="25%" stopColor="#ff6b6b" stopOpacity="0.8" />
-                      <stop offset="60%" stopColor="#ff1725" stopOpacity="0.4" />
-                      <stop offset="100%" stopColor="#800000" stopOpacity="0" />
-                    </radialGradient>
-                    <linearGradient
-                      id="tentacleRed"
-                      x1="0%"
-                      y1="0%"
-                      x2="0%"
-                      y2="100%"
-                    >
-                      <stop offset="0%" stopColor="#ff4d4d" stopOpacity="0.85" />
-                      <stop offset="50%" stopColor="#e51e2b" stopOpacity="0.45" />
-                      <stop offset="100%" stopColor="#ff1a2b" stopOpacity="0.05" />
+                    <linearGradient id="folderBackGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                      <stop offset="0%" stopColor="#2e050d" />
+                      <stop offset="50%" stopColor="#150206" />
+                      <stop offset="100%" stopColor="#080102" />
                     </linearGradient>
-                    <filter
-                      id="jellyGlow"
-                      x="-30%"
-                      y="-30%"
-                      width="160%"
-                      height="160%"
-                    >
-                      <feGaussianBlur stdDeviation="14" result="blur" />
+                    <linearGradient id="folderFrontGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                      <stop offset="0%" stopColor="rgba(255, 55, 75, 0.4)" />
+                      <stop offset="45%" stopColor="rgba(190, 20, 38, 0.28)" />
+                      <stop offset="100%" stopColor="rgba(24, 3, 7, 0.9)" />
+                    </linearGradient>
+                    <linearGradient id="tokenRed" x1="0%" y1="0%" x2="100%" y2="100%">
+                      <stop offset="0%" stopColor="#ff4d5a" />
+                      <stop offset="100%" stopColor="#b30010" />
+                    </linearGradient>
+                    <linearGradient id="goldCoinGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                      <stop offset="0%" stopColor="#ff6b6b" />
+                      <stop offset="100%" stopColor="#e51e2b" />
+                    </linearGradient>
+                    <radialGradient id="folderCoreGlow" cx="50%" cy="50%" r="50%">
+                      <stop offset="0%" stopColor="#ffffff" stopOpacity="0.9" />
+                      <stop offset="30%" stopColor="#ff3344" stopOpacity="0.75" />
+                      <stop offset="70%" stopColor="#800000" stopOpacity="0.3" />
+                      <stop offset="100%" stopColor="#000000" stopOpacity="0" />
+                    </radialGradient>
+                    <filter id="payoutDropGlow" x="-30%" y="-30%" width="160%" height="160%">
+                      <feGaussianBlur stdDeviation="12" result="blur" />
                       <feComposite in="SourceGraphic" in2="blur" operator="over" />
                     </filter>
                   </defs>
 
-                  {/* Jellyfish Bell (Umbrella) */}
-                  <g filter="url(#jellyGlow)">
+                  {/* Ambient Deep Halo behind folder */}
+                  <ellipse cx="210" cy="300" rx="160" ry="90" fill="url(#folderCoreGlow)" opacity="0.45" />
+
+                  {/* FOLDER BACK LAYER */}
+                  <g className="folder-back-plate">
+                    {/* Folder Tab & Back Body */}
                     <path
-                      d="M60 140 C60 45, 300 45, 300 140 C300 175, 275 195, 250 190 C225 185, 205 195, 180 190 C155 185, 135 195, 110 190 C85 185, 60 175, 60 140 Z"
-                      fill="url(#jellyCap)"
+                      d="M60 210 L135 210 L160 235 L350 235 C360 235 368 243 368 253 L368 395 C368 405 360 413 350 413 L60 413 C50 413 42 405 42 395 L42 228 C42 218 50 210 60 210 Z"
+                      fill="url(#folderBackGrad)"
+                      stroke="#ff3344"
+                      strokeWidth="1.8"
+                      strokeOpacity="0.5"
                     />
-                    {/* Inner glowing organs */}
-                    <ellipse
-                      cx="180"
-                      cy="130"
-                      rx="70"
-                      ry="45"
-                      fill="url(#innerCore)"
-                    />
-                    <ellipse
-                      cx="180"
-                      cy="120"
-                      rx="35"
-                      ry="22"
-                      fill="#ffffff"
-                      opacity="0.7"
-                    />
+                    {/* Circuit lines */}
+                    <path d="M70 250 H210 L230 270 H340" stroke="#ff3344" strokeWidth="1" strokeOpacity="0.3" strokeDasharray="4 4" />
+                    <path d="M75 290 H170 L185 305 H325" stroke="#ff3344" strokeWidth="1" strokeOpacity="0.2" />
                   </g>
 
-                  {/* Flowing Bioluminescent Tentacles */}
-                  <g className="tentacles-group" stroke="url(#tentacleRed)">
+                  {/* LUMINOUS VAULT CORE */}
+                  <ellipse cx="210" cy="290" rx="95" ry="35" fill="url(#folderCoreGlow)" filter="url(#payoutDropGlow)" />
+
+                  {/* FLOATING PAYOUT TOKENS & STREAM */}
+                  <g className="payout-tokens-stream">
+                    {/* Ascending Laser Beams */}
+                    <path d="M160 300 L130 115" stroke="#ff3344" strokeWidth="1.5" strokeOpacity="0.35" strokeDasharray="6 4" className="stream-beam b1" />
+                    <path d="M210 280 L210 75" stroke="#ff4d5a" strokeWidth="2" strokeOpacity="0.6" strokeDasharray="8 4" className="stream-beam b2" />
+                    <path d="M260 300 L290 120" stroke="#ff3344" strokeWidth="1.5" strokeOpacity="0.35" strokeDasharray="6 4" className="stream-beam b3" />
+
+                    {/* Digital Payout Receipt (Hovering Center) */}
+                    <g className="payout-token-card">
+                      <rect x="135" y="85" width="150" height="90" rx="14" fill="#0f0205" stroke="#ff3344" strokeWidth="1.8" strokeOpacity="0.8" filter="url(#payoutDropGlow)" />
+                      <circle cx="160" cy="112" r="8" fill="#ff3344" />
+                      <rect x="175" y="108" width="85" height="4" rx="2" fill="#ffffff" opacity="0.85" />
+                      <rect x="175" y="116" width="55" height="3" rx="1.5" fill="#a1a1aa" />
+                      <text x="155" y="145" fill="#4ade80" fontSize="14" fontWeight="800" fontFamily="monospace">+0.25 ETH</text>
+                      <text x="155" y="160" fill="#ff5252" fontSize="7.5" fontWeight="700" letterSpacing="0.6">NEAR MPC VERIFIED</text>
+                    </g>
+
+                    {/* Floating ETH Diamond Coin (Left) */}
+                    <g className="payout-coin coin-eth">
+                      <circle cx="95" cy="170" r="28" fill="url(#goldCoinGrad)" filter="url(#payoutDropGlow)" />
+                      <circle cx="95" cy="170" r="23" fill="#140205" stroke="#ff4d5a" strokeWidth="1.5" />
+                      <path d="M95 154 L104 169 L95 174 L86 169 Z" fill="#ffffff" />
+                      <path d="M95 176 L104 171 L95 184 L86 171 Z" fill="#ff6b6b" />
+                    </g>
+
+                    {/* Floating NEAR Coin (Right) */}
+                    <g className="payout-coin coin-near">
+                      <circle cx="325" cy="185" r="26" fill="url(#goldCoinGrad)" filter="url(#payoutDropGlow)" />
+                      <circle cx="325" cy="185" r="22" fill="#140205" stroke="#ff4d5a" strokeWidth="1.5" />
+                      <path d="M318 196 L318 174 L324 174 L330 184 L330 174 L334 174 L334 196 L328 196 L322 186 L322 196 Z" fill="#ffffff" />
+                    </g>
+
+                    {/* Floating Sparkle Token (High Center) */}
+                    <g className="payout-coin coin-sparkle">
+                      <circle cx="265" cy="55" r="18" fill="url(#tokenRed)" filter="url(#payoutDropGlow)" />
+                      <circle cx="265" cy="55" r="15" fill="#180206" stroke="#ff4d5a" strokeWidth="1" />
+                      <text x="260" y="60" fill="#ffffff" fontSize="13" fontWeight="bold">⚡</text>
+                    </g>
+
+                    {/* Radiant Particles */}
+                    <circle cx="80" cy="125" r="2" fill="#ffffff" opacity="0.9" />
+                    <circle cx="345" cy="115" r="2.5" fill="#ff4d5a" />
+                    <circle cx="175" cy="55" r="1.5" fill="#ffffff" />
+                    <circle cx="365" cy="250" r="2" fill="#ff3344" />
+                  </g>
+
+                  {/* FOLDER FRONT FLAP (Isometric Translucent Glass Flap) */}
+                  <g className="folder-front-plate">
                     <path
-                      d="M130 185 Q115 250 145 320 T120 440"
-                      strokeWidth="3.5"
-                      fill="none"
-                      className="tentacle t1"
+                      d="M38 265 L372 250 C382 250 390 258 388 268 L364 415 C363 423 355 430 346 430 L58 430 C48 430 40 423 39 413 L34 275 C33 269 35 265 38 265 Z"
+                      fill="url(#folderFrontGrad)"
+                      stroke="#ff4d5a"
+                      strokeWidth="2.2"
+                      filter="url(#payoutDropGlow)"
                     />
-                    <path
-                      d="M150 190 Q170 270 140 350 T160 460"
-                      strokeWidth="2.5"
-                      fill="none"
-                      className="tentacle t2"
-                    />
-                    <path
-                      d="M180 192 Q185 280 180 370 T185 470"
-                      strokeWidth="4"
-                      fill="none"
-                      className="tentacle t3"
-                    />
-                    <path
-                      d="M210 190 Q190 270 220 350 T200 460"
-                      strokeWidth="2.5"
-                      fill="none"
-                      className="tentacle t4"
-                    />
-                    <path
-                      d="M230 185 Q245 250 215 320 T240 440"
-                      strokeWidth="3.5"
-                      fill="none"
-                      className="tentacle t5"
-                    />
-                    {/* Filament wisps */}
-                    <path
-                      d="M100 175 Q85 240 105 320 T95 410"
-                      strokeWidth="1.2"
-                      opacity="0.6"
-                      fill="none"
-                      className="tentacle t6"
-                    />
-                    <path
-                      d="M260 175 Q275 240 255 320 T265 410"
-                      strokeWidth="1.2"
-                      opacity="0.6"
-                      fill="none"
-                      className="tentacle t7"
-                    />
+                    {/* Glass Sheen */}
+                    <path d="M48 274 L360 260" stroke="#ffffff" strokeWidth="2" strokeOpacity="0.45" />
+
+                    {/* Cybernetic Vault Seal Lock */}
+                    <g className="vault-seal">
+                      <circle cx="205" cy="350" r="28" fill="#0d0103" stroke="#ff3344" strokeWidth="2.2" />
+                      <circle cx="205" cy="350" r="21" fill="url(#tokenRed)" opacity="0.3" />
+                      <circle cx="205" cy="350" r="15" fill="#ff2a3b" filter="url(#payoutDropGlow)" />
+                      {/* Shield / Keyhole symbol */}
+                      <path d="M201 346 C201 343 209 343 209 346 L210 353 C210 356 200 356 200 353 Z" fill="#ffffff" />
+                      <circle cx="205" cy="348" r="2.5" fill="#0d0103" />
+                    </g>
+
+                    {/* PayFold Brand Tag with Logo */}
+                    <g className="brand-folder-badge">
+                      <rect x="68" y="375" width="125" height="30" rx="8" fill="#120205" stroke="#ff3344" strokeWidth="1.2" strokeOpacity="0.8" />
+                      <image href="/logo.png" x="73" y="378" width="24" height="24" />
+                      <text x="104" y="394" fill="#ffffff" fontSize="11" fontWeight="800" letterSpacing="0.8">PAYFOLD</text>
+                    </g>
                   </g>
                 </svg>
-              </div>
-
-              {/* Floating Social Pill (Matching Screenshot) */}
-              <div className="floating-social-capsule">
-                <a
-                  href="https://github.com/Lakshay-Deol/payfold"
-                  target="_blank"
-                  rel="noreferrer"
-                  title="GitHub"
-                >
-                  <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z" />
-                  </svg>
-                </a>
-                <a
-                  href="https://near.org"
-                  target="_blank"
-                  rel="noreferrer"
-                  title="NEAR Protocol"
-                >
-                  <span className="text-icon">N</span>
-                </a>
-                <a
-                  href="https://x.com"
-                  target="_blank"
-                  rel="noreferrer"
-                  title="X (Twitter)"
-                >
-                  <span className="text-icon">𝕏</span>
-                </a>
-              </div>
-
-              {/* Floating Card 1: 230+ Projects (Top Right) */}
-              <div className="floating-card-widget widget-top">
-                <div className="mini-thumb-jelly">
-                  <div className="mini-jelly-dot"></div>
-                </div>
-                <div className="widget-num">230+</div>
-                <div className="widget-caption">
-                  Prizes successfully dispersed worldwide
-                </div>
-              </div>
-
-              {/* Floating Card 2: 400+ Trusted Partners & CTA (Bottom Right) */}
-              <div className="floating-card-widget widget-bottom">
-                <div className="widget-num">400+</div>
-                <div className="widget-caption">Trusted Hackathons</div>
-                <div className="partner-strip-chips">
-                  <span className="partner-chip">NEAR</span>
-                  <span className="partner-chip">Aurora</span>
-                  <span className="partner-chip">Gemini</span>
-                  <span className="partner-chip">Resend</span>
-                </div>
-                <button
-                  onClick={() => {
-                    setActiveTab("console");
-                    scrollToSection("services-console");
-                  }}
-                  className="btn-card-action"
-                >
-                  Launch App
-                </button>
               </div>
             </div>
           </div>
         </div>
       </section>
 
-      {/* 3. EDITORIAL STATEMENT (Matching Screenshot) */}
-      <section className="statement-strip" id="statement">
+      {/* 3. EDITORIAL STATEMENT */}
+      <section className="statement-strip scroll-reveal" id="statement">
         <div className="statement-container">
           <div className="statement-pill-badge">
             <span className="badge-dot"></span>
-            <span>About Us</span>
+            <span>Why NEAR Protocol?</span>
           </div>
 
           <h2 className="statement-quote">
-            We <span className="crimson-focus">design</span> and deploy{" "}
-            <span className="crimson-focus">AI solutions</span> with people at
-            the core, ensuring every{" "}
-            <span className="crimson-focus">system enhances</span> real user
-            experiences.
+            We leverage <span className="crimson-focus">NEAR Chain Signatures</span> and{" "}
+            <span className="crimson-focus">Aurora EVM</span> to build a truly{" "}
+            <span className="crimson-focus">autonomous escrow protocol</span> — eliminating
+            manual spreadsheets and server keys with decentralized threshold cryptography.
           </h2>
         </div>
       </section>
 
-      {/* 4. DUAL CARDS SECTION (Matching Screenshot) */}
-      <section className="proof-zone" id="proof">
+      {/* 4. DUAL CARDS SECTION: NEAR Architecture & Benefits */}
+      <section className="proof-zone scroll-reveal" id="proof">
         <div className="proof-grid">
-          {/* Left Card: Based in Montreal / Powered by NEAR Protocol */}
+          {/* Left Card: Multi-Chain Key Derivation Terminal */}
           <div className="proof-card card-left">
             <div className="card-top-row">
               <div className="live-indicator">
                 <span className="ping-dot"></span>
-                <span>Available for worldwide hackathons</span>
+                <span>Deterministic Key Derivation</span>
               </div>
             </div>
 
@@ -623,31 +724,47 @@ NEAR_MPC.sign({
             </div>
           </div>
 
-          {/* Right Card: 120+ Metric & Ava Collins Quote (Matching Screenshot) */}
+          {/* Right Card: Real Technical Benefits of NEAR */}
           <div className="proof-card card-right">
-            <div className="card-right-header">
-              Trusted by 120+ hackathons across 4 continents — shipping
-              decentralized payouts from idea to production in seconds
-            </div>
-
-            <div className="giant-metric-row">
-              <span className="giant-metric-number">120+</span>
-              <div className="five-stars">★★★★★</div>
-            </div>
-
-            {/* Inset Quote Card */}
-            <div className="quote-inset-card">
-              <div className="quote-avatar">
-                <div className="avatar-initials">LD</div>
+            <div className="card-top-row">
+              <div className="live-indicator">
+                <span className="ping-dot"></span>
+                <span>Architecture Advantages</span>
               </div>
-              <div className="quote-content">
-                <p className="quote-text">
-                  &ldquo;Good AI feels obvious — because the hard work is
-                  hidden.&rdquo;
-                </p>
-                <div className="quote-author">
-                  <strong>Lakshay Deol</strong> &bull; PayFold Architect &amp;
-                  NEAR Builder
+            </div>
+
+            <h3 className="card-primary-title">
+              Core Benefits of NEAR in PayFold
+            </h3>
+
+            <div className="near-benefits-list">
+              <div className="near-benefit-item">
+                <div className="benefit-icon-badge">01</div>
+                <div className="benefit-text-wrap">
+                  <h4>Cross-Chain Key Derivation</h4>
+                  <p>
+                    A single master account (<code>lakshay-payfold.testnet</code>) dynamically derives distinct, isolated EVM vault addresses for every hackathon on Aurora and Sepolia.
+                  </p>
+                </div>
+              </div>
+
+              <div className="near-benefit-item">
+                <div className="benefit-icon-badge">02</div>
+                <div className="benefit-text-wrap">
+                  <h4>Keyless MPC Threshold Signatures</h4>
+                  <p>
+                    Zero private keys exist on disk. Payout transactions are co-signed across NEAR’s decentralized validator set (<code>v1.signer-prod</code>) eliminating single points of compromise.
+                  </p>
+                </div>
+              </div>
+
+              <div className="near-benefit-item">
+                <div className="benefit-icon-badge">03</div>
+                <div className="benefit-text-wrap">
+                  <h4>Chain Abstraction for Winners</h4>
+                  <p>
+                    Winners don&apos;t need NEAR accounts or gas. The protocol handles cross-chain execution behind the scenes, delivering native ETH directly to the recipient&apos;s EVM address.
+                  </p>
                 </div>
               </div>
             </div>
@@ -655,10 +772,10 @@ NEAR_MPC.sign({
         </div>
       </section>
 
-      {/* 5. BRAND TICKER STRIP (Matching Screenshot) */}
-      <section className="ticker-strip">
+      {/* 5. BRAND TICKER STRIP */}
+      <section className="ticker-strip scroll-reveal">
         <div className="ticker-inner">
-          <span className="ticker-label">Trusted by premier Web3 &amp; AI stacks</span>
+          <span className="ticker-label">Powered by premier Web3 &amp; AI infrastructure</span>
           <div className="ticker-logos">
             <span className="brand-logo-text">NEAR PROTOCOL</span>
             <span className="ticker-divider">&bull;</span>
@@ -673,45 +790,43 @@ NEAR_MPC.sign({
         </div>
       </section>
 
-      {/* 6. SERVICES & INTERACTIVE PROTOCOL CONSOLE (Matching Screenshot) */}
-      <section className="services-section" id="services-console" ref={formRef}>
+      {/* 6. SERVICES & INTERACTIVE PROTOCOL CONSOLE */}
+      <section className="services-section scroll-reveal" id="services-console" ref={formRef}>
         <div className="services-container">
           {/* Section Kicker */}
           <div className="section-kicker-pill">
             <span className="badge-dot"></span>
-            <span>Services</span>
+            <span>Architecture</span>
           </div>
 
           <div className="services-main-grid">
-            {/* Left Column: Heading, Description & Step Pills */}
+            {/* Left Column: Heading, Description & NEAR Architecture Flow */}
             <div className="services-left">
               <h2 className="services-title">
-                End-to-End
+                Autonomous Escrow
                 <br />
-                AI Services
+                Architecture
               </h2>
 
               <p className="services-desc">
-                We turn ambiguous AI ideas into production features your users
-                trust — combining strategy, design, engineering, and rigorous
-                on-chain cryptographic evaluation.
+                PayFold marries Google Gemini AI with NEAR Chain Signatures to eliminate manual spreadsheets and give hackathon organizers trustless, non-custodial prize settlement.
               </p>
 
-              {/* Service Step Card (Matching Screenshot: AI Strategy & Mapping 01) */}
+              {/* Service Feature Card: Concrete NEAR MPC & Escrow Flow */}
               <div className="service-feature-card">
                 <div className="service-header-row">
-                  <h4 className="service-name">AI Strategy &amp; Mapping</h4>
-                  <span className="service-step-index">(01)</span>
+                  <h4 className="service-name">Decentralized Threshold Escrow</h4>
+                  <span className="service-step-index">(NEAR MPC)</span>
                 </div>
                 <p className="service-detail">
-                  Identify high-ROI use cases and define a realistic, measurable
-                  AI prize disbursement roadmap.
+                  The on-chain contract (<code>PayFoldEscrow.sol</code>) locks organizer prize pools on Aurora. Only the authorized NEAR MPC threshold signer can release payouts once the winner&apos;s identity is validated by AI.
                 </p>
 
                 <div className="service-tags-wrap">
-                  <span className="service-tag">Stakeholder discovery</span>
-                  <span className="service-tag">Value model &amp; KPI definition</span>
-                  <span className="service-tag">Data readiness assessment</span>
+                  <span className="service-tag">NEAR v1.signer-prod</span>
+                  <span className="service-tag">Aurora EVM Escrow</span>
+                  <span className="service-tag">Google Gemini 1.5 Flash</span>
+                  <span className="service-tag">Sub-Cent Gas Finality</span>
                 </div>
               </div>
 
@@ -859,10 +974,13 @@ NEAR_MPC.sign({
       </section>
 
       {/* 7. FOOTER */}
-      <footer className="universe-footer">
+      <footer className="universe-footer scroll-reveal">
         <div className="footer-content">
           <div className="footer-left">
-            <span className="footer-brand">PayFold</span>
+            <div className="footer-brand-lockup">
+              <img src="/logo.png" alt="PayFold Logo" className="footer-logo-img" />
+              <span className="footer-brand">PayFold</span>
+            </div>
             <span className="footer-sub">
               Autonomous Hackathon Escrow Engine powered by NEAR Chain Signatures
             </span>
@@ -980,22 +1098,17 @@ NEAR_MPC.sign({
           gap: 0.75rem;
         }
 
-        .brand-symbol {
-          width: 24px;
-          height: 24px;
-          border-radius: 50%;
-          border: 2px solid #ff3344;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          box-shadow: 0 0 14px rgba(255, 51, 68, 0.6);
+        .brand-logo-img {
+          width: 34px;
+          height: 34px;
+          object-fit: contain;
+          border-radius: 8px;
+          filter: drop-shadow(0 0 12px rgba(255, 45, 60, 0.7));
+          transition: transform 0.25s ease;
         }
 
-        .symbol-core {
-          width: 10px;
-          height: 10px;
-          background: #ff3344;
-          border-radius: 50%;
+        .nav-brand:hover .brand-logo-img {
+          transform: scale(1.08) rotate(-3deg);
         }
 
         .brand-title {
@@ -1031,6 +1144,10 @@ NEAR_MPC.sign({
           color: #ffffff;
         }
 
+        .capsule-btn.tour-btn {
+          color: #ff6b76;
+        }
+
         .capsule-btn.active {
           background: #e51e2b;
           color: #ffffff;
@@ -1040,6 +1157,26 @@ NEAR_MPC.sign({
         .nav-actions {
           display: flex;
           align-items: center;
+          gap: 0.85rem;
+        }
+
+        .btn-tour-pill {
+          background: rgba(255, 45, 60, 0.12);
+          border: 1px solid rgba(255, 45, 60, 0.35);
+          color: #ff5252;
+          padding: 0.5rem 1rem;
+          border-radius: 9999px;
+          font-size: 0.82rem;
+          font-weight: 600;
+          cursor: pointer;
+          transition: all 0.2s ease;
+        }
+
+        .btn-tour-pill:hover {
+          background: rgba(255, 45, 60, 0.25);
+          border-color: #ff3344;
+          color: #ffffff;
+          box-shadow: 0 0 14px rgba(255, 45, 60, 0.4);
         }
 
         /* 2. HERO SECTION */
@@ -1203,12 +1340,12 @@ NEAR_MPC.sign({
           line-height: 1.2;
         }
 
-        /* Hero Right: Bioluminescent Jellyfish & Stage */
+        /* Hero Right: Bioluminescent Animated PayFold Vault Folder & Stage */
         .hero-right {
           position: relative;
         }
 
-        .jellyfish-stage {
+        .payout-stage {
           position: relative;
           min-height: 520px;
           display: flex;
@@ -1216,172 +1353,106 @@ NEAR_MPC.sign({
           justify-content: center;
         }
 
-        .jellyfish-creature {
-          position: absolute;
-          width: 380px;
-          height: 480px;
-          animation: jellyPulse 6s ease-in-out infinite alternate;
+        .payout-creature {
+          position: relative;
+          width: 420px;
+          height: 500px;
+          animation: folderFloat 6s ease-in-out infinite alternate;
+          filter: drop-shadow(0 0 40px rgba(255, 35, 50, 0.45));
         }
 
-        @keyframes jellyPulse {
+        @keyframes folderFloat {
           0% {
-            transform: translateY(0px) scale(0.98);
+            transform: perspective(1000px) rotateY(-4deg) rotateX(3deg) translateY(0px);
           }
           100% {
-            transform: translateY(-16px) scale(1.02);
+            transform: perspective(1000px) rotateY(-1deg) rotateX(6deg) translateY(-16px);
           }
         }
 
-        .jellyfish-svg {
+        .payout-svg {
           width: 100%;
           height: 100%;
-          filter: drop-shadow(0 0 35px rgba(255, 30, 45, 0.45));
+          overflow: visible;
         }
 
-        .tentacle {
-          animation: waveTentacle 5s ease-in-out infinite alternate;
-          transform-origin: top center;
+        /* Payout Stream Animations */
+        .payout-token-card {
+          animation: cardHover 4.5s ease-in-out infinite alternate;
+          transform-origin: center;
         }
 
-        .tentacle.t1 { animation-delay: 0s; }
-        .tentacle.t2 { animation-delay: 0.5s; }
-        .tentacle.t3 { animation-delay: 1s; }
-        .tentacle.t4 { animation-delay: 1.5s; }
-        .tentacle.t5 { animation-delay: 2s; }
-
-        @keyframes waveTentacle {
-          0% { transform: skewX(-2deg); }
-          100% { transform: skewX(3deg); }
+        @keyframes cardHover {
+          0% {
+            transform: translateY(0px) rotate(-1deg);
+          }
+          100% {
+            transform: translateY(-14px) rotate(1.5deg);
+          }
         }
 
-        /* Floating Social Capsule (f, camera, x) */
-        .floating-social-capsule {
-          position: absolute;
-          top: 38%;
-          left: 54%;
-          transform: translate(-50%, -50%);
-          display: flex;
-          flex-direction: column;
-          gap: 0.6rem;
-          background: rgba(18, 18, 22, 0.85);
-          backdrop-filter: blur(12px);
-          border: 1px solid rgba(255, 255, 255, 0.1);
-          padding: 0.55rem 0.45rem;
-          border-radius: 9999px;
-          z-index: 15;
+        .coin-eth {
+          animation: coinFloatEth 5s ease-in-out infinite alternate;
+          transform-origin: 95px 170px;
         }
 
-        .floating-social-capsule a {
-          color: #a1a1aa;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          width: 24px;
-          height: 24px;
-          border-radius: 50%;
-          text-decoration: none;
-          transition: all 0.2s ease;
+        @keyframes coinFloatEth {
+          0% {
+            transform: translateY(0px) rotate(-4deg);
+          }
+          100% {
+            transform: translateY(-18px) rotate(8deg);
+          }
         }
 
-        .floating-social-capsule a:hover {
-          color: #ffffff;
-          background: rgba(255, 255, 255, 0.08);
+        .coin-near {
+          animation: coinFloatNear 4.8s ease-in-out infinite alternate;
+          transform-origin: 325px 185px;
         }
 
-        .text-icon {
-          font-size: 0.75rem;
-          font-weight: 700;
+        @keyframes coinFloatNear {
+          0% {
+            transform: translateY(0px) rotate(4deg);
+          }
+          100% {
+            transform: translateY(-16px) rotate(-6deg);
+          }
         }
 
-        /* Floating Card Widgets (Top & Bottom Right) */
-        .floating-card-widget {
-          position: absolute;
-          background: rgba(14, 14, 18, 0.85);
-          backdrop-filter: blur(20px);
-          border: 1px solid rgba(255, 255, 255, 0.08);
-          border-radius: 1.25rem;
-          padding: 1.25rem;
-          z-index: 12;
-          box-shadow: 0 15px 35px rgba(0, 0, 0, 0.6);
+        .coin-sparkle {
+          animation: sparkleFloat 3.8s ease-in-out infinite alternate;
+          transform-origin: 265px 55px;
         }
 
-        .widget-top {
-          top: 40px;
-          right: 0px;
-          width: 170px;
+        @keyframes sparkleFloat {
+          0% {
+            transform: translateY(0px) scale(0.95);
+          }
+          100% {
+            transform: translateY(-12px) scale(1.1);
+          }
         }
 
-        .mini-thumb-jelly {
-          width: 100%;
-          height: 65px;
-          background: radial-gradient(circle at 50% 40%, rgba(255, 45, 60, 0.4) 0%, rgba(20, 20, 25, 0.9) 70%);
-          border-radius: 0.75rem;
-          margin-bottom: 0.75rem;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          border: 1px solid rgba(255, 45, 60, 0.2);
+        .stream-beam {
+          animation: beamOscillate 2.5s ease-in-out infinite alternate;
         }
 
-        .mini-jelly-dot {
-          width: 16px;
-          height: 16px;
-          background: #ff3344;
-          border-radius: 50%;
-          box-shadow: 0 0 14px #ff3344;
+        .stream-beam.b1 { animation-delay: 0s; }
+        .stream-beam.b2 { animation-delay: 0.4s; }
+        .stream-beam.b3 { animation-delay: 0.8s; }
+
+        @keyframes beamOscillate {
+          0% { opacity: 0.3; }
+          100% { opacity: 0.85; }
         }
 
-        .widget-bottom {
-          bottom: 20px;
-          right: 0px;
-          width: 190px;
+        .vault-seal {
+          animation: sealGlow 3s ease-in-out infinite alternate;
         }
 
-        .widget-num {
-          font-size: 1.6rem;
-          font-weight: 850;
-          color: #ffffff;
-          line-height: 1.1;
-        }
-
-        .widget-caption {
-          font-size: 0.72rem;
-          color: #8e8e96;
-          margin-top: 0.25rem;
-          margin-bottom: 0.75rem;
-        }
-
-        .partner-strip-chips {
-          display: flex;
-          flex-wrap: wrap;
-          gap: 0.35rem;
-          margin-bottom: 0.85rem;
-        }
-
-        .partner-chip {
-          font-size: 0.62rem;
-          background: rgba(255, 255, 255, 0.05);
-          color: #b0b0b8;
-          padding: 0.2rem 0.45rem;
-          border-radius: 4px;
-        }
-
-        .btn-card-action {
-          width: 100%;
-          background: #e51e2b;
-          color: #ffffff;
-          border: none;
-          padding: 0.55rem;
-          border-radius: 9999px;
-          font-size: 0.78rem;
-          font-weight: 700;
-          cursor: pointer;
-          box-shadow: 0 4px 12px rgba(229, 30, 43, 0.35);
-          transition: all 0.2s ease;
-        }
-
-        .btn-card-action:hover {
-          box-shadow: 0 6px 18px rgba(229, 30, 43, 0.55);
+        @keyframes sealGlow {
+          0% { transform: scale(0.98); }
+          100% { transform: scale(1.02); }
         }
 
         /* 3. EDITORIAL STATEMENT STRIP */
@@ -1548,77 +1619,66 @@ NEAR_MPC.sign({
           overflow-x: auto;
         }
 
-        /* Card Right */
+        /* Card Right: NEAR Architectural Benefits */
         .card-right {
-          justify-content: space-between;
-        }
-
-        .card-right-header {
-          font-size: 0.95rem;
-          color: #9c9ca3;
-          line-height: 1.5;
-          max-width: 420px;
-        }
-
-        .giant-metric-row {
           display: flex;
-          align-items: center;
-          gap: 1.5rem;
-          margin: 2.5rem 0;
+          flex-direction: column;
         }
 
-        .giant-metric-number {
-          font-size: clamp(3.5rem, 6vw, 5.2rem);
-          font-weight: 850;
-          color: #ffffff;
-          line-height: 1;
-          letter-spacing: -2px;
-        }
-
-        .five-stars {
-          color: #ff3344;
-          font-size: 1.15rem;
-          letter-spacing: 2px;
-        }
-
-        .quote-inset-card {
-          background: rgba(18, 18, 24, 0.85);
-          border: 1px solid rgba(255, 255, 255, 0.08);
-          border-radius: 1.25rem;
-          padding: 1.35rem;
+        .near-benefits-list {
           display: flex;
-          gap: 1.15rem;
-          align-items: center;
+          flex-direction: column;
+          gap: 0.9rem;
+          margin-top: 0.25rem;
         }
 
-        .quote-avatar {
-          width: 48px;
-          height: 48px;
+        .near-benefit-item {
+          display: flex;
+          gap: 1rem;
+          background: rgba(255, 255, 255, 0.03);
+          border: 1px solid rgba(255, 255, 255, 0.06);
+          border-radius: 1rem;
+          padding: 1rem 1.15rem;
+          transition: all 0.2s ease;
+        }
+
+        .near-benefit-item:hover {
+          border-color: rgba(255, 45, 60, 0.3);
+          background: rgba(255, 45, 60, 0.04);
+        }
+
+        .benefit-icon-badge {
+          width: 32px;
+          height: 32px;
           border-radius: 50%;
-          background: linear-gradient(135deg, #ff3344, #8b0000);
+          background: rgba(255, 45, 60, 0.15);
+          border: 1px solid rgba(255, 45, 60, 0.35);
+          color: #ff5252;
           display: flex;
           align-items: center;
           justify-content: center;
+          font-size: 0.75rem;
+          font-weight: 800;
           flex-shrink: 0;
         }
 
-        .avatar-initials {
+        .benefit-text-wrap h4 {
+          font-size: 0.92rem;
+          font-weight: 700;
           color: #ffffff;
-          font-weight: 750;
-          font-size: 0.95rem;
+          margin-bottom: 0.25rem;
         }
 
-        .quote-text {
-          font-size: 0.88rem;
-          color: #ededed;
-          font-style: italic;
+        .benefit-text-wrap p {
+          font-size: 0.78rem;
+          color: #9c9ca3;
           line-height: 1.45;
-          margin-bottom: 0.35rem;
         }
 
-        .quote-author {
-          font-size: 0.72rem;
-          color: #71717a;
+        .benefit-text-wrap code {
+          color: #ff4d4d;
+          font-family: monospace;
+          font-size: 0.76rem;
         }
 
         /* 5. TICKER STRIP */
@@ -1958,12 +2018,26 @@ NEAR_MPC.sign({
           box-shadow: 0 25px 60px rgba(0, 0, 0, 0.8), 0 0 40px rgba(255, 45, 60, 0.2);
         }
 
+        .modal-header-brand {
+          display: flex;
+          align-items: center;
+          gap: 0.75rem;
+          margin-bottom: 0.85rem;
+        }
+
+        .modal-logo-img {
+          width: 32px;
+          height: 32px;
+          object-fit: contain;
+          border-radius: 8px;
+          box-shadow: 0 0 12px rgba(255, 45, 60, 0.5);
+        }
+
         .modal-pill {
           font-size: 0.7rem;
           font-weight: 750;
           color: #ff4d4d;
           letter-spacing: 0.8px;
-          margin-bottom: 0.75rem;
         }
 
         .modal-title {
@@ -1996,6 +2070,230 @@ NEAR_MPC.sign({
           gap: 1rem;
         }
 
+        /* Onboarding Tour Modal */
+        .tour-modal {
+          max-width: 580px;
+        }
+
+        .tour-top-bar {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          margin-bottom: 1.25rem;
+        }
+
+        .tour-brand-group {
+          display: flex;
+          align-items: center;
+          gap: 0.75rem;
+        }
+
+        .tour-logo {
+          width: 30px;
+          height: 30px;
+          object-fit: contain;
+          border-radius: 8px;
+          box-shadow: 0 0 14px rgba(255, 45, 60, 0.6);
+        }
+
+        .tour-brand-name {
+          font-size: 0.95rem;
+          font-weight: 750;
+          color: #ffffff;
+        }
+
+        .tour-close-btn {
+          background: rgba(255, 255, 255, 0.06);
+          border: 1px solid rgba(255, 255, 255, 0.1);
+          color: #a1a1aa;
+          width: 28px;
+          height: 28px;
+          border-radius: 50%;
+          cursor: pointer;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-size: 0.85rem;
+          transition: all 0.2s ease;
+        }
+
+        .tour-close-btn:hover {
+          background: rgba(255, 45, 60, 0.2);
+          color: #ffffff;
+          border-color: #ff3344;
+        }
+
+        .tour-progress-track {
+          width: 100%;
+          height: 4px;
+          background: rgba(255, 255, 255, 0.08);
+          border-radius: 9999px;
+          overflow: hidden;
+          margin-bottom: 1.25rem;
+        }
+
+        .tour-progress-bar {
+          height: 100%;
+          background: linear-gradient(90deg, #ff3344, #ff6b76);
+          transition: width 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+          box-shadow: 0 0 12px rgba(255, 51, 68, 0.8);
+        }
+
+        .tour-step-indicators {
+          display: flex;
+          gap: 0.5rem;
+          margin-bottom: 1.5rem;
+        }
+
+        .tour-dot-btn {
+          flex: 1;
+          background: rgba(255, 255, 255, 0.04);
+          border: 1px solid rgba(255, 255, 255, 0.08);
+          color: #8e8e96;
+          padding: 0.45rem 0.2rem;
+          border-radius: 8px;
+          font-size: 0.75rem;
+          font-weight: 600;
+          cursor: pointer;
+          transition: all 0.2s ease;
+        }
+
+        .tour-dot-btn.active {
+          background: rgba(255, 45, 60, 0.18);
+          border-color: #ff3344;
+          color: #ff4d4d;
+        }
+
+        .tour-dot-btn.completed {
+          color: #4ade80;
+          border-color: rgba(74, 222, 128, 0.3);
+        }
+
+        .tour-body-card {
+          background: rgba(8, 8, 12, 0.7);
+          border: 1px solid rgba(255, 45, 60, 0.25);
+          border-radius: 1.25rem;
+          padding: 1.75rem;
+          margin-bottom: 1.75rem;
+          box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+        }
+
+        .tour-icon-row {
+          display: flex;
+          align-items: center;
+          gap: 0.75rem;
+          margin-bottom: 1rem;
+        }
+
+        .tour-step-icon {
+          font-size: 1.8rem;
+        }
+
+        .tour-step-badge {
+          font-size: 0.72rem;
+          font-weight: 800;
+          color: #ff4d4d;
+          letter-spacing: 0.8px;
+          background: rgba(255, 45, 60, 0.12);
+          border: 1px solid rgba(255, 45, 60, 0.25);
+          padding: 0.25rem 0.65rem;
+          border-radius: 9999px;
+        }
+
+        .tour-step-title {
+          font-size: 1.35rem;
+          font-weight: 750;
+          color: #ffffff;
+          margin-bottom: 0.75rem;
+          letter-spacing: -0.4px;
+        }
+
+        .tour-step-desc {
+          font-size: 0.92rem;
+          color: #a1a1aa;
+          line-height: 1.6;
+          margin-bottom: 1.25rem;
+        }
+
+        .tour-step-highlight {
+          display: flex;
+          align-items: center;
+          gap: 0.5rem;
+          background: rgba(255, 255, 255, 0.04);
+          border: 1px solid rgba(255, 255, 255, 0.08);
+          padding: 0.55rem 0.85rem;
+          border-radius: 8px;
+          font-size: 0.8rem;
+          color: #ededed;
+          font-weight: 600;
+        }
+
+        .highlight-spark {
+          color: #ff3344;
+        }
+
+        .tour-nav-buttons {
+          display: flex;
+          justify-content: space-between;
+          gap: 1rem;
+        }
+
+        .btn-tour-secondary {
+          background: rgba(255, 255, 255, 0.05);
+          border: 1px solid rgba(255, 255, 255, 0.1);
+          color: #ededed;
+          padding: 0.75rem 1.5rem;
+          border-radius: 9999px;
+          font-size: 0.88rem;
+          font-weight: 600;
+          cursor: pointer;
+          transition: all 0.2s ease;
+        }
+
+        .btn-tour-secondary:disabled {
+          opacity: 0.3;
+          cursor: not-allowed;
+        }
+
+        .btn-tour-primary {
+          background: linear-gradient(135deg, #e51e2b, #b30010);
+          border: none;
+          color: #ffffff;
+          padding: 0.75rem 1.75rem;
+          border-radius: 9999px;
+          font-size: 0.88rem;
+          font-weight: 700;
+          cursor: pointer;
+          box-shadow: 0 4px 16px rgba(229, 30, 43, 0.4);
+          transition: all 0.2s ease;
+        }
+
+        .btn-tour-primary:hover {
+          box-shadow: 0 6px 24px rgba(229, 30, 43, 0.65);
+          transform: translateY(-1px);
+        }
+
+        /* Scroll Reveal Animations */
+        .scroll-reveal {
+          opacity: 0;
+          transform: translateY(35px);
+          transition: opacity 0.85s cubic-bezier(0.16, 1, 0.3, 1),
+                      transform 0.85s cubic-bezier(0.16, 1, 0.3, 1);
+          will-change: opacity, transform;
+        }
+
+        .scroll-reveal.revealed {
+          opacity: 1;
+          transform: translateY(0);
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+          .scroll-reveal {
+            opacity: 1;
+            transform: none;
+          }
+        }
+
         /* 7. FOOTER */
         .universe-footer {
           max-width: 1280px;
@@ -2016,7 +2314,21 @@ NEAR_MPC.sign({
         .footer-left {
           display: flex;
           flex-direction: column;
-          gap: 0.25rem;
+          gap: 0.35rem;
+        }
+
+        .footer-brand-lockup {
+          display: flex;
+          align-items: center;
+          gap: 0.65rem;
+        }
+
+        .footer-logo-img {
+          width: 26px;
+          height: 26px;
+          object-fit: contain;
+          border-radius: 6px;
+          box-shadow: 0 0 10px rgba(255, 45, 60, 0.5);
         }
 
         .footer-brand {
