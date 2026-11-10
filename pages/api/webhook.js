@@ -147,8 +147,18 @@ export default async function handler(req, res) {
       status: "success",
       message: "Autonomous prize disbursement completed",
       winner: winnerInfo.Name,
+      prize: winnerInfo.prize,
+      hackathon: targetHackathon.name,
       walletAddress,
       transactionHash: explorerHash,
+      nearDetails: {
+        signerAccount: "lakshay-payfold.testnet",
+        mpcContract: "v1.signer-prod.testnet",
+        derivationPath: targetHackathon.name,
+        keyType: "secp256k1",
+        consensus: "Decentralized Validator Threshold (MPC)",
+        targetNetwork: "Aurora EVM / Sepolia",
+      },
     });
   } catch (error) {
     console.error("Webhook processing error:", error);
