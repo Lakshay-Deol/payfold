@@ -55,7 +55,11 @@
             "successfull": true,
             "successful": true,
             "logId": "log_NltPE-d_6K_v"
-          }
+          },
+          "paymentStatus": "success",
+          "recipientAddress": "0x71C8452f483FEfA834165dC65f57B8b71569B148",
+          "transactionHash": "https://sepolia.etherscan.io/tx/0xmock_1794317634213",
+          "paymentDate": "2026-11-10T13:33:54.213Z"
         }
       ],
       "createdAt": "2025-06-16T06:28:52.604Z",
@@ -95,6 +99,31 @@
       "createdAt": "2025-06-16T07:34:46.222Z",
       "lastUpdated": "2025-06-16T07:34:57.403Z",
       "hackathonAddress": "0xE0B84570ae81D7C234B32fd9c36d4CFdf2e40Aef"
+    },
+    {
+      "id": 2,
+      "name": "NEAR Hackathon 2026",
+      "winners": [
+        {
+          "id": 0,
+          "Name": "Lakshay",
+          "email": "lakshayld26@gmail.com",
+          "prize": "0.5",
+          "place": "1st Place",
+          "track": "realworld",
+          "addedAt": "2026-11-10T13:33:45.934Z",
+          "emailStatus": "success",
+          "emailResponse": {
+            "success": true,
+            "provider": "simulated",
+            "id": "sim_1794317625935",
+            "note": "No RESEND_API_KEY or COMPOSIO_API_KEY configured. Email was simulated."
+          }
+        }
+      ],
+      "createdAt": "2026-11-10T13:33:42.392Z",
+      "lastUpdated": "2026-11-10T13:33:45.935Z",
+      "hackathonAddress": "0x0330262f7a6882639F3649369731D274cc53e647"
     }
   ],
   "emailResponses": [

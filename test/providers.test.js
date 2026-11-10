@@ -22,3 +22,4 @@ test('sendEmail gracefully simulates email when credentials absent', async (t) =
   });
   t.true(result.success);
 });
+

@@ -1,9 +1,9 @@
 import { useState } from "react";
 import { ethers } from "ethers";
 import { ConnectButton } from "@rainbow-me/rainbowkit";
-import { useAccount } from "wagmi";
+import { useAccount, useChainId } from "wagmi";
 import { createWalletClient, custom } from "viem";
-import { sepolia } from "wagmi/chains";
+import { sepolia, aurora, auroraTestnet } from "wagmi/chains";
 import { parseEther } from "ethers";
 
 const CONTRACT_ADDRESS = "0xFcAaf9F83875C2c4fEF050af893e90061254c660";
@@ -23,6 +23,9 @@ const CONTRACT_ABI = [
 
 export default function Home() {
   const { address, isConnected } = useAccount();
+  const chainId = useChainId();
+  const currentChain =
+    [aurora, sepolia, auroraTestnet].find((c) => c.id === chainId) || aurora;
   const [error, setError] = useState("");
   const [formData, setFormData] = useState({
     name: "",
@@ -64,7 +67,7 @@ export default function Home() {
       setIsSubmitting(true);
       setError("");
       const walletClient = createWalletClient({
-        chain: sepolia,
+        chain: currentChain,
         transport: custom(window.ethereum),
       });
 

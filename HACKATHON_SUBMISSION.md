@@ -27,3 +27,4 @@
    - **See**: Web application serves on `http://localhost:3000` with RainbowKit wallet connect and Winner Details form.
 4. **Do**: `POST /api/getHackathonId` with `{"hackathonName": "Near AI Hackathon"}`
    - **See**: JSON response `{"hackathonId": 0}` from local ledger.
+
