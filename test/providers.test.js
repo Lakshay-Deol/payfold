@@ -1,6 +1,13 @@
 import test from 'ava';
+import fs from 'fs';
+import path from 'path';
 import { getAiClient, extractWalletAddressFromText } from '../utils/ai-provider.js';
 import { sendEmail } from '../utils/email-provider.js';
+
+test('branding › logo asset exists in public directory', (t) => {
+  const logoPath = path.resolve('public', 'logo.png');
+  t.true(fs.existsSync(logoPath), 'public/logo.png should exist');
+});
 
 test('getAiClient returns client configuration or safe fallback', (t) => {
   const config = getAiClient();
