@@ -384,7 +384,7 @@ export default function Home() {
             onClick={() => scrollToSection("near-playground")}
             className="capsule-btn"
           >
-            ⚡ NEAR Live
+            NEAR Live
           </button>
         </nav>
 
@@ -576,7 +576,7 @@ export default function Home() {
                       <path d="M318 196 L318 174 L324 174 L330 184 L330 174 L334 174 L334 196 L328 196 L322 186 L322 196 Z" fill="#ffffff" />
                     </g>
 
-                    {/* Floating Sparkle Token (High Center) */}
+                    {/* Floating Token (High Center) */}
                     <g className="payout-coin coin-sparkle">
                       <circle cx="265" cy="55" r="18" fill="url(#tokenRed)" filter="url(#payoutDropGlow)" />
                       <circle cx="265" cy="55" r="15" fill="#180206" stroke="#ff4d5a" strokeWidth="1" />
@@ -666,7 +666,7 @@ export default function Home() {
                 rel="noreferrer"
                 className="btn-dark-pill"
               >
-                Inspect Contract ↗
+                Inspect Contract
               </a>
             </div>
 
@@ -954,7 +954,7 @@ NEAR_MPC.sign({
           {/* Header */}
           <div className="section-kicker-pill">
             <span className="badge-dot"></span>
-            <span>⚡ NEAR Protocol Hackathon Feature</span>
+            <span>NEAR Protocol Hackathon Feature</span>
           </div>
 
           <div className="playground-header-row">
@@ -975,7 +975,7 @@ NEAR_MPC.sign({
                 className="btn-refresh-pill"
                 disabled={loadingHackathons}
               >
-                {loadingHackathons ? "Syncing..." : "🔄 Refresh Ledger"}
+                {loadingHackathons ? "Syncing..." : "Refresh Ledger"}
               </button>
             </div>
           </div>
@@ -1042,7 +1042,7 @@ NEAR_MPC.sign({
             </div>
 
             <div className="toolbar-hint">
-              <span>💡 Click <strong>Simulate NEAR MPC</strong> on any pending winner to trigger live keyless co-signing.</span>
+              <span>Click <strong>Simulate NEAR MPC</strong> on any pending winner to trigger live keyless co-signing.</span>
             </div>
           </div>
 
@@ -1134,7 +1134,7 @@ NEAR_MPC.sign({
                                       rel="noreferrer"
                                       className="btn-explorer-link"
                                     >
-                                      Receipt ↗
+                                      Receipt
                                     </a>
                                   ) : (
                                     <button
@@ -1142,7 +1142,7 @@ NEAR_MPC.sign({
                                       onClick={() => openSimModal(winner, h)}
                                       className="btn-sim-trigger glow"
                                     >
-                                      ⚡ Simulate NEAR MPC
+                                      Simulate NEAR MPC
                                     </button>
                                   )}
                                 </td>
@@ -1167,7 +1167,7 @@ NEAR_MPC.sign({
             <div className="sim-modal-header">
               <div className="sim-modal-title-group">
                 <span className="live-dot-red"></span>
-                <h3>⚡ NEAR Chain Signatures Live Execution</h3>
+                <h3>NEAR Chain Signatures Live Execution</h3>
               </div>
               <button
                 type="button"
@@ -1285,7 +1285,7 @@ NEAR_MPC.sign({
                   className="btn-red-pill glow"
                   style={{ textDecoration: "none", display: "inline-flex", alignItems: "center", gap: "0.5rem" }}
                 >
-                  🔗 View Explorer Receipt ↗
+                  View Explorer Receipt
                 </a>
               ) : (
                 <button
@@ -1295,8 +1295,8 @@ NEAR_MPC.sign({
                   className="btn-red-pill glow"
                 >
                   {simStage === "idle" || simStage === "done" || simStage === "error"
-                    ? "🚀 Execute Autonomous Settlement via NEAR MPC"
-                    : "⚡ Processing NEAR MPC Consensus..."}
+                    ? "Execute Autonomous Settlement via NEAR MPC"
+                    : "Processing NEAR MPC Consensus..."}
                 </button>
               )}
             </div>
