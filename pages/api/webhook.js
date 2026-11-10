@@ -157,9 +157,12 @@ export default async function handler(req, res) {
 }
 
 async function releasePrize(hackathonId, winnerId, winnerAddress, botAddress) {
+  const escrowAddress =
+    process.env.NEXT_PUBLIC_ESCROW_CONTRACT ||
+    "0xFcAaf9F83875C2c4fEF050af893e90061254c660";
   const provider = new JsonRpcProvider(process.env.ETHEREUM_RPC_URL || "https://rpc.sepolia.org");
   const contract = new Contract(
-    "0xFcAaf9F83875C2c4fEF050af893e90061254c660",
+    escrowAddress,
     ethContractAbi,
     provider
   );
@@ -172,7 +175,7 @@ async function releasePrize(hackathonId, winnerId, winnerAddress, botAddress) {
 
   const { transaction, hashesToSign } = await Evm.prepareTransactionForSigning({
     from: botAddress,
-    to: "0xFcAaf9F83875C2c4fEF050af893e90061254c660",
+    to: escrowAddress,
     data,
   });
 

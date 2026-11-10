@@ -6,7 +6,9 @@ import { createWalletClient, custom } from "viem";
 import { sepolia, aurora, auroraTestnet } from "wagmi/chains";
 import { parseEther } from "ethers";
 
-const CONTRACT_ADDRESS = "0xFcAaf9F83875C2c4fEF050af893e90061254c660";
+const CONTRACT_ADDRESS =
+  process.env.NEXT_PUBLIC_ESCROW_CONTRACT ||
+  "0xFcAaf9F83875C2c4fEF050af893e90061254c660";
 const CONTRACT_ABI = [
   {
     name: "announceWinner",

@@ -119,10 +119,28 @@
             "id": "sim_1794317625935",
             "note": "No RESEND_API_KEY or COMPOSIO_API_KEY configured. Email was simulated."
           }
+        },
+        {
+          "id": 1,
+          "Name": "Gods Eye",
+          "email": "lakshayld26@gmail.com",
+          "prize": "0.001",
+          "place": "1",
+          "track": "real world",
+          "addedAt": "2026-11-10T13:48:40.536Z",
+          "emailStatus": "success",
+          "emailResponse": {
+            "success": true,
+            "provider": "resend",
+            "id": "01a1c5b7-d9a7-75ae-9d6a-531d41956d2a",
+            "response": {
+              "id": "01a1c5b7-d9a7-75ae-9d6a-531d41956d2a"
+            }
+          }
         }
       ],
       "createdAt": "2026-11-10T13:33:42.392Z",
-      "lastUpdated": "2026-11-10T13:33:45.935Z",
+      "lastUpdated": "2026-11-10T13:48:42.338Z",
       "hackathonAddress": "0x0330262f7a6882639F3649369731D274cc53e647"
     }
   ],

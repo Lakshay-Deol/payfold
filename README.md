@@ -1,29 +1,81 @@
 # PayFold 💳
 
 > **Autonomous Hackathon Prize Distribution & Web3 Payout Automation Platform**  
-> *Developed & Maintained by **Lakshay Deol** (<lakshayld26@gmail.com>)*
+> *Developed & Maintained by **Lakshay Deol** (<lakshayld26@gmail.com>)*  
+> *Built for **NEAR HACKATHON 2026***
 
 ---
 
 ## 🌟 Overview
 
-**PayFold** is a decentralized, autonomous payout execution system designed for hackathon organizers, grant programs, and Web3 event managers. It eliminates the manual friction of collecting wallet addresses, validating recipients, and sending prize payouts one-by-one.
+**PayFold** is a decentralized, autonomous payout execution system designed for hackathon organizers, grant programs, and Web3 event managers. It eliminates the friction of collecting wallet addresses, validating recipients, and sending prize payouts one-by-one.
 
 With PayFold:
-1. **Organizers Announce Winners**: Connect a Web3 wallet (via RainbowKit/Wagmi on Aurora/Sepolia) and enter hackathon winner details (Winner Name, Email, Prize Amount, Place, and Track).
-2. **Autonomous Email Outreach**: PayFold's backend integrates OpenAI and Composio (Gmail) to automatically compose and send a personalized congratulatory email to the winner, requesting their payout wallet address.
-3. **Smart Inbound Webhook**: When the winner replies via email, PayFold parses their wallet address using AI-driven extraction.
-4. **Verifiable Autonomous Payout**: PayFold triggers an on-chain transaction via NEAR Chain Signatures (MPC) and Phala TEE (Trusted Execution Environment) to distribute funds securely to the verified winner's address on Aurora/Ethereum.
-5. **Instant Confirmation**: PayFold updates its ledger and sends a follow-up email with the on-chain explorer transaction link.
+1. **Organizers Announce Winners**: Connect a Web3 wallet (MetaMask/Rainbow on Aurora/Sepolia) and enter hackathon winner details (Winner Name, Email, Prize Amount, Place, and Track).
+2. **Escrow Locked On-Chain**: Prize funds are deposited and locked into the `PayFoldEscrow` smart contract.
+3. **Autonomous Email Outreach**: PayFold's backend generates a personalized congratulatory email via Google Gemini / OpenAI and delivers it via Resend / Composio, requesting their payout wallet address.
+4. **Smart Inbound Webhook**: When the winner replies via email, PayFold parses their EVM wallet address using AI-driven extraction.
+5. **Verifiable Autonomous Payout via NEAR**: PayFold triggers an on-chain transfer signed by **NEAR Chain Signatures (MPC)** and verified inside a **Phala TEE (Trusted Execution Environment)**, releasing funds to the winner without exposing any private keys.
+6. **Instant Confirmation**: PayFold updates its ledger and sends a follow-up email with the on-chain explorer transaction link.
 
 ---
 
-## 🏗️ Architecture
+## 🌐 How NEAR is Utilized in PayFold (NEAR Hackathon Architecture)
+
+PayFold is architected around NEAR Protocol's core capabilities: **Chain Signatures (MPC)**, **Shade Agents (TEE)**, and **Aurora EVM**.
+
+### 1. The Core Problem PayFold Solves with NEAR
+If you build an autonomous AI agent to disburse prize money, **where do you store the wallet's private key?**
+* **Server-side private keys**: Any server breach or memory dump compromises the entire hackathon treasury.
+* **Manual human execution**: Slow, error-prone, and defeats the purpose of autonomous agency.
+
+### 2. Concrete Role of NEAR Technologies
+
+#### A. NEAR Chain Signatures (Decentralized Multi-Party Computation)
+* PayFold uses **NEAR Chain Signatures** (`chainsig.js`) via NEAR's MPC network (`v1.signer-prod.testnet`).
+* Your single NEAR account (`lakshay-payfold.testnet`) controls unlimited deterministic addresses across any blockchain (Aurora, Ethereum, Arbitrum, Bitcoin).
+* In [`pages/api/sendWinners.js`](pages/api/sendWinners.js), PayFold derives a dedicated escrow bot address for each hackathon:
+  ```javascript
+  const { address } = await Evm.deriveAddressAndPublicKey(contractId, payload.Hackathon);
+  ```
+* When an AI email arrives with the winner's address, PayFold requests NEAR's validator threshold network to co-sign the EVM transfer using:
+  ```javascript
+  const signRes = await signWithAgent(path, payloadHash);
+  ```
+* **Zero private keys are stored on our servers.** The keys exist purely as distributed mathematical shares across NEAR validators.
+
+#### B. NEAR Shade Agent & TEE Enclaves (Confidential Computing)
+* PayFold uses `@neardefi/shade-agent-js` and Phala Cloud DStack/TDX (Intel Trusted Execution Environment).
+* The autonomous webhook decision logic runs inside a hardware-isolated enclave, guaranteeing that neither cloud providers nor malicious actors can tamper with the agent's code or redirect payouts.
+
+#### C. Aurora (EVM Engine on NEAR)
+* PayFold's smart contract [`PayFoldEscrow.sol`](contracts/PayFoldEscrow.sol) is deployed on **Aurora**, NEAR's Ethereum Virtual Machine.
+* This provides **1-second finality** and **sub-cent gas fees**, settling directly onto NEAR consensus.
+
+#### D. Chain Abstraction
+* **Organizers** connect standard EVM wallets (MetaMask/Rainbow) and deposit funds.
+* **Winners** receive an email and reply with their address.
+* **NEAR** invisibly handles cross-chain identity, cryptographic signing, and verification behind the scenes.
+
+---
+
+## 🎯 NEAR Hackathon Track Alignment
+
+| Track | Alignment in PayFold |
+| :--- | :--- |
+| **`realworld`** (Real-World Money) | Solves the real-world operational nightmare of prize payouts, payroll, remittances, and grant disbursement for businesses and hackathons. |
+| **`agents`** (Agent Economy) | Autonomous AI agents that manage communication, verify recipient identities, and disburse on-chain value autonomously. |
+| **`business`** (Autonomous Business) | Self-driving treasury automation that replaces finance spreadsheets with programmable on-chain rules. |
+| **`privacy`** (Privacy & Private AI) | Confidential execution using NEAR Shade Agent TEE enclaves to prevent key leakage and data exposure. |
+
+---
+
+## 🏗️ System Architecture
 
 ```
                                   +---------------------------+
                                   |     PayFold Frontend      |
-                                  | (Next.js 14, Wagmi, viem) |
+                                  | (Next.js 16, Wagmi, viem) |
                                   +-------------+-------------+
                                                 |
                        1. Announce Winner       |  2. Deposit & Register
@@ -34,10 +86,10 @@ With PayFold:
                                   +------+--------------+-----+
                                          |              |
                 3. Send AI Email Outreach|              | 4. Derive Hackathon Address
-                                         v              v
+                   (Gemini / Resend)     v              v
                +---------------------------+    +----------------------------+
-               |   OpenAI + Composio       |    | NEAR Chain Signatures /    |
-               |   (Gmail Toolset)         |    | Shade Agent MPC (EVM)      |
+               | Google Gemini + Resend    |    | NEAR Chain Signatures /    |
+               | (AI Extraction & Delivery)|    | Shade Agent MPC (EVM)      |
                +-------------+-------------+    +--------------+-------------+
                              |                                 |
               5. Winner email|                                 |
@@ -49,28 +101,25 @@ With PayFold:
                              |                                 v
                              |                    +---------------------------+
                              +------------------->| Aurora / EVM Blockchain   |
-                              7. Confirmation Tx  +---------------------------+
+                              7. Confirmation Tx  | (PayFoldEscrow Contract)  |
+                                                  +---------------------------+
 ```
 
 ---
 
-## 🚀 Key Features & Inherited Improvements
+## 📜 Smart Contract Architecture
 
-- **Web3 Wallet Connectivity**: Intuitive connection via RainbowKit and Wagmi with support for Aurora, Sepolia, and EVM networks.
-- **Autonomous Address Collection**: Replaces tedious spreadsheets and forms with conversational, AI-driven email workflows.
-- **NEAR Chain Signature Integration**: Uses decentralized MPC keys to derive hackathon escrow addresses and sign transactions without exposing private keys.
-- **Confidential Computing (TEE)**: Compatible with Phala Cloud DStack/TDX confidential virtual machines for tamper-proof execution.
-- **Audit Ledger**: Local persistent JSON ledger (`data.json`) tracking hackathons, winners, email statuses, and on-chain transaction hashes.
+The [`contracts/PayFoldEscrow.sol`](contracts/PayFoldEscrow.sol) contract manages all prize escrow:
 
----
+```solidity
+// Core Methods:
+function announceWinner(uint256 hackathonId, string calldata email, uint256 amount) external payable;
+function distributeFund(uint256 hackathonId, uint256 winnerId, address payable recipient) external;
+function setAgentSigner(address newSigner) external onlyOwner;
+```
 
-## 🛠️ Tech Stack
-
-- **Frontend**: Next.js 14 (Pages Router), React 18, RainbowKit, Wagmi, Viem, Ethers.js v6
-- **Styling**: CSS Modules, responsive Web3 glassmorphism design
-- **AI & Automation**: OpenAI API (GPT-4 / GPT-3.5-Turbo), Composio Core SDK (Gmail toolset)
-- **Decentralized Infrastructure**: NEAR Protocol Chain Signatures (`chainsig.js`), `@neardefi/shade-agent-js`
-- **Deployment**: Docker, Docker Compose, Phala Cloud CVM
+* **Compilation**: `node scripts/compile-contract.js` (uses `solc 0.8.20`)
+* **Deployment**: `node scripts/deploy-contract.js`
 
 ---
 
@@ -81,7 +130,7 @@ Create a `.env.development.local` file in the root directory (based on `.env.dev
 ```bash
 # NEAR Configuration for Chain Signatures / MPC
 NEAR_ACCOUNT_ID=lakshay-payfold.testnet
-NEAR_SEED_PHRASE="your twelve word seed phrase here"
+NEAR_SEED_PHRASE="analyst member chronic identify settle tattoo language alien boat few name dignity"
 
 # Contract Configuration (ac-proxy for local, ac-sandbox for Phala Cloud)
 NEXT_PUBLIC_contractId=ac-proxy.lakshay-payfold.testnet
@@ -93,10 +142,10 @@ APP_CODEHASH=f6552a63eddc6c8d0c78e76461e8be427711b23d429fd130d2b49d114dc695a4
 # Free AI & Email Automation Keys (Recommended)
 GEMINI_API_KEY=your_gemini_api_key_here
 RESEND_API_KEY=your_resend_api_key_here
+RESEND_FROM_EMAIL=PayFold <onboarding@resend.dev>
 
-# Alternative Paid Credentials
-OPENAI_API_KEY=your_openai_api_key
-COMPOSIO_API_KEY=your_composio_api_key
+# Optional: Custom Escrow Contract
+NEXT_PUBLIC_ESCROW_CONTRACT=0xFcAaf9F83875C2c4fEF050af893e90061254c660
 ```
 
 ---
@@ -107,14 +156,17 @@ This project is built for automated reproducibility check per NEAR Hackathon gui
 
 1. **Step 1: Run Automated Test Suite**
    - **Do**: `yarn test`
-   - **See**: All 6 tests pass (data model integrity, decimal conversions, AI provider fallbacks, email simulations).
+   - **See**: All 6 tests pass across data models, decimal conversions, AI provider fallbacks, and simulated email dispatch.
 2. **Step 2: Build Production Bundle**
    - **Do**: `yarn build`
    - **See**: Full Next.js production compilation with 0 errors across all routes.
-3. **Step 3: Launch Local Server**
+3. **Step 3: Compile Smart Contract**
+   - **Do**: `node scripts/compile-contract.js`
+   - **See**: `Compilation successful! Artifact saved to contracts/PayFoldEscrow.json`.
+4. **Step 4: Launch Local Server**
    - **Do**: `yarn dev`
-   - **See**: Server ready on `http://localhost:3000` with interactive RainbowKit wallet connection and payout form.
-4. **Step 4: Query Ledger API**
+   - **See**: Server ready on `http://localhost:3000` with interactive RainbowKit multi-chain wallet connection (Aurora / Sepolia) and payout form.
+5. **Step 5: Query Ledger API**
    - **Do**: `curl -X POST http://localhost:3000/api/getHackathonId -H "Content-Type: application/json" -d '{"hackathonName":"Near AI Hackathon"}'`
    - **See**: `{"hackathonId": 0}` returned with status `200 OK`.
 
@@ -123,25 +175,25 @@ This project is built for automated reproducibility check per NEAR Hackathon gui
 ## 📦 Getting Started
 
 ### 1. Prerequisites
-- **Node.js**: v18.0.0+ (v20+ recommended)
-- **Yarn**: Yarn 4 Berry (configured via `.yarnrc.yml` and `.yarn/releases`)
+- **Node.js**: v18.0.0+ (v20 or v22 recommended)
+- **Yarn**: Yarn 4 Berry (configured via `.yarnrc.yml`)
 
 ### 2. Install Dependencies
 ```bash
 yarn install
 ```
 
-### 3. Start Development Server
+### 3. Run Automated Tests
+```bash
+yarn test
+```
+
+### 4. Start Development Server
 ```bash
 yarn dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000) in your browser.
-
-### 4. Build for Production
-```bash
-yarn build
-```
 
 ---
 
