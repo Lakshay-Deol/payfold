@@ -43,3 +43,12 @@ test('convertToDecimal helper logic formats numbers correctly', (t) => {
   t.is(microResult, "0.5000");
 });
 
+test('api/getHackathons.js endpoint file exists and handles vault query', (t) => {
+  const endpointPath = path.join(__dirname, '..', 'pages', 'api', 'getHackathons.js');
+  t.true(fs.existsSync(endpointPath), 'pages/api/getHackathons.js must exist');
+  
+  const content = fs.readFileSync(endpointPath, 'utf-8');
+  t.true(content.includes('data.json'), 'endpoint must read hackathon data ledger');
+  t.true(content.includes('hackathons'), 'endpoint must return hackathons array');
+});
+
