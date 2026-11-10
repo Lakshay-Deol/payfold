@@ -25,10 +25,15 @@ const CONTRACT_ABI = [
 ];
 
 export default function Home() {
+  const [mounted, setMounted] = useState(false);
   const { address, isConnected } = useAccount();
   const chainId = useChainId();
   const currentChain =
     [aurora, sepolia, auroraTestnet].find((c) => c.id === chainId) || aurora;
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const formRef = useRef(null);
   const [activeTab, setActiveTab] = useState("console"); // "console" or "workflow"
@@ -238,7 +243,22 @@ export default function Home() {
             <span className="live-pulse"></span>
             NEAR Protocol
           </div>
-          <ConnectButton />
+          {mounted ? (
+            <ConnectButton />
+          ) : (
+            <button
+              type="button"
+              className="btn-crimson"
+              style={{
+                padding: "8px 18px",
+                fontSize: "14px",
+                borderRadius: "100px",
+                opacity: 0.85,
+              }}
+            >
+              Connect Wallet
+            </button>
+          )}
         </div>
       </header>
 
@@ -324,7 +344,11 @@ export default function Home() {
 
                 <div className="metric-row">
                   <span>Network Target</span>
-                  <strong>{currentChain.name} ({currentChain.id})</strong>
+                  <strong suppressHydrationWarning>
+                    {mounted
+                      ? `${currentChain.name} (${currentChain.id})`
+                      : "Aurora (1313161554)"}
+                  </strong>
                 </div>
                 <div className="metric-row">
                   <span>Engine</span>
@@ -529,10 +553,13 @@ export default function Home() {
 
                   <button
                     type="submit"
-                    disabled={isSubmitting || !isConnected}
+                    disabled={!mounted || isSubmitting || !isConnected}
                     className="submit-action-btn"
+                    suppressHydrationWarning
                   >
-                    {isSubmitting
+                    {!mounted
+                      ? "Connect Wallet to Announce"
+                      : isSubmitting
                       ? "Locking Escrow & Dispatching..."
                       : isConnected
                       ? "Lock Escrow & Announce Winner"
