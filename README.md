@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="public/logo.png" alt="PayFold Logo" width="120" />
+</p>
+
 # PayFold 💳
 
 > **Autonomous Hackathon Prize Distribution & Web3 Payout Automation Platform**  
