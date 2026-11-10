@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useRef, useEffect } from "react";
 import Head from "next/head";
 import { ConnectButton } from "@rainbow-me/rainbowkit";
 import { useAccount, useChainId } from "wagmi";
@@ -30,6 +30,7 @@ export default function Home() {
   const currentChain =
     [aurora, sepolia, auroraTestnet].find((c) => c.id === chainId) || aurora;
 
+  const formRef = useRef(null);
   const [activeTab, setActiveTab] = useState("console"); // "console" or "workflow"
   const [error, setError] = useState("");
   const [formData, setFormData] = useState({
@@ -43,6 +44,11 @@ export default function Home() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [hackathonAddress, setHackathonAddress] = useState("");
+
+  const scrollToSection = (id) => {
+    const el = document.getElementById(id);
+    if (el) el.scrollIntoView({ behavior: "smooth" });
+  };
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -76,7 +82,7 @@ export default function Home() {
         try {
           await window.ethereum.request({ method: "eth_requestAccounts" });
         } catch (permErr) {
-          console.warn("eth_requestAccounts notice:", permErr.message);
+          console.warn("eth_requestAccounts:", permErr.message);
         }
       }
 
@@ -129,10 +135,10 @@ export default function Home() {
         const data = await apiRes.json();
         setHackathonAddress(data.hackathonAddress);
         setShowModal(true);
-        setError("Winner announced and prize locked in escrow!");
+        setError("Vault deposit confirmed & winner notified via AI email!");
       } catch (apiError) {
         console.error("API Error:", apiError);
-        setError("Contract deposit successful. Backend notification queued.");
+        setError("Contract deposit successful. Notification queued in background.");
       }
 
       // Reset form
@@ -153,34 +159,43 @@ export default function Home() {
   };
 
   return (
-    <div className="page-wrapper">
+    <div className="agent-universe">
       <Head>
-        <title>PayFold — Autonomous Hackathon Prize Distribution via NEAR</title>
+        <title>PayFold — Autonomous Hackathon Prize Engine</title>
         <meta
           name="description"
-          content="Autonomous Web3 hackathon prize payouts powered by NEAR Chain Signatures & Aurora"
+          content="Autonomous Web3 hackathon prize payouts powered by NEAR Chain Signatures, Google Gemini & Aurora"
         />
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
+      {/* Ambient Bioluminescent Red Glows */}
+      <div className="ambient-glow top-center"></div>
+      <div className="ambient-glow right-mid"></div>
+      <div className="ambient-glow bottom-left"></div>
+
       {/* Success Modal */}
       {showModal && (
         <div className="modal-backdrop">
-          <div className="modal-card">
-            <h3 className="modal-title">🎉 Escrow Vault Initialized</h3>
-            <p className="modal-desc">
+          <div className="modal-glass">
+            <div className="modal-pill">NEAR MPC ESCROW INITIALIZED</div>
+            <h3 className="modal-title">Vault Active On-Chain</h3>
+            <p className="modal-text">
               Your prize deposit has been locked into the escrow contract. The
-              NEAR MPC bot address derived for this hackathon is:
+              NEAR Chain Signature MPC address derived for this hackathon is:
             </p>
-            <div className="modal-address">{hackathonAddress}</div>
-            <div className="modal-actions">
+            <div className="modal-code">{hackathonAddress}</div>
+            <div className="modal-button-row">
               <button
                 onClick={() => copyToClipboard(hackathonAddress)}
-                className="btn-primary"
+                className="btn-crimson"
               >
                 Copy Address
               </button>
-              <button onClick={() => setShowModal(false)} className="btn-secondary">
+              <button
+                onClick={() => setShowModal(false)}
+                className="btn-glass"
+              >
                 Done
               </button>
             </div>
@@ -188,253 +203,381 @@ export default function Home() {
         </div>
       )}
 
-      {/* Navigation */}
-      <header className="navbar">
-        <div className="brand">
-          <span className="logo-icon">💳</span>
-          <span className="logo-text">PayFold</span>
-          <span className="brand-tag">NEAR MPC</span>
+      {/* Top Navbar */}
+      <header className="top-nav">
+        <div className="brand-lockup">
+          <div className="brand-dot"></div>
+          <span className="brand-name">PayFold</span>
         </div>
-        <div className="nav-controls">
-          <div className="tab-switch">
-            <button
-              onClick={() => setActiveTab("console")}
-              className={`tab-btn ${activeTab === "console" ? "active" : ""}`}
-            >
-              Payout Console
-            </button>
-            <button
-              onClick={() => setActiveTab("workflow")}
-              className={`tab-btn ${activeTab === "workflow" ? "active" : ""}`}
-            >
-              How It Works
-            </button>
+
+        <nav className="center-pill-menu">
+          <button
+            onClick={() => setActiveTab("console")}
+            className={`pill-item ${activeTab === "console" ? "active" : ""}`}
+          >
+            Console
+          </button>
+          <button
+            onClick={() => setActiveTab("workflow")}
+            className={`pill-item ${activeTab === "workflow" ? "active" : ""}`}
+          >
+            Workflow
+          </button>
+          <a
+            href="https://github.com/Lakshay-Deol/payfold"
+            target="_blank"
+            rel="noreferrer"
+            className="pill-item"
+          >
+            Docs
+          </a>
+        </nav>
+
+        <div className="nav-actions">
+          <div className="near-tag">
+            <span className="live-pulse"></span>
+            NEAR Protocol
           </div>
           <ConnectButton />
         </div>
       </header>
 
-      {/* Hero Section */}
-      <section className="hero-section">
-        <div className="badge-pill">
-          <span>Built for NEAR HACKATHON 2026</span>
-          <span className="badge-dot">•</span>
-          <span className="badge-highlight">Chain Abstraction</span>
-        </div>
-        <h1 className="hero-title">
-          Autonomous Web3 Prize Payouts.
-          <br />
-          <span className="gradient-text">Zero Manual Spreadsheets.</span>
-        </h1>
-        <p className="hero-subtitle">
-          Lock hackathon prize vaults on-chain. Our AI agent contacts winners via email,
-          extracts their payout addresses, and disburses prizes trustlessly via{" "}
-          <strong>NEAR Chain Signatures</strong>.
-        </p>
+      {/* Main Hero Container */}
+      <section className="hero-zone">
+        <div className="hero-columns">
+          {/* Left Column: Headlines & CTAs */}
+          <div className="hero-content">
+            <div className="eyebrow-pill">
+              <span className="pill-spark">⚡</span>
+              <span>AI-Driven Autonomous Payouts</span>
+            </div>
 
-        {/* Feature Badges */}
-        <div className="feature-badges">
-          <div className="badge-item">
-            <span className="badge-icon">🛡️</span>
-            <div>
-              <strong>NEAR Chain Signatures</strong>
-              <p>Non-custodial MPC — 0 private keys on servers</p>
+            <h1 className="hero-main-title">
+              Your Autonomous
+              <br />
+              Prize Engine
+              <br />
+              <span className="crimson-highlight">On Demand</span>
+            </h1>
+
+            <p className="hero-subtext">
+              From hackathon escrow to AI address collection and zero-leakage
+              settlement. We automate the entire prize distribution lifecycle on-chain
+              with <strong>NEAR Chain Signatures</strong>.
+            </p>
+
+            <div className="cta-row">
+              <button
+                onClick={() => {
+                  setActiveTab("console");
+                  scrollToSection("app-console");
+                }}
+                className="btn-crimson"
+              >
+                Announce Winner
+              </button>
+              <button
+                onClick={() => setActiveTab("workflow")}
+                className="btn-glass"
+              >
+                Explore Workflow
+              </button>
+            </div>
+
+            {/* Quick Micro Stat Pills */}
+            <div className="stat-pills-row">
+              <div className="stat-card">
+                <span className="stat-num">0</span>
+                <span className="stat-label">Keys on Server</span>
+              </div>
+              <div className="stat-card">
+                <span className="stat-num">1s</span>
+                <span className="stat-label">Aurora Finality</span>
+              </div>
+              <div className="stat-card">
+                <span className="stat-num">100%</span>
+                <span className="stat-label">Non-Custodial</span>
+              </div>
             </div>
           </div>
-          <div className="badge-item">
-            <span className="badge-icon">⚡</span>
-            <div>
-              <strong>1-Second Aurora Settlement</strong>
-              <p>Instant finality with sub-cent gas fees</p>
-            </div>
-          </div>
-          <div className="badge-item">
-            <span className="badge-icon">🤖</span>
-            <div>
-              <strong>AI Email Orchestration</strong>
-              <p>Conversational address collection via Gemini</p>
+
+          {/* Right Column: Bioluminescent Visual Orb & Floating Glass Card */}
+          <div className="hero-visual">
+            <div className="visual-stage">
+              <div className="glow-sphere"></div>
+              
+              {/* Ethereal Floating Jellyfish-Inspired Radial Accent */}
+              <div className="jelly-glow"></div>
+
+              {/* Floating Glass Metric Card */}
+              <div className="floating-metric-card">
+                <div className="metric-header">
+                  <span className="metric-tag">VAULT METRICS</span>
+                  <span className="metric-time">LIVE</span>
+                </div>
+                <div className="metric-big-num">10.00 NEAR</div>
+                <div className="metric-sub">
+                  Escrow Signer: <code>lakshay-payfold.testnet</code>
+                </div>
+
+                <div className="metric-divider"></div>
+
+                <div className="metric-row">
+                  <span>Network Target</span>
+                  <strong>{currentChain.name} ({currentChain.id})</strong>
+                </div>
+                <div className="metric-row">
+                  <span>Engine</span>
+                  <strong>NEAR Chain Signatures MPC</strong>
+                </div>
+                <div className="metric-row">
+                  <span>AI Agent</span>
+                  <strong>Google Gemini 1.5 Flash</strong>
+                </div>
+
+                <button
+                  onClick={() => {
+                    setActiveTab("console");
+                    scrollToSection("app-console");
+                  }}
+                  className="card-book-btn"
+                >
+                  Deposit Escrow ↗
+                </button>
+              </div>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Main Content Area */}
-      <main className="content-container">
-        {activeTab === "workflow" ? (
-          /* Workflow Explainer Section */
-          <div className="workflow-grid">
-            <div className="workflow-card">
-              <div className="step-num">01</div>
-              <h3>1. Lock Prize in Escrow</h3>
-              <p>
-                The hackathon organizer announces winners and locks the prize funds
-                in the <code>PayFoldEscrow</code> contract with a single wallet click.
-              </p>
-              <div className="card-footer-pill">Aurora / Sepolia EVM</div>
-            </div>
+      {/* Editorial Statement Section (Matching Screenshot) */}
+      <section className="statement-zone">
+        <div className="statement-inner">
+          <p className="statement-text">
+            We <span className="red-word">architect</span> and deploy{" "}
+            <span className="red-word">autonomous payout protocols</span> with security
+            at the core, ensuring every prize disbursement{" "}
+            <span className="red-word">enhances real user experiences</span> without manual friction.
+          </p>
+        </div>
+      </section>
 
-            <div className="workflow-card">
-              <div className="step-num">02</div>
-              <h3>2. AI Email Outreach</h3>
-              <p>
-                PayFold generates a personalized congratulatory email requesting the
-                winner's payout address. When they reply, AI parses their EVM address.
-              </p>
-              <div className="card-footer-pill">Google Gemini + Resend</div>
-            </div>
-
-            <div className="workflow-card highlighted">
-              <div className="step-num">03</div>
-              <h3>3. NEAR MPC Payout</h3>
-              <p>
-                The decentralized NEAR validator threshold network co-signs the
-                payout transaction and transfers the prize directly into the winner's wallet.
-              </p>
-              <div className="card-footer-pill near-pill">NEAR Chain Signatures</div>
-            </div>
-          </div>
-        ) : (
-          /* Payout Console (Interactive App) */
-          <div className="console-wrapper">
-            <div className="form-card">
-              <div className="form-header">
-                <h2>Announce Hackathon Winner</h2>
-                <p>Deposit prize funds and initiate automated AI outreach</p>
+      {/* Interactive App & Workflow Section */}
+      <section className="app-workspace" id="app-console" ref={formRef}>
+        <div className="workspace-inner">
+          {activeTab === "workflow" ? (
+            /* Workflow Cards */
+            <div className="workflow-deck">
+              <div className="deck-card">
+                <div className="step-count">01</div>
+                <h3>Lock Prize in Escrow</h3>
+                <p>
+                  The organizer deposits the hackathon prize tokens into the
+                  on-chain <code>PayFoldEscrow</code> contract. Funds remain trustlessly
+                  locked in vault until winner identity is verified.
+                </p>
+                <div className="card-badge">Aurora &amp; Sepolia EVM</div>
               </div>
 
-              {error && (
-                <div
-                  className={`status-banner ${
-                    error.includes("successful") || error.includes("locked")
-                      ? "success"
-                      : "error"
-                  }`}
-                >
-                  {error}
-                </div>
-              )}
+              <div className="deck-card">
+                <div className="step-count">02</div>
+                <h3>AI Outreach &amp; Extraction</h3>
+                <p>
+                  An autonomous Gemini AI agent contacts the winner with personalized
+                  congratulations and instructions. When they reply, AI parses their EVM
+                  wallet address without forms.
+                </p>
+                <div className="card-badge">Google Gemini + Resend</div>
+              </div>
 
-              <form onSubmit={handleSubmit} className="payout-form">
-                <div className="input-group">
-                  <label>Hackathon Name</label>
-                  <input
-                    type="text"
-                    name="hackathonName"
-                    value={formData.hackathonName}
-                    onChange={handleInputChange}
-                    placeholder="NEAR Hackathon 2026"
-                    required
-                  />
-                </div>
-
-                <div className="input-row">
-                  <div className="input-group">
-                    <label>Winner Name</label>
-                    <input
-                      type="text"
-                      name="name"
-                      value={formData.name}
-                      onChange={handleInputChange}
-                      placeholder="Alex Rivera"
-                      required
-                    />
-                  </div>
-                  <div className="input-group">
-                    <label>Winner Email</label>
-                    <input
-                      type="email"
-                      name="email"
-                      value={formData.email}
-                      onChange={handleInputChange}
-                      placeholder="alex@example.com"
-                      required
-                    />
-                  </div>
-                </div>
-
-                <div className="input-row three-col">
-                  <div className="input-group">
-                    <label>Prize (ETH)</label>
-                    <input
-                      type="number"
-                      name="amount"
-                      value={formData.amount}
-                      onChange={handleInputChange}
-                      placeholder="0.25"
-                      step="0.00000001"
-                      min="0"
-                      required
-                    />
-                  </div>
-                  <div className="input-group">
-                    <label>Placement</label>
-                    <input
-                      type="text"
-                      name="place"
-                      value={formData.place}
-                      onChange={handleInputChange}
-                      placeholder="1st Place"
-                      required
-                    />
-                  </div>
-                  <div className="input-group">
-                    <label>Track</label>
-                    <input
-                      type="text"
-                      name="track"
-                      value={formData.track}
-                      onChange={handleInputChange}
-                      placeholder="Real-World Money"
-                      required
-                    />
-                  </div>
-                </div>
-
-                <button
-                  type="submit"
-                  disabled={isSubmitting || !isConnected}
-                  className="btn-submit"
-                >
-                  {isSubmitting
-                    ? "Depositing & Dispatching..."
-                    : isConnected
-                    ? "Lock Escrow & Send Prize"
-                    : "Connect Wallet to Proceed"}
-                </button>
-              </form>
+              <div className="deck-card glowing-border">
+                <div className="step-count">03</div>
+                <h3>NEAR MPC Disbursement</h3>
+                <p>
+                  NEAR&apos;s decentralized validator threshold network co-signs the
+                  release transaction, broadcasting the payout directly to the winner
+                  without any private keys on server disk.
+                </p>
+                <div className="card-badge red-badge">NEAR Chain Signatures</div>
+              </div>
             </div>
-          </div>
-        )}
-      </main>
+          ) : (
+            /* Console Form */
+            <div className="console-split">
+              {/* Left Side: Summary Card */}
+              <div className="glass-summary-panel">
+                <div className="summary-header">
+                  <span className="chip-bullet"></span>
+                  <span>Autonomous Payout Console</span>
+                </div>
+                <h2>Zero Spreadsheets. Verifiable On-Chain.</h2>
+                <p className="summary-desc">
+                  Deposit prize pools once. The agent handles communication, address
+                  collection, cryptographic validation, and instant on-chain release.
+                </p>
 
-      {/* Footer */}
-      <footer className="footer">
-        <div className="footer-content">
-          <div>
-            <strong>PayFold</strong> &bull; Developed by{" "}
-            <a href="mailto:lakshayld26@gmail.com">Lakshay Deol</a>
+                <div className="protocol-pills">
+                  <div className="proto-pill">
+                    <strong>MPC Threshold</strong>
+                    <span>NEAR v1.signer-prod</span>
+                  </div>
+                  <div className="proto-pill">
+                    <strong>Settlement Speed</strong>
+                    <span>~1 Second Finality</span>
+                  </div>
+                </div>
+
+                <div className="audit-note">
+                  🔒 Protected by Phala TEE &amp; NEAR Decentralized Validator Set.
+                </div>
+              </div>
+
+              {/* Right Side: Form */}
+              <div className="glass-form-panel">
+                <div className="form-title-bar">
+                  <h3>Announce Winner</h3>
+                  <p>Deposit funds into escrow &amp; trigger AI email outreach</p>
+                </div>
+
+                {error && (
+                  <div
+                    className={`feedback-msg ${
+                      error.includes("confirmed") || error.includes("successful")
+                        ? "success"
+                        : "danger"
+                    }`}
+                  >
+                    {error}
+                  </div>
+                )}
+
+                <form onSubmit={handleSubmit} className="agent-form">
+                  <div className="form-group">
+                    <label>Hackathon Name</label>
+                    <input
+                      type="text"
+                      name="hackathonName"
+                      value={formData.hackathonName}
+                      onChange={handleInputChange}
+                      placeholder="NEAR Hackathon 2026"
+                      required
+                    />
+                  </div>
+
+                  <div className="form-grid-2">
+                    <div className="form-group">
+                      <label>Winner Name</label>
+                      <input
+                        type="text"
+                        name="name"
+                        value={formData.name}
+                        onChange={handleInputChange}
+                        placeholder="Alex Rivera"
+                        required
+                      />
+                    </div>
+                    <div className="form-group">
+                      <label>Winner Email</label>
+                      <input
+                        type="email"
+                        name="email"
+                        value={formData.email}
+                        onChange={handleInputChange}
+                        placeholder="alex@example.com"
+                        required
+                      />
+                    </div>
+                  </div>
+
+                  <div className="form-grid-3">
+                    <div className="form-group">
+                      <label>Prize (ETH)</label>
+                      <input
+                        type="number"
+                        name="amount"
+                        value={formData.amount}
+                        onChange={handleInputChange}
+                        placeholder="0.25"
+                        step="0.00000001"
+                        min="0"
+                        required
+                      />
+                    </div>
+                    <div className="form-group">
+                      <label>Place</label>
+                      <input
+                        type="text"
+                        name="place"
+                        value={formData.place}
+                        onChange={handleInputChange}
+                        placeholder="1st Place"
+                        required
+                      />
+                    </div>
+                    <div className="form-group">
+                      <label>Track</label>
+                      <input
+                        type="text"
+                        name="track"
+                        value={formData.track}
+                        onChange={handleInputChange}
+                        placeholder="Real-World Money"
+                        required
+                      />
+                    </div>
+                  </div>
+
+                  <button
+                    type="submit"
+                    disabled={isSubmitting || !isConnected}
+                    className="submit-action-btn"
+                  >
+                    {isSubmitting
+                      ? "Locking Escrow & Dispatching..."
+                      : isConnected
+                      ? "Lock Escrow & Announce Winner"
+                      : "Connect Wallet to Announce"}
+                  </button>
+                </form>
+              </div>
+            </div>
+          )}
+        </div>
+      </section>
+
+      {/* Sleek Minimal Footer */}
+      <footer className="agent-footer">
+        <div className="footer-container">
+          <div className="footer-left">
+            <span className="f-logo">PayFold</span>
+            <span className="f-tagline">
+              Autonomous Hackathon Prize Engine on NEAR Protocol
+            </span>
           </div>
-          <div className="footer-links">
+
+          <div className="footer-mid">
+            <span>Built by Lakshay Deol &bull; NEAR HACKATHON 2026</span>
+          </div>
+
+          <div className="footer-right">
             <a
               href="https://github.com/Lakshay-Deol/payfold"
               target="_blank"
               rel="noreferrer"
             >
-              GitHub Repository
+              GitHub
             </a>
-            <span>&bull;</span>
             <a href="https://near.org" target="_blank" rel="noreferrer">
-              NEAR Protocol
+              NEAR
             </a>
-            <span>&bull;</span>
             <a href="https://aurora.dev" target="_blank" rel="noreferrer">
-              Aurora EVM
+              Aurora
             </a>
           </div>
         </div>
       </footer>
 
-      {/* Embedded Styles matching existing glassmorphism aesthetic */}
+      {/* Sleek Dark Mode Bioluminescent Stylesheet */}
       <style jsx global>{`
         * {
           box-sizing: border-box;
@@ -443,374 +586,744 @@ export default function Home() {
         }
 
         body {
+          background-color: #070709;
+          color: #ededed;
           font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
-            Oxygen, Ubuntu, Cantarell, sans-serif;
-          background: #0f111a;
-          color: #f7fafc;
+            Helvetica, Arial, sans-serif;
           overflow-x: hidden;
+          -webkit-font-smoothing: antialiased;
         }
 
-        .page-wrapper {
+        .agent-universe {
           min-height: 100vh;
-          background: radial-gradient(circle at 20% 20%, #1e1e38 0%, #0d0f18 100%);
+          position: relative;
+          background: #070709;
           display: flex;
           flex-direction: column;
         }
 
-        /* Navbar */
-        .navbar {
-          max-width: 1240px;
+        /* Ambient Bioluminescent Red Background Glows */
+        .ambient-glow {
+          position: absolute;
+          border-radius: 50%;
+          filter: blur(140px);
+          pointer-events: none;
+          z-index: 0;
+        }
+
+        .ambient-glow.top-center {
+          width: 600px;
+          height: 600px;
+          top: -150px;
+          left: 50%;
+          transform: translateX(-30%);
+          background: radial-gradient(circle, rgba(255, 45, 60, 0.18) 0%, transparent 70%);
+          animation: pulseAmbient 10s ease-in-out infinite alternate;
+        }
+
+        .ambient-glow.right-mid {
+          width: 500px;
+          height: 500px;
+          top: 30%;
+          right: -100px;
+          background: radial-gradient(circle, rgba(255, 45, 60, 0.12) 0%, transparent 70%);
+        }
+
+        .ambient-glow.bottom-left {
+          width: 550px;
+          height: 550px;
+          bottom: 10%;
+          left: -150px;
+          background: radial-gradient(circle, rgba(255, 45, 60, 0.08) 0%, transparent 70%);
+        }
+
+        @keyframes pulseAmbient {
+          0% {
+            opacity: 0.8;
+            transform: translateX(-30%) scale(0.95);
+          }
+          100% {
+            opacity: 1.2;
+            transform: translateX(-30%) scale(1.08);
+          }
+        }
+
+        /* 1. TOP NAVBAR */
+        .top-nav {
+          max-width: 1280px;
           margin: 0 auto;
           width: 100%;
           padding: 1.5rem 2rem;
           display: flex;
           justify-content: space-between;
           align-items: center;
-          border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+          position: relative;
+          z-index: 10;
         }
 
-        .brand {
+        .brand-lockup {
           display: flex;
           align-items: center;
-          gap: 0.6rem;
+          gap: 0.65rem;
         }
 
-        .logo-icon {
-          font-size: 1.8rem;
+        .brand-dot {
+          width: 12px;
+          height: 12px;
+          background: #ff2d3c;
+          border-radius: 50%;
+          box-shadow: 0 0 16px #ff2d3c;
         }
 
-        .logo-text {
-          font-size: 1.6rem;
+        .brand-name {
+          font-size: 1.35rem;
           font-weight: 800;
           letter-spacing: -0.5px;
-          background: linear-gradient(45deg, #00ff87, #60efff);
-          -webkit-background-clip: text;
-          -webkit-text-fill-color: transparent;
+          color: #ffffff;
         }
 
-        .brand-tag {
-          font-size: 0.75rem;
-          background: rgba(0, 255, 135, 0.12);
-          color: #00ff87;
-          padding: 0.2rem 0.6rem;
+        .center-pill-menu {
+          display: flex;
+          background: rgba(255, 255, 255, 0.04);
+          backdrop-filter: blur(16px);
+          border: 1px solid rgba(255, 255, 255, 0.08);
+          padding: 0.3rem 0.4rem;
           border-radius: 9999px;
-          border: 1px solid rgba(0, 255, 135, 0.3);
-          font-weight: 600;
+          gap: 0.25rem;
         }
 
-        .nav-controls {
-          display: flex;
-          align-items: center;
-          gap: 1.5rem;
-        }
-
-        .tab-switch {
-          display: flex;
-          background: rgba(255, 255, 255, 0.05);
-          padding: 0.25rem;
-          border-radius: 0.75rem;
-          border: 1px solid rgba(255, 255, 255, 0.1);
-        }
-
-        .tab-btn {
+        .pill-item {
           background: transparent;
           border: none;
-          color: #a0aec0;
-          padding: 0.5rem 1rem;
-          border-radius: 0.5rem;
-          cursor: pointer;
+          color: #8e8e93;
+          padding: 0.45rem 1.15rem;
+          border-radius: 9999px;
+          font-size: 0.85rem;
           font-weight: 600;
-          font-size: 0.9rem;
+          cursor: pointer;
+          text-decoration: none;
           transition: all 0.2s ease;
         }
 
-        .tab-btn.active {
-          background: rgba(255, 255, 255, 0.12);
-          color: #fff;
+        .pill-item:hover {
+          color: #ffffff;
         }
 
-        /* Hero */
-        .hero-section {
-          max-width: 960px;
-          margin: 3rem auto 2rem;
-          text-align: center;
-          padding: 0 1.5rem;
+        .pill-item.active {
+          background: rgba(255, 45, 60, 0.18);
+          color: #ff4d5a;
+          border: 1px solid rgba(255, 45, 60, 0.35);
         }
 
-        .badge-pill {
+        .nav-actions {
+          display: flex;
+          align-items: center;
+          gap: 1.25rem;
+        }
+
+        .near-tag {
+          display: flex;
+          align-items: center;
+          gap: 0.45rem;
+          background: rgba(255, 255, 255, 0.04);
+          border: 1px solid rgba(255, 255, 255, 0.08);
+          color: #c7c7cc;
+          font-size: 0.8rem;
+          font-weight: 600;
+          padding: 0.4rem 0.85rem;
+          border-radius: 9999px;
+        }
+
+        .live-pulse {
+          width: 7px;
+          height: 7px;
+          background: #ff2d3c;
+          border-radius: 50%;
+          box-shadow: 0 0 8px #ff2d3c;
+          animation: pulseDot 2s infinite;
+        }
+
+        @keyframes pulseDot {
+          0%, 100% { opacity: 1; transform: scale(1); }
+          50% { opacity: 0.4; transform: scale(0.85); }
+        }
+
+        /* 2. HERO ZONE */
+        .hero-zone {
+          max-width: 1280px;
+          margin: 2.5rem auto 0;
+          padding: 0 2rem;
+          width: 100%;
+          position: relative;
+          z-index: 5;
+        }
+
+        .hero-columns {
+          display: grid;
+          grid-template-columns: 1.15fr 0.95fr;
+          gap: 3.5rem;
+          align-items: center;
+        }
+
+        .eyebrow-pill {
           display: inline-flex;
           align-items: center;
-          gap: 0.5rem;
-          background: rgba(255, 255, 255, 0.04);
-          border: 1px solid rgba(255, 255, 255, 0.12);
-          padding: 0.4rem 1rem;
+          gap: 0.45rem;
+          background: rgba(255, 45, 60, 0.1);
+          border: 1px solid rgba(255, 45, 60, 0.25);
+          color: #ff6b76;
+          font-size: 0.8rem;
+          font-weight: 700;
+          padding: 0.35rem 0.9rem;
           border-radius: 9999px;
+          margin-bottom: 1.5rem;
+          letter-spacing: 0.2px;
+        }
+
+        .pill-spark {
           font-size: 0.85rem;
-          color: #cbd5e0;
+        }
+
+        .hero-main-title {
+          font-size: clamp(2.8rem, 5.5vw, 4.4rem);
+          font-weight: 900;
+          line-height: 1.08;
+          letter-spacing: -1.5px;
+          color: #ffffff;
           margin-bottom: 1.5rem;
         }
 
-        .badge-dot {
-          color: #00ff87;
+        .crimson-highlight {
+          color: #ff3344;
+          text-shadow: 0 0 35px rgba(255, 51, 68, 0.55);
         }
 
-        .badge-highlight {
-          color: #60efff;
+        .hero-subtext {
+          font-size: 1.15rem;
+          color: #98989f;
+          line-height: 1.65;
+          max-width: 560px;
+          margin-bottom: 2.25rem;
+        }
+
+        .hero-subtext strong {
+          color: #ffffff;
+        }
+
+        .cta-row {
+          display: flex;
+          gap: 1.25rem;
+          margin-bottom: 3rem;
+        }
+
+        .btn-crimson {
+          background: linear-gradient(135deg, #ff3344 0%, #d41728 100%);
+          color: #ffffff;
+          border: none;
+          padding: 0.95rem 2rem;
+          border-radius: 9999px;
+          font-size: 1rem;
+          font-weight: 700;
+          cursor: pointer;
+          box-shadow: 0 8px 24px rgba(255, 51, 68, 0.35);
+          transition: all 0.2s ease;
+          text-decoration: none;
+          display: inline-block;
+        }
+
+        .btn-crimson:hover {
+          transform: translateY(-2px);
+          box-shadow: 0 12px 30px rgba(255, 51, 68, 0.5);
+        }
+
+        .btn-glass {
+          background: rgba(255, 255, 255, 0.05);
+          color: #ededed;
+          border: 1px solid rgba(255, 255, 255, 0.12);
+          padding: 0.95rem 1.85rem;
+          border-radius: 9999px;
+          font-size: 1rem;
           font-weight: 600;
+          cursor: pointer;
+          transition: all 0.2s ease;
+          text-decoration: none;
+          display: inline-block;
         }
 
-        .hero-title {
-          font-size: 3.2rem;
+        .btn-glass:hover {
+          background: rgba(255, 255, 255, 0.09);
+          border-color: rgba(255, 255, 255, 0.2);
+        }
+
+        .stat-pills-row {
+          display: flex;
+          gap: 1.5rem;
+        }
+
+        .stat-card {
+          background: rgba(255, 255, 255, 0.03);
+          border: 1px solid rgba(255, 255, 255, 0.06);
+          padding: 0.85rem 1.25rem;
+          border-radius: 1rem;
+          display: flex;
+          flex-direction: column;
+          gap: 0.2rem;
+        }
+
+        .stat-num {
+          font-size: 1.5rem;
           font-weight: 800;
-          line-height: 1.15;
+          color: #ffffff;
+        }
+
+        .stat-label {
+          font-size: 0.75rem;
+          color: #7a7a80;
+          text-transform: uppercase;
+          letter-spacing: 0.5px;
+        }
+
+        /* Hero Visual (Right Column) */
+        .visual-stage {
+          position: relative;
+          min-height: 480px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        }
+
+        .jelly-glow {
+          position: absolute;
+          width: 320px;
+          height: 380px;
+          background: radial-gradient(ellipse at center, rgba(255, 45, 60, 0.35) 0%, rgba(255, 20, 40, 0.1) 50%, transparent 75%);
+          filter: blur(50px);
+          animation: floatOrb 6s ease-in-out infinite alternate;
+        }
+
+        @keyframes floatOrb {
+          0% { transform: translateY(-10px) scale(0.98); }
+          100% { transform: translateY(15px) scale(1.04); }
+        }
+
+        .floating-metric-card {
+          position: relative;
+          z-index: 2;
+          background: rgba(18, 18, 24, 0.75);
+          backdrop-filter: blur(24px);
+          border: 1px solid rgba(255, 45, 60, 0.3);
+          border-radius: 1.5rem;
+          padding: 2.25rem;
+          width: 100%;
+          max-width: 390px;
+          box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6), 0 0 30px rgba(255, 45, 60, 0.15);
+        }
+
+        .metric-header {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          margin-bottom: 0.5rem;
+        }
+
+        .metric-tag {
+          font-size: 0.7rem;
+          font-weight: 800;
+          letter-spacing: 1px;
+          color: #ff4d5a;
+        }
+
+        .metric-time {
+          font-size: 0.7rem;
+          color: #ff3344;
+          font-weight: 700;
+        }
+
+        .metric-big-num {
+          font-size: 2.5rem;
+          font-weight: 900;
+          color: #ffffff;
           letter-spacing: -1px;
+          margin-bottom: 0.3rem;
+        }
+
+        .metric-sub {
+          font-size: 0.8rem;
+          color: #7a7a80;
           margin-bottom: 1.25rem;
         }
 
-        .gradient-text {
-          background: linear-gradient(45deg, #00ff87, #60efff);
-          -webkit-background-clip: text;
-          -webkit-text-fill-color: transparent;
-        }
-
-        .hero-subtitle {
-          font-size: 1.2rem;
-          color: #a0aec0;
-          max-width: 720px;
-          margin: 0 auto 2.5rem;
-          line-height: 1.6;
-        }
-
-        .feature-badges {
-          display: grid;
-          grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-          gap: 1.25rem;
-          margin-top: 1rem;
-          text-align: left;
-        }
-
-        .badge-item {
-          background: rgba(255, 255, 255, 0.04);
-          border: 1px solid rgba(255, 255, 255, 0.08);
-          padding: 1rem 1.25rem;
-          border-radius: 1rem;
-          display: flex;
-          align-items: center;
-          gap: 0.85rem;
-        }
-
-        .badge-icon {
-          font-size: 1.7rem;
-        }
-
-        .badge-item strong {
-          display: block;
-          color: #fff;
-          font-size: 0.95rem;
-        }
-
-        .badge-item p {
-          color: #718096;
-          font-size: 0.8rem;
-          margin-top: 0.15rem;
-        }
-
-        /* Content Container */
-        .content-container {
-          max-width: 1100px;
-          margin: 1.5rem auto 4rem;
-          padding: 0 1.5rem;
-          width: 100%;
-          flex: 1;
-        }
-
-        /* Workflow Cards */
-        .workflow-grid {
-          display: grid;
-          grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-          gap: 1.5rem;
-        }
-
-        .workflow-card {
-          background: rgba(255, 255, 255, 0.03);
-          border: 1px solid rgba(255, 255, 255, 0.08);
-          border-radius: 1.25rem;
-          padding: 2rem;
-          display: flex;
-          flex-direction: column;
-          position: relative;
-        }
-
-        .workflow-card.highlighted {
-          border-color: rgba(0, 255, 135, 0.4);
-          background: radial-gradient(circle at top left, rgba(0, 255, 135, 0.08), transparent);
-        }
-
-        .step-num {
-          font-size: 2.2rem;
-          font-weight: 800;
-          color: rgba(255, 255, 255, 0.2);
-          margin-bottom: 1rem;
-        }
-
-        .workflow-card h3 {
-          font-size: 1.3rem;
-          color: #fff;
-          margin-bottom: 0.75rem;
-        }
-
-        .workflow-card p {
-          color: #a0aec0;
-          font-size: 0.95rem;
-          line-height: 1.6;
-          flex: 1;
-        }
-
-        .workflow-card code {
-          background: rgba(255, 255, 255, 0.1);
-          padding: 0.15rem 0.35rem;
+        .metric-sub code {
+          color: #ededed;
+          background: rgba(255, 255, 255, 0.08);
+          padding: 0.1rem 0.35rem;
           border-radius: 0.3rem;
-          color: #00ff87;
         }
 
-        .card-footer-pill {
-          margin-top: 1.5rem;
-          font-size: 0.8rem;
-          color: #cbd5e0;
-          background: rgba(255, 255, 255, 0.06);
-          padding: 0.35rem 0.75rem;
-          border-radius: 9999px;
-          align-self: flex-start;
+        .metric-divider {
+          height: 1px;
+          background: rgba(255, 255, 255, 0.08);
+          margin-bottom: 1.25rem;
         }
 
-        .card-footer-pill.near-pill {
-          background: rgba(0, 255, 135, 0.15);
-          color: #00ff87;
-          border: 1px solid rgba(0, 255, 135, 0.3);
-          font-weight: 600;
+        .metric-row {
+          display: flex;
+          justify-content: space-between;
+          font-size: 0.85rem;
+          margin-bottom: 0.75rem;
+          color: #98989f;
         }
 
-        /* Form Card */
-        .console-wrapper {
-          max-width: 680px;
+        .metric-row strong {
+          color: #ffffff;
+        }
+
+        .card-book-btn {
+          width: 100%;
+          background: linear-gradient(135deg, #ff3344 0%, #b80f1e 100%);
+          border: none;
+          color: #ffffff;
+          padding: 0.85rem;
+          border-radius: 0.85rem;
+          font-weight: 700;
+          font-size: 0.95rem;
+          cursor: pointer;
+          margin-top: 1rem;
+          transition: all 0.2s ease;
+        }
+
+        .card-book-btn:hover {
+          box-shadow: 0 0 20px rgba(255, 51, 68, 0.5);
+        }
+
+        /* 3. EDITORIAL STATEMENT ZONE */
+        .statement-zone {
+          max-width: 1100px;
+          margin: 5rem auto;
+          padding: 0 2rem;
+          text-align: center;
+          position: relative;
+          z-index: 5;
+        }
+
+        .statement-inner {
+          border-top: 1px solid rgba(255, 255, 255, 0.08);
+          border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+          padding: 3.5rem 1rem;
+        }
+
+        .statement-text {
+          font-size: clamp(1.5rem, 3vw, 2.3rem);
+          font-weight: 700;
+          line-height: 1.45;
+          letter-spacing: -0.5px;
+          color: #ffffff;
+          max-width: 880px;
           margin: 0 auto;
         }
 
-        .form-card {
-          background: rgba(255, 255, 255, 0.04);
-          backdrop-filter: blur(12px);
-          border: 1px solid rgba(255, 255, 255, 0.12);
-          border-radius: 1.5rem;
-          padding: 2.5rem;
-          box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+        .red-word {
+          color: #ff3344;
+          text-shadow: 0 0 20px rgba(255, 51, 68, 0.4);
         }
 
-        .form-header {
-          text-align: center;
+        /* 4. WORKSPACE / APP SECTION */
+        .app-workspace {
+          max-width: 1240px;
+          margin: 0 auto 5rem;
+          padding: 0 2rem;
+          width: 100%;
+          position: relative;
+          z-index: 5;
+        }
+
+        .workspace-inner {
+          width: 100%;
+        }
+
+        /* Workflow Cards Grid */
+        .workflow-deck {
+          display: grid;
+          grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+          gap: 1.75rem;
+        }
+
+        .deck-card {
+          background: rgba(18, 18, 24, 0.6);
+          backdrop-filter: blur(16px);
+          border: 1px solid rgba(255, 255, 255, 0.08);
+          border-radius: 1.5rem;
+          padding: 2.25rem;
+          display: flex;
+          flex-direction: column;
+          position: relative;
+          transition: all 0.3s ease;
+        }
+
+        .deck-card:hover {
+          border-color: rgba(255, 255, 255, 0.2);
+          transform: translateY(-4px);
+        }
+
+        .deck-card.glowing-border {
+          border-color: rgba(255, 51, 68, 0.4);
+          box-shadow: 0 0 35px rgba(255, 51, 68, 0.12);
+        }
+
+        .step-count {
+          font-size: 2.2rem;
+          font-weight: 900;
+          color: #ff3344;
+          margin-bottom: 1rem;
+          opacity: 0.9;
+        }
+
+        .deck-card h3 {
+          font-size: 1.35rem;
+          font-weight: 700;
+          color: #ffffff;
+          margin-bottom: 0.65rem;
+        }
+
+        .deck-card p {
+          color: #8e8e93;
+          font-size: 0.95rem;
+          line-height: 1.6;
+          flex: 1;
+        }
+
+        .deck-card code {
+          color: #ff6b76;
+          background: rgba(255, 51, 68, 0.1);
+          padding: 0.15rem 0.35rem;
+          border-radius: 0.3rem;
+        }
+
+        .card-badge {
+          margin-top: 1.75rem;
+          align-self: flex-start;
+          font-size: 0.75rem;
+          font-weight: 700;
+          background: rgba(255, 255, 255, 0.05);
+          color: #c7c7cc;
+          padding: 0.35rem 0.85rem;
+          border-radius: 9999px;
+          border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .card-badge.red-badge {
+          background: rgba(255, 51, 68, 0.15);
+          color: #ff4d5a;
+          border-color: rgba(255, 51, 68, 0.3);
+        }
+
+        /* Console Split Layout */
+        .console-split {
+          display: grid;
+          grid-template-columns: 1fr 1.25fr;
+          gap: 2.5rem;
+          align-items: stretch;
+        }
+
+        .glass-summary-panel {
+          background: rgba(18, 18, 24, 0.75);
+          backdrop-filter: blur(20px);
+          border: 1px solid rgba(255, 255, 255, 0.08);
+          border-radius: 1.75rem;
+          padding: 2.5rem;
+          display: flex;
+          flex-direction: column;
+          justify-content: space-between;
+        }
+
+        .summary-header {
+          display: flex;
+          align-items: center;
+          gap: 0.5rem;
+          color: #ff4d5a;
+          font-size: 0.8rem;
+          font-weight: 700;
+          letter-spacing: 0.5px;
+          margin-bottom: 1rem;
+        }
+
+        .chip-bullet {
+          width: 8px;
+          height: 8px;
+          background: #ff2d3c;
+          border-radius: 50%;
+          box-shadow: 0 0 8px #ff2d3c;
+        }
+
+        .glass-summary-panel h2 {
+          font-size: 2rem;
+          font-weight: 800;
+          line-height: 1.25;
+          color: #ffffff;
+          margin-bottom: 0.75rem;
+        }
+
+        .summary-desc {
+          color: #8e8e93;
+          font-size: 1rem;
+          line-height: 1.6;
           margin-bottom: 2rem;
         }
 
-        .form-header h2 {
-          font-size: 1.8rem;
-          font-weight: 700;
-          color: #fff;
-          margin-bottom: 0.4rem;
+        .protocol-pills {
+          display: flex;
+          flex-direction: column;
+          gap: 0.85rem;
+          margin-bottom: 2rem;
         }
 
-        .form-header p {
-          color: #a0aec0;
-          font-size: 0.95rem;
+        .proto-pill {
+          background: rgba(255, 255, 255, 0.03);
+          border: 1px solid rgba(255, 255, 255, 0.06);
+          padding: 0.85rem 1.15rem;
+          border-radius: 0.85rem;
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          font-size: 0.85rem;
         }
 
-        .status-banner {
+        .proto-pill strong {
+          color: #ededed;
+        }
+
+        .proto-pill span {
+          color: #ff6b76;
+          font-family: monospace;
+        }
+
+        .audit-note {
+          font-size: 0.8rem;
+          color: #636366;
+          padding-top: 1rem;
+          border-top: 1px solid rgba(255, 255, 255, 0.06);
+        }
+
+        /* Form Panel */
+        .glass-form-panel {
+          background: rgba(18, 18, 24, 0.85);
+          backdrop-filter: blur(24px);
+          border: 1px solid rgba(255, 45, 60, 0.25);
+          border-radius: 1.75rem;
+          padding: 2.5rem;
+          box-shadow: 0 25px 60px rgba(0, 0, 0, 0.7), 0 0 40px rgba(255, 45, 60, 0.1);
+        }
+
+        .form-title-bar {
+          margin-bottom: 1.75rem;
+        }
+
+        .form-title-bar h3 {
+          font-size: 1.6rem;
+          font-weight: 800;
+          color: #ffffff;
+          margin-bottom: 0.35rem;
+        }
+
+        .form-title-bar p {
+          color: #8e8e93;
+          font-size: 0.9rem;
+        }
+
+        .feedback-msg {
           padding: 0.85rem 1rem;
           border-radius: 0.75rem;
-          margin-bottom: 1.5rem;
           font-size: 0.9rem;
-          text-align: center;
+          margin-bottom: 1.5rem;
         }
 
-        .status-banner.success {
-          background: rgba(0, 255, 135, 0.15);
-          color: #00ff87;
+        .feedback-msg.success {
+          background: rgba(0, 255, 135, 0.12);
           border: 1px solid rgba(0, 255, 135, 0.3);
+          color: #00ff87;
         }
 
-        .status-banner.error {
-          background: rgba(255, 107, 107, 0.15);
-          color: #ff6b6b;
-          border: 1px solid rgba(255, 107, 107, 0.3);
+        .feedback-msg.danger {
+          background: rgba(255, 45, 60, 0.12);
+          border: 1px solid rgba(255, 45, 60, 0.35);
+          color: #ff6b76;
         }
 
-        .payout-form {
+        .agent-form {
           display: flex;
           flex-direction: column;
           gap: 1.25rem;
         }
 
-        .input-group {
+        .form-group {
           display: flex;
           flex-direction: column;
-          gap: 0.4rem;
+          gap: 0.45rem;
           flex: 1;
         }
 
-        .input-group label {
-          color: #cbd5e0;
-          font-size: 0.85rem;
-          font-weight: 600;
+        .form-group label {
+          font-size: 0.8rem;
+          font-weight: 700;
+          color: #c7c7cc;
+          text-transform: uppercase;
+          letter-spacing: 0.5px;
         }
 
-        .input-group input {
+        .form-group input {
           width: 100%;
-          padding: 0.85rem 1rem;
-          background: rgba(255, 255, 255, 0.05);
-          border: 1px solid rgba(255, 255, 255, 0.12);
+          background: rgba(255, 255, 255, 0.04);
+          border: 1px solid rgba(255, 255, 255, 0.1);
+          padding: 0.9rem 1.15rem;
           border-radius: 0.75rem;
-          color: #fff;
+          color: #ffffff;
           font-size: 0.95rem;
           transition: all 0.2s ease;
         }
 
-        .input-group input:focus {
+        .form-group input:focus {
           outline: none;
-          border-color: #00ff87;
-          box-shadow: 0 0 0 2px rgba(0, 255, 135, 0.2);
+          border-color: #ff3344;
+          box-shadow: 0 0 0 3px rgba(255, 51, 68, 0.25);
+          background: rgba(255, 255, 255, 0.06);
         }
 
-        .input-row {
+        .form-grid-2 {
           display: flex;
-          gap: 1rem;
+          gap: 1.15rem;
         }
 
-        .input-row.three-col {
+        .form-grid-3 {
           display: grid;
           grid-template-columns: 1fr 1fr 1fr;
+          gap: 1.15rem;
         }
 
-        .btn-submit {
+        .submit-action-btn {
           width: 100%;
-          padding: 1.1rem;
-          background: linear-gradient(45deg, #00ff87, #60efff);
+          padding: 1.15rem;
+          background: linear-gradient(135deg, #ff3344 0%, #c41221 100%);
           border: none;
-          border-radius: 0.75rem;
-          color: #10121d;
+          color: #ffffff;
           font-size: 1.05rem;
-          font-weight: 700;
+          font-weight: 800;
+          border-radius: 9999px;
           cursor: pointer;
-          transition: transform 0.2s ease, opacity 0.2s ease;
+          transition: all 0.2s ease;
+          box-shadow: 0 10px 25px rgba(255, 51, 68, 0.35);
           margin-top: 0.75rem;
         }
 
-        .btn-submit:hover:not(:disabled) {
+        .submit-action-btn:hover:not(:disabled) {
           transform: translateY(-2px);
-          box-shadow: 0 10px 20px rgba(0, 255, 135, 0.2);
+          box-shadow: 0 14px 35px rgba(255, 51, 68, 0.5);
         }
 
-        .btn-submit:disabled {
-          background: rgba(255, 255, 255, 0.1);
-          color: #718096;
+        .submit-action-btn:disabled {
+          background: rgba(255, 255, 255, 0.08);
+          color: #55555c;
           cursor: not-allowed;
+          box-shadow: none;
         }
 
         /* Modal */
@@ -820,125 +1333,161 @@ export default function Home() {
           left: 0;
           right: 0;
           bottom: 0;
-          background: rgba(0, 0, 0, 0.75);
-          backdrop-filter: blur(8px);
+          background: rgba(0, 0, 0, 0.85);
+          backdrop-filter: blur(14px);
           display: flex;
           align-items: center;
           justify-content: center;
           z-index: 9999;
-          padding: 1rem;
+          padding: 1.5rem;
         }
 
-        .modal-card {
-          background: #181a27;
-          border: 1px solid rgba(0, 255, 135, 0.3);
-          border-radius: 1.25rem;
+        .modal-glass {
+          background: #111117;
+          border: 1px solid rgba(255, 51, 68, 0.35);
+          border-radius: 1.5rem;
+          padding: 2.5rem;
           max-width: 500px;
           width: 100%;
-          padding: 2rem;
           text-align: center;
+          box-shadow: 0 25px 60px rgba(0, 0, 0, 0.8), 0 0 40px rgba(255, 51, 68, 0.2);
+        }
+
+        .modal-pill {
+          display: inline-block;
+          font-size: 0.75rem;
+          font-weight: 800;
+          color: #ff4d5a;
+          background: rgba(255, 51, 68, 0.15);
+          padding: 0.35rem 0.85rem;
+          border-radius: 9999px;
+          margin-bottom: 1rem;
         }
 
         .modal-title {
-          font-size: 1.5rem;
-          color: #00ff87;
-          margin-bottom: 0.75rem;
+          font-size: 1.8rem;
+          font-weight: 800;
+          color: #ffffff;
+          margin-bottom: 0.5rem;
         }
 
-        .modal-desc {
-          color: #cbd5e0;
+        .modal-text {
           font-size: 0.95rem;
-          line-height: 1.5;
-          margin-bottom: 1.25rem;
-        }
-
-        .modal-address {
-          background: rgba(255, 255, 255, 0.05);
-          padding: 0.75rem;
-          border-radius: 0.5rem;
-          word-break: break-all;
-          font-family: monospace;
-          color: #60efff;
-          font-size: 0.85rem;
+          color: #8e8e93;
+          line-height: 1.55;
           margin-bottom: 1.5rem;
         }
 
-        .modal-actions {
+        .modal-code {
+          background: rgba(255, 255, 255, 0.04);
+          border: 1px solid rgba(255, 255, 255, 0.08);
+          padding: 0.85rem;
+          border-radius: 0.75rem;
+          font-family: monospace;
+          color: #ff6b76;
+          font-size: 0.85rem;
+          word-break: break-all;
+          margin-bottom: 1.75rem;
+        }
+
+        .modal-button-row {
           display: flex;
           gap: 1rem;
           justify-content: center;
         }
 
-        .btn-primary {
-          background: linear-gradient(45deg, #00ff87, #60efff);
-          border: none;
-          padding: 0.75rem 1.5rem;
-          border-radius: 0.5rem;
-          font-weight: 700;
-          color: #10121d;
-          cursor: pointer;
+        /* 5. FOOTER */
+        .agent-footer {
+          border-top: 1px solid rgba(255, 255, 255, 0.06);
+          padding: 2.5rem 2rem;
+          position: relative;
+          z-index: 5;
         }
 
-        .btn-secondary {
-          background: rgba(255, 255, 255, 0.1);
-          border: 1px solid rgba(255, 255, 255, 0.2);
-          padding: 0.75rem 1.5rem;
-          border-radius: 0.5rem;
-          color: #fff;
-          cursor: pointer;
-        }
-
-        /* Footer */
-        .footer {
-          border-top: 1px solid rgba(255, 255, 255, 0.08);
-          padding: 2rem;
-          font-size: 0.9rem;
-          color: #718096;
-        }
-
-        .footer-content {
-          max-width: 1240px;
+        .footer-container {
+          max-width: 1280px;
           margin: 0 auto;
           display: flex;
           justify-content: space-between;
           align-items: center;
-          flex-wrap: gap;
-          gap: 1rem;
+          font-size: 0.9rem;
+          color: #7a7a80;
         }
 
-        .footer-links {
+        .footer-left {
           display: flex;
           align-items: center;
           gap: 0.75rem;
         }
 
-        .footer a {
-          color: #a0aec0;
+        .f-logo {
+          font-weight: 800;
+          color: #ffffff;
+        }
+
+        .f-tagline {
+          color: #55555c;
+        }
+
+        .footer-mid {
+          color: #8e8e93;
+        }
+
+        .footer-right {
+          display: flex;
+          gap: 1.25rem;
+        }
+
+        .footer-right a {
+          color: #98989f;
           text-decoration: none;
           transition: color 0.2s;
         }
 
-        .footer a:hover {
-          color: #00ff87;
+        .footer-right a:hover {
+          color: #ff3344;
         }
 
-        @media (max-width: 768px) {
-          .hero-title {
-            font-size: 2.2rem;
+        /* RESPONSIVE */
+        @media (max-width: 960px) {
+          .hero-columns {
+            grid-template-columns: 1fr;
+            text-align: center;
           }
-          .input-row {
-            flex-direction: column;
+          .hero-subtext {
+            margin: 0 auto 2rem;
           }
-          .input-row.three-col {
+          .cta-row {
+            justify-content: center;
+          }
+          .stat-pills-row {
+            justify-content: center;
+          }
+          .console-split {
             grid-template-columns: 1fr;
           }
-          .navbar {
+          .top-nav {
+            flex-direction: column;
+            gap: 1.25rem;
+          }
+          .footer-container {
             flex-direction: column;
             gap: 1rem;
-          }
-          .footer-content {
-            flex-direction: column;
             text-align: center;
+          }
+        }
+
+        @media (max-width: 640px) {
+          .form-grid-2,
+          .form-grid-3 {
+            grid-template-columns: 1fr;
+            flex-direction: column;
+          }
+          .cta-row {
+            flex-direction: column;
+          }
+          .stat-pills-row {
+            flex-direction: column;
           }
         }
       `}</style>
