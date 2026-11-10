@@ -66,10 +66,22 @@ export default function Home() {
     try {
       setIsSubmitting(true);
       setError("");
+
+      if (typeof window !== "undefined" && window.ethereum) {
+        try {
+          await window.ethereum.request({ method: "eth_requestAccounts" });
+        } catch (permErr) {
+          console.warn("eth_requestAccounts warning:", permErr.message);
+        }
+      }
+
       const walletClient = createWalletClient({
         chain: currentChain,
         transport: custom(window.ethereum),
       });
+
+      const addresses = await walletClient.getAddresses();
+      const activeAccount = addresses[0] || address;
 
       // Convert ETH to Wei
       const amountInWei = parseEther(formData.amount);
@@ -91,7 +103,7 @@ export default function Home() {
         functionName: "announceWinner",
         args: [hackathonId, formData.email, amountInWei],
         value: amountInWei,
-        account: address,
+        account: activeAccount,
       });
 
       try {
