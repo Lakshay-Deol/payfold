@@ -160,19 +160,46 @@ This project is built for automated reproducibility check per NEAR Hackathon gui
 
 1. **Step 1: Run Automated Test Suite**
    - **Do**: `yarn test`
-   - **See**: All 6 tests pass across data models, decimal conversions, AI provider fallbacks, and simulated email dispatch.
+   - **See**: All 8 tests pass across data models, decimal conversions, AI provider fallbacks, public brand logo, and NEAR hackathon vault querying.
 2. **Step 2: Build Production Bundle**
    - **Do**: `yarn build`
-   - **See**: Full Next.js production compilation with 0 errors across all routes.
+   - **See**: Full Next.js production compilation with 0 errors across all static and dynamic API routes.
 3. **Step 3: Compile Smart Contract**
    - **Do**: `node scripts/compile-contract.js`
    - **See**: `Compilation successful! Artifact saved to contracts/PayFoldEscrow.json`.
 4. **Step 4: Launch Local Server**
    - **Do**: `yarn dev`
    - **See**: Server ready on `http://localhost:3000` with interactive RainbowKit multi-chain wallet connection (Aurora / Sepolia) and payout form.
-5. **Step 5: Query Ledger API**
-   - **Do**: `curl -X POST http://localhost:3000/api/getHackathonId -H "Content-Type: application/json" -d '{"hackathonName":"Near AI Hackathon"}'`
-   - **See**: `{"hackathonId": 0}` returned with status `200 OK`.
+5. **Step 5: Query Live Ledger API**
+   - **Do**: `curl -X GET http://localhost:3000/api/getHackathons`
+   - **See**: Full JSON array of hackathon vaults, escrow addresses, and winner settlement statuses.
+6. **Step 6: Simulate Autonomous NEAR MPC Settlement (Judge Live Demo)**
+   - **Do**:
+     ```bash
+     curl -X POST http://localhost:3000/api/webhook \
+       -H "Content-Type: application/json" \
+       -d '{"sender":"lakshayld26@gmail.com","text":"Hi PayFold! Thanks for the prize, here is my Aurora EVM wallet address: 0x71C8452f483FEfA834165dC65f57B8b71569B148"}'
+     ```
+   - **See**:
+     ```json
+     {
+       "status": "success",
+       "message": "Autonomous prize disbursement completed",
+       "winner": "Lakshay",
+       "prize": "0.5",
+       "hackathon": "NEAR Hackathon 2026",
+       "walletAddress": "0x71C8452f483FEfA834165dC65f57B8b71569B148",
+       "transactionHash": "https://sepolia.etherscan.io/tx/0xmock_...",
+       "nearDetails": {
+         "signerAccount": "lakshay-payfold.testnet",
+         "mpcContract": "v1.signer-prod.testnet",
+         "derivationPath": "NEAR Hackathon 2026",
+         "keyType": "secp256k1",
+         "consensus": "Decentralized Validator Threshold (MPC)",
+         "targetNetwork": "Aurora EVM / Sepolia"
+       }
+     }
+     ```
 
 ---
 

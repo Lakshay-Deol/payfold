@@ -21,11 +21,15 @@
 
 ## 3. Machine-Readable "Do X - See Y" Verification
 1. **Do**: `yarn test`
-   - **See**: 7 tests passing across data schema, decimal precision, branding assets, AI providers, and email simulation.
+   - **See**: 8 tests passing across data schema, decimal precision, branding assets, AI providers, email simulation, and vault queries.
 2. **Do**: `yarn build`
    - **See**: Next.js production build completes with all static and dynamic routes compiled.
 3. **Do**: `yarn dev`
-   - **See**: Web application serves on `http://localhost:3000` with RainbowKit wallet connect and Winner Details form.
+   - **See**: Web application serves on `http://localhost:3000` with RainbowKit wallet connect, Announce Winner console, and interactive NEAR Chain Signatures Live Playground.
 4. **Do**: `POST /api/getHackathonId` with `{"hackathonName": "Near AI Hackathon"}`
    - **See**: JSON response `{"hackathonId": 0}` from local ledger.
+5. **Do**: `GET /api/getHackathons`
+   - **See**: JSON response listing all hackathon vaults, escrow addresses, and winner settlement statuses.
+6. **Do**: `POST /api/webhook` with `{"sender": "lakshayld26@gmail.com", "text": "Here is my Aurora address: 0x71C8452f483FEfA834165dC65f57B8b71569B148"}`
+   - **See**: Autonomous settlement completed with `nearDetails` showing `lakshay-payfold.testnet` and `v1.signer-prod.testnet` threshold MPC co-signing.
 
