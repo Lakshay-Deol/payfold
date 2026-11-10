@@ -52,3 +52,17 @@ test('api/getHackathons.js endpoint file exists and handles vault query', (t) =>
   t.true(content.includes('hackathons'), 'endpoint must return hackathons array');
 });
 
+test('codebase typography has zero emojis across UI and documentation', (t) => {
+  const emojiRegex = /\p{Extended_Pictographic}/u;
+  const filesToCheck = [
+    path.join(__dirname, '..', 'pages', 'index.js'),
+    path.join(__dirname, '..', 'README.md'),
+    path.join(__dirname, '..', 'HACKATHON_SUBMISSION.md'),
+  ];
+  
+  for (const file of filesToCheck) {
+    const text = fs.readFileSync(file, 'utf-8');
+    t.false(emojiRegex.test(text), `File ${path.basename(file)} must contain zero emojis`);
+  }
+});
+
