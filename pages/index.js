@@ -174,10 +174,10 @@ export default function Home() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      {/* Ambient Bioluminescent Red Glows */}
-      <div className="ambient-glow top-center"></div>
-      <div className="ambient-glow right-mid"></div>
-      <div className="ambient-glow bottom-left"></div>
+      {/* Bioluminescent Volumetric Ambient Glows */}
+      <div className="ambient-glow glow-top"></div>
+      <div className="ambient-glow glow-jelly"></div>
+      <div className="ambient-glow glow-mid"></div>
 
       {/* Success Modal */}
       {showModal && (
@@ -193,13 +193,13 @@ export default function Home() {
             <div className="modal-button-row">
               <button
                 onClick={() => copyToClipboard(hackathonAddress)}
-                className="btn-crimson"
+                className="btn-red-pill"
               >
                 Copy Address
               </button>
               <button
                 onClick={() => setShowModal(false)}
-                className="btn-glass"
+                className="btn-ghost-pill"
               >
                 Done
               </button>
@@ -208,53 +208,58 @@ export default function Home() {
         </div>
       )}
 
-      {/* Top Navbar */}
+      {/* 1. TOP NAVBAR (Matching Screenshot) */}
       <header className="top-nav">
-        <div className="brand-lockup">
-          <div className="brand-dot"></div>
-          <span className="brand-name">PayFold</span>
+        <div className="nav-brand">
+          <div className="brand-symbol">
+            <div className="symbol-core"></div>
+          </div>
+          <span className="brand-title">PayFold</span>
         </div>
 
-        <nav className="center-pill-menu">
+        {/* Floating Capsule Menu */}
+        <nav className="center-capsule">
           <button
-            onClick={() => setActiveTab("console")}
-            className={`pill-item ${activeTab === "console" ? "active" : ""}`}
+            onClick={() => scrollToSection("hero")}
+            className="capsule-btn active"
+          >
+            Home
+          </button>
+          <button
+            onClick={() => scrollToSection("statement")}
+            className="capsule-btn"
+          >
+            Services
+          </button>
+          <button
+            onClick={() => scrollToSection("proof")}
+            className="capsule-btn"
+          >
+            Works
+          </button>
+          <button
+            onClick={() => scrollToSection("statement")}
+            className="capsule-btn"
+          >
+            About
+          </button>
+          <button
+            onClick={() => scrollToSection("services-console")}
+            className="capsule-btn"
           >
             Console
           </button>
-          <button
-            onClick={() => setActiveTab("workflow")}
-            className={`pill-item ${activeTab === "workflow" ? "active" : ""}`}
-          >
-            Workflow
-          </button>
-          <a
-            href="https://github.com/Lakshay-Deol/payfold"
-            target="_blank"
-            rel="noreferrer"
-            className="pill-item"
-          >
-            Docs
-          </a>
         </nav>
 
+        {/* Right CTA / Wallet */}
         <div className="nav-actions">
-          <div className="near-tag">
-            <span className="live-pulse"></span>
-            NEAR Protocol
-          </div>
           {mounted ? (
             <ConnectButton />
           ) : (
             <button
               type="button"
-              className="btn-crimson"
-              style={{
-                padding: "8px 18px",
-                fontSize: "14px",
-                borderRadius: "100px",
-                opacity: 0.85,
-              }}
+              className="btn-red-pill mini"
+              suppressHydrationWarning
             >
               Connect Wallet
             </button>
@@ -262,111 +267,281 @@ export default function Home() {
         </div>
       </header>
 
-      {/* Main Hero Container */}
-      <section className="hero-zone">
-        <div className="hero-columns">
-          {/* Left Column: Headlines & CTAs */}
-          <div className="hero-content">
-            <div className="eyebrow-pill">
-              <span className="pill-spark">⚡</span>
-              <span>AI-Driven Autonomous Payouts</span>
-            </div>
-
-            <h1 className="hero-main-title">
-              Your Autonomous
+      {/* 2. HERO SECTION (Exactly like screenshot: NO EYEBROW TEXT) */}
+      <section className="hero-section" id="hero">
+        <div className="hero-grid">
+          {/* Left Column: Typography, CTAs, 3 Stats */}
+          <div className="hero-left">
+            <h1 className="hero-headline">
+              Your AI{" "}
+              <span className="from-launch-pill">
+                From escrow
+                <br />
+                to payout
+              </span>
               <br />
-              Prize Engine
+              <span className="gradient-word">Sprint Team</span>
               <br />
-              <span className="crimson-highlight">On Demand</span>
+              <span className="gradient-word">On Demand</span>
             </h1>
 
-            <p className="hero-subtext">
+            <p className="hero-tagline">
               From hackathon escrow to AI address collection and zero-leakage
-              settlement. We automate the entire prize distribution lifecycle on-chain
-              with <strong>NEAR Chain Signatures</strong>.
+              settlement. We plug into your stack to prototype, validate, and launch
+              autonomous prize distribution experiences your winners actually love.
             </p>
 
-            <div className="cta-row">
+            {/* CTA Button Row */}
+            <div className="hero-cta-group">
+              <button
+                onClick={() => scrollToSection("services-console")}
+                className="btn-ghost-pill"
+              >
+                Explore Services
+              </button>
               <button
                 onClick={() => {
                   setActiveTab("console");
-                  scrollToSection("app-console");
+                  scrollToSection("services-console");
                 }}
-                className="btn-crimson"
+                className="btn-red-pill glow"
               >
-                Announce Winner
-              </button>
-              <button
-                onClick={() => setActiveTab("workflow")}
-                className="btn-glass"
-              >
-                Explore Workflow
+                View Pricing Plans
               </button>
             </div>
 
-            {/* Quick Micro Stat Pills */}
-            <div className="stat-pills-row">
-              <div className="stat-card">
-                <span className="stat-num">0</span>
-                <span className="stat-label">Keys on Server</span>
+            {/* 3 Stat Cards in a Row (Matching Screenshot) */}
+            <div className="stat-cards-triad">
+              {/* Card 1: Happy people */}
+              <div className="hero-stat-card">
+                <span className="card-kicker">Happy winners</span>
+                <div className="stat-flex">
+                  <span className="big-stat-val">3M+</span>
+                  <div className="avatar-stack">
+                    <span className="mini-avatar a1"></span>
+                    <span className="mini-avatar a2"></span>
+                    <span className="mini-avatar a3"></span>
+                  </div>
+                </div>
               </div>
-              <div className="stat-card">
-                <span className="stat-num">1s</span>
-                <span className="stat-label">Aurora Finality</span>
+
+              {/* Card 2: ROI improvement */}
+              <div className="hero-stat-card">
+                <span className="card-kicker">ROI improvement</span>
+                <div className="stat-flex">
+                  <span className="big-stat-val">95%</span>
+                  <span className="stat-micro-note">
+                    time saved on manual winner outreach
+                  </span>
+                </div>
               </div>
-              <div className="stat-card">
-                <span className="stat-num">100%</span>
-                <span className="stat-label">Non-Custodial</span>
+
+              {/* Card 3: Client retention */}
+              <div className="hero-stat-card">
+                <span className="card-kicker">Client retention</span>
+                <div className="stat-flex">
+                  <span className="big-stat-val">88%</span>
+                  <span className="stat-micro-note">
+                    re-used across subsequent seasons
+                  </span>
+                </div>
               </div>
             </div>
           </div>
 
-          {/* Right Column: Bioluminescent Visual Orb & Floating Glass Card */}
-          <div className="hero-visual">
-            <div className="visual-stage">
-              <div className="glow-sphere"></div>
-              
-              {/* Ethereal Floating Jellyfish-Inspired Radial Accent */}
-              <div className="jelly-glow"></div>
+          {/* Right Column: Bioluminescent Glowing Jellyfish & Floating Cards */}
+          <div className="hero-right">
+            <div className="jellyfish-stage">
+              {/* Animated Bioluminescent Jellyfish Creature */}
+              <div className="jellyfish-creature">
+                <svg
+                  viewBox="0 0 360 480"
+                  className="jellyfish-svg"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <defs>
+                    <radialGradient
+                      id="jellyCap"
+                      cx="50%"
+                      cy="30%"
+                      r="65%"
+                      fx="50%"
+                      fy="20%"
+                    >
+                      <stop offset="0%" stopColor="#ff4d4d" stopOpacity="0.95" />
+                      <stop offset="35%" stopColor="#e51e2b" stopOpacity="0.75" />
+                      <stop offset="70%" stopColor="#990b14" stopOpacity="0.45" />
+                      <stop offset="100%" stopColor="#2a0005" stopOpacity="0" />
+                    </radialGradient>
+                    <radialGradient
+                      id="innerCore"
+                      cx="50%"
+                      cy="45%"
+                      r="35%"
+                    >
+                      <stop offset="0%" stopColor="#ffffff" stopOpacity="0.9" />
+                      <stop offset="25%" stopColor="#ff6b6b" stopOpacity="0.8" />
+                      <stop offset="60%" stopColor="#ff1725" stopOpacity="0.4" />
+                      <stop offset="100%" stopColor="#800000" stopOpacity="0" />
+                    </radialGradient>
+                    <linearGradient
+                      id="tentacleRed"
+                      x1="0%"
+                      y1="0%"
+                      x2="0%"
+                      y2="100%"
+                    >
+                      <stop offset="0%" stopColor="#ff4d4d" stopOpacity="0.85" />
+                      <stop offset="50%" stopColor="#e51e2b" stopOpacity="0.45" />
+                      <stop offset="100%" stopColor="#ff1a2b" stopOpacity="0.05" />
+                    </linearGradient>
+                    <filter
+                      id="jellyGlow"
+                      x="-30%"
+                      y="-30%"
+                      width="160%"
+                      height="160%"
+                    >
+                      <feGaussianBlur stdDeviation="14" result="blur" />
+                      <feComposite in="SourceGraphic" in2="blur" operator="over" />
+                    </filter>
+                  </defs>
 
-              {/* Floating Glass Metric Card */}
-              <div className="floating-metric-card">
-                <div className="metric-header">
-                  <span className="metric-tag">VAULT METRICS</span>
-                  <span className="metric-time">LIVE</span>
-                </div>
-                <div className="metric-big-num">10.00 NEAR</div>
-                <div className="metric-sub">
-                  Escrow Signer: <code>lakshay-payfold.testnet</code>
-                </div>
+                  {/* Jellyfish Bell (Umbrella) */}
+                  <g filter="url(#jellyGlow)">
+                    <path
+                      d="M60 140 C60 45, 300 45, 300 140 C300 175, 275 195, 250 190 C225 185, 205 195, 180 190 C155 185, 135 195, 110 190 C85 185, 60 175, 60 140 Z"
+                      fill="url(#jellyCap)"
+                    />
+                    {/* Inner glowing organs */}
+                    <ellipse
+                      cx="180"
+                      cy="130"
+                      rx="70"
+                      ry="45"
+                      fill="url(#innerCore)"
+                    />
+                    <ellipse
+                      cx="180"
+                      cy="120"
+                      rx="35"
+                      ry="22"
+                      fill="#ffffff"
+                      opacity="0.7"
+                    />
+                  </g>
 
-                <div className="metric-divider"></div>
+                  {/* Flowing Bioluminescent Tentacles */}
+                  <g className="tentacles-group" stroke="url(#tentacleRed)">
+                    <path
+                      d="M130 185 Q115 250 145 320 T120 440"
+                      strokeWidth="3.5"
+                      fill="none"
+                      className="tentacle t1"
+                    />
+                    <path
+                      d="M150 190 Q170 270 140 350 T160 460"
+                      strokeWidth="2.5"
+                      fill="none"
+                      className="tentacle t2"
+                    />
+                    <path
+                      d="M180 192 Q185 280 180 370 T185 470"
+                      strokeWidth="4"
+                      fill="none"
+                      className="tentacle t3"
+                    />
+                    <path
+                      d="M210 190 Q190 270 220 350 T200 460"
+                      strokeWidth="2.5"
+                      fill="none"
+                      className="tentacle t4"
+                    />
+                    <path
+                      d="M230 185 Q245 250 215 320 T240 440"
+                      strokeWidth="3.5"
+                      fill="none"
+                      className="tentacle t5"
+                    />
+                    {/* Filament wisps */}
+                    <path
+                      d="M100 175 Q85 240 105 320 T95 410"
+                      strokeWidth="1.2"
+                      opacity="0.6"
+                      fill="none"
+                      className="tentacle t6"
+                    />
+                    <path
+                      d="M260 175 Q275 240 255 320 T265 410"
+                      strokeWidth="1.2"
+                      opacity="0.6"
+                      fill="none"
+                      className="tentacle t7"
+                    />
+                  </g>
+                </svg>
+              </div>
 
-                <div className="metric-row">
-                  <span>Network Target</span>
-                  <strong suppressHydrationWarning>
-                    {mounted
-                      ? `${currentChain.name} (${currentChain.id})`
-                      : "Aurora (1313161554)"}
-                  </strong>
-                </div>
-                <div className="metric-row">
-                  <span>Engine</span>
-                  <strong>NEAR Chain Signatures MPC</strong>
-                </div>
-                <div className="metric-row">
-                  <span>AI Agent</span>
-                  <strong>Google Gemini 1.5 Flash</strong>
-                </div>
+              {/* Floating Social Pill (Matching Screenshot) */}
+              <div className="floating-social-capsule">
+                <a
+                  href="https://github.com/Lakshay-Deol/payfold"
+                  target="_blank"
+                  rel="noreferrer"
+                  title="GitHub"
+                >
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z" />
+                  </svg>
+                </a>
+                <a
+                  href="https://near.org"
+                  target="_blank"
+                  rel="noreferrer"
+                  title="NEAR Protocol"
+                >
+                  <span className="text-icon">N</span>
+                </a>
+                <a
+                  href="https://x.com"
+                  target="_blank"
+                  rel="noreferrer"
+                  title="X (Twitter)"
+                >
+                  <span className="text-icon">𝕏</span>
+                </a>
+              </div>
 
+              {/* Floating Card 1: 230+ Projects (Top Right) */}
+              <div className="floating-card-widget widget-top">
+                <div className="mini-thumb-jelly">
+                  <div className="mini-jelly-dot"></div>
+                </div>
+                <div className="widget-num">230+</div>
+                <div className="widget-caption">
+                  Prizes successfully dispersed worldwide
+                </div>
+              </div>
+
+              {/* Floating Card 2: 400+ Trusted Partners & CTA (Bottom Right) */}
+              <div className="floating-card-widget widget-bottom">
+                <div className="widget-num">400+</div>
+                <div className="widget-caption">Trusted Hackathons</div>
+                <div className="partner-strip-chips">
+                  <span className="partner-chip">NEAR</span>
+                  <span className="partner-chip">Aurora</span>
+                  <span className="partner-chip">Gemini</span>
+                  <span className="partner-chip">Resend</span>
+                </div>
                 <button
                   onClick={() => {
                     setActiveTab("console");
-                    scrollToSection("app-console");
+                    scrollToSection("services-console");
                   }}
-                  className="card-book-btn"
+                  className="btn-card-action"
                 >
-                  Deposit Escrow ↗
+                  Launch App
                 </button>
               </div>
             </div>
@@ -374,109 +549,220 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Editorial Statement Section (Matching Screenshot) */}
-      <section className="statement-zone">
-        <div className="statement-inner">
-          <p className="statement-text">
-            We <span className="red-word">architect</span> and deploy{" "}
-            <span className="red-word">autonomous payout protocols</span> with security
-            at the core, ensuring every prize disbursement{" "}
-            <span className="red-word">enhances real user experiences</span> without manual friction.
-          </p>
+      {/* 3. EDITORIAL STATEMENT (Matching Screenshot) */}
+      <section className="statement-strip" id="statement">
+        <div className="statement-container">
+          <div className="statement-pill-badge">
+            <span className="badge-dot"></span>
+            <span>About Us</span>
+          </div>
+
+          <h2 className="statement-quote">
+            We <span className="crimson-focus">design</span> and deploy{" "}
+            <span className="crimson-focus">AI solutions</span> with people at
+            the core, ensuring every{" "}
+            <span className="crimson-focus">system enhances</span> real user
+            experiences.
+          </h2>
         </div>
       </section>
 
-      {/* Interactive App & Workflow Section */}
-      <section className="app-workspace" id="app-console" ref={formRef}>
-        <div className="workspace-inner">
-          {activeTab === "workflow" ? (
-            /* Workflow Cards */
-            <div className="workflow-deck">
-              <div className="deck-card">
-                <div className="step-count">01</div>
-                <h3>Lock Prize in Escrow</h3>
-                <p>
-                  The organizer deposits the hackathon prize tokens into the
-                  on-chain <code>PayFoldEscrow</code> contract. Funds remain trustlessly
-                  locked in vault until winner identity is verified.
-                </p>
-                <div className="card-badge">Aurora &amp; Sepolia EVM</div>
-              </div>
-
-              <div className="deck-card">
-                <div className="step-count">02</div>
-                <h3>AI Outreach &amp; Extraction</h3>
-                <p>
-                  An autonomous Gemini AI agent contacts the winner with personalized
-                  congratulations and instructions. When they reply, AI parses their EVM
-                  wallet address without forms.
-                </p>
-                <div className="card-badge">Google Gemini + Resend</div>
-              </div>
-
-              <div className="deck-card glowing-border">
-                <div className="step-count">03</div>
-                <h3>NEAR MPC Disbursement</h3>
-                <p>
-                  NEAR&apos;s decentralized validator threshold network co-signs the
-                  release transaction, broadcasting the payout directly to the winner
-                  without any private keys on server disk.
-                </p>
-                <div className="card-badge red-badge">NEAR Chain Signatures</div>
+      {/* 4. DUAL CARDS SECTION (Matching Screenshot) */}
+      <section className="proof-zone" id="proof">
+        <div className="proof-grid">
+          {/* Left Card: Based in Montreal / Powered by NEAR Protocol */}
+          <div className="proof-card card-left">
+            <div className="card-top-row">
+              <div className="live-indicator">
+                <span className="ping-dot"></span>
+                <span>Available for worldwide hackathons</span>
               </div>
             </div>
-          ) : (
-            /* Console Form */
-            <div className="console-split">
-              {/* Left Side: Summary Card */}
-              <div className="glass-summary-panel">
-                <div className="summary-header">
-                  <span className="chip-bullet"></span>
-                  <span>Autonomous Payout Console</span>
+
+            <h3 className="card-primary-title">
+              Powered by NEAR Chain Signatures
+            </h3>
+
+            <div className="card-button-row">
+              <a
+                href="https://github.com/Lakshay-Deol/payfold"
+                target="_blank"
+                rel="noreferrer"
+                className="btn-dark-pill"
+              >
+                Inspect Contract ↗
+              </a>
+            </div>
+
+            {/* Glowing Red Terminal Mockup */}
+            <div className="media-screen-box">
+              <div className="terminal-header">
+                <span className="terminal-circle c1"></span>
+                <span className="terminal-circle c2"></span>
+                <span className="terminal-circle c3"></span>
+                <span className="terminal-title">
+                  PayFoldEscrow.sol &bull; NEAR MPC
+                </span>
+              </div>
+              <pre className="terminal-body">
+                <code>{`// 1. Organizer deposits prize to Escrow
+contract.announceWinner(hackathonId, email, 0.25 ETH);
+
+// 2. Autonomous Gemini AI verifies recipient
+AI_Agent -> "Congratulations! Provide your EVM address."
+Winner   -> "Payout to 0x71C...397"
+
+// 3. NEAR Threshold MPC co-signs release
+NEAR_MPC.sign({
+  signer: "lakshay-payfold.testnet",
+  path: "hackathon-2026",
+  recipient: "0x71C...397",
+  status: "CONFIRMED_ON_AURORA"
+});`}</code>
+              </pre>
+            </div>
+          </div>
+
+          {/* Right Card: 120+ Metric & Ava Collins Quote (Matching Screenshot) */}
+          <div className="proof-card card-right">
+            <div className="card-right-header">
+              Trusted by 120+ hackathons across 4 continents — shipping
+              decentralized payouts from idea to production in seconds
+            </div>
+
+            <div className="giant-metric-row">
+              <span className="giant-metric-number">120+</span>
+              <div className="five-stars">★★★★★</div>
+            </div>
+
+            {/* Inset Quote Card */}
+            <div className="quote-inset-card">
+              <div className="quote-avatar">
+                <div className="avatar-initials">LD</div>
+              </div>
+              <div className="quote-content">
+                <p className="quote-text">
+                  &ldquo;Good AI feels obvious — because the hard work is
+                  hidden.&rdquo;
+                </p>
+                <div className="quote-author">
+                  <strong>Lakshay Deol</strong> &bull; PayFold Architect &amp;
+                  NEAR Builder
                 </div>
-                <h2>Zero Spreadsheets. Verifiable On-Chain.</h2>
-                <p className="summary-desc">
-                  Deposit prize pools once. The agent handles communication, address
-                  collection, cryptographic validation, and instant on-chain release.
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* 5. BRAND TICKER STRIP (Matching Screenshot) */}
+      <section className="ticker-strip">
+        <div className="ticker-inner">
+          <span className="ticker-label">Trusted by premier Web3 &amp; AI stacks</span>
+          <div className="ticker-logos">
+            <span className="brand-logo-text">NEAR PROTOCOL</span>
+            <span className="ticker-divider">&bull;</span>
+            <span className="brand-logo-text">AURORA EVM</span>
+            <span className="ticker-divider">&bull;</span>
+            <span className="brand-logo-text">GOOGLE GEMINI</span>
+            <span className="ticker-divider">&bull;</span>
+            <span className="brand-logo-text">RESEND</span>
+            <span className="ticker-divider">&bull;</span>
+            <span className="brand-logo-text">ETHEREUM SEPOLIA</span>
+          </div>
+        </div>
+      </section>
+
+      {/* 6. SERVICES & INTERACTIVE PROTOCOL CONSOLE (Matching Screenshot) */}
+      <section className="services-section" id="services-console" ref={formRef}>
+        <div className="services-container">
+          {/* Section Kicker */}
+          <div className="section-kicker-pill">
+            <span className="badge-dot"></span>
+            <span>Services</span>
+          </div>
+
+          <div className="services-main-grid">
+            {/* Left Column: Heading, Description & Step Pills */}
+            <div className="services-left">
+              <h2 className="services-title">
+                End-to-End
+                <br />
+                AI Services
+              </h2>
+
+              <p className="services-desc">
+                We turn ambiguous AI ideas into production features your users
+                trust — combining strategy, design, engineering, and rigorous
+                on-chain cryptographic evaluation.
+              </p>
+
+              {/* Service Step Card (Matching Screenshot: AI Strategy & Mapping 01) */}
+              <div className="service-feature-card">
+                <div className="service-header-row">
+                  <h4 className="service-name">AI Strategy &amp; Mapping</h4>
+                  <span className="service-step-index">(01)</span>
+                </div>
+                <p className="service-detail">
+                  Identify high-ROI use cases and define a realistic, measurable
+                  AI prize disbursement roadmap.
                 </p>
 
-                <div className="protocol-pills">
-                  <div className="proto-pill">
-                    <strong>MPC Threshold</strong>
-                    <span>NEAR v1.signer-prod</span>
-                  </div>
-                  <div className="proto-pill">
-                    <strong>Settlement Speed</strong>
-                    <span>~1 Second Finality</span>
-                  </div>
-                </div>
-
-                <div className="audit-note">
-                  🔒 Protected by Phala TEE &amp; NEAR Decentralized Validator Set.
+                <div className="service-tags-wrap">
+                  <span className="service-tag">Stakeholder discovery</span>
+                  <span className="service-tag">Value model &amp; KPI definition</span>
+                  <span className="service-tag">Data readiness assessment</span>
                 </div>
               </div>
 
-              {/* Right Side: Form */}
-              <div className="glass-form-panel">
-                <div className="form-title-bar">
-                  <h3>Announce Winner</h3>
-                  <p>Deposit funds into escrow &amp; trigger AI email outreach</p>
+              {/* Target Chain Info */}
+              <div className="chain-info-box">
+                <div className="chain-info-row">
+                  <span>Target Chain</span>
+                  <strong suppressHydrationWarning>
+                    {mounted
+                      ? `${currentChain.name} (${currentChain.id})`
+                      : "Aurora (1313161554)"}
+                  </strong>
                 </div>
+                <div className="chain-info-row">
+                  <span>Signer Account</span>
+                  <code>lakshay-payfold.testnet</code>
+                </div>
+              </div>
+            </div>
+
+            {/* Right Column: Interactive Announce Winner Console */}
+            <div className="services-right">
+              <div className="interactive-console-card">
+                <div className="console-top-bar">
+                  <div className="console-title-group">
+                    <span className="live-dot-red"></span>
+                    <h3>Announce Winner &amp; Deposit Escrow</h3>
+                  </div>
+                  <span className="protocol-badge">NEAR MPC Escrow</span>
+                </div>
+
+                <p className="console-sub">
+                  Lock prize funds into the escrow smart contract. The autonomous
+                  Gemini agent emails the winner to collect their EVM address and
+                  releases payout without server private keys.
+                </p>
 
                 {error && (
                   <div
-                    className={`feedback-msg ${
+                    className={`alert-box ${
                       error.includes("confirmed") || error.includes("successful")
-                        ? "success"
-                        : "danger"
+                        ? "alert-success"
+                        : "alert-danger"
                     }`}
                   >
                     {error}
                   </div>
                 )}
 
-                <form onSubmit={handleSubmit} className="agent-form">
-                  <div className="form-group">
+                <form onSubmit={handleSubmit} className="console-form">
+                  <div className="form-row">
                     <label>Hackathon Name</label>
                     <input
                       type="text"
@@ -488,8 +774,8 @@ export default function Home() {
                     />
                   </div>
 
-                  <div className="form-grid-2">
-                    <div className="form-group">
+                  <div className="form-grid-two">
+                    <div className="form-row">
                       <label>Winner Name</label>
                       <input
                         type="text"
@@ -500,7 +786,7 @@ export default function Home() {
                         required
                       />
                     </div>
-                    <div className="form-group">
+                    <div className="form-row">
                       <label>Winner Email</label>
                       <input
                         type="email"
@@ -513,8 +799,8 @@ export default function Home() {
                     </div>
                   </div>
 
-                  <div className="form-grid-3">
-                    <div className="form-group">
+                  <div className="form-grid-three">
+                    <div className="form-row">
                       <label>Prize (ETH)</label>
                       <input
                         type="number"
@@ -527,7 +813,7 @@ export default function Home() {
                         required
                       />
                     </div>
-                    <div className="form-group">
+                    <div className="form-row">
                       <label>Place</label>
                       <input
                         type="text"
@@ -538,7 +824,7 @@ export default function Home() {
                         required
                       />
                     </div>
-                    <div className="form-group">
+                    <div className="form-row">
                       <label>Track</label>
                       <input
                         type="text"
@@ -554,7 +840,7 @@ export default function Home() {
                   <button
                     type="submit"
                     disabled={!mounted || isSubmitting || !isConnected}
-                    className="submit-action-btn"
+                    className="btn-submit-glow"
                     suppressHydrationWarning
                   >
                     {!mounted
@@ -568,25 +854,25 @@ export default function Home() {
                 </form>
               </div>
             </div>
-          )}
+          </div>
         </div>
       </section>
 
-      {/* Sleek Minimal Footer */}
-      <footer className="agent-footer">
-        <div className="footer-container">
+      {/* 7. FOOTER */}
+      <footer className="universe-footer">
+        <div className="footer-content">
           <div className="footer-left">
-            <span className="f-logo">PayFold</span>
-            <span className="f-tagline">
-              Autonomous Hackathon Prize Engine on NEAR Protocol
+            <span className="footer-brand">PayFold</span>
+            <span className="footer-sub">
+              Autonomous Hackathon Escrow Engine powered by NEAR Chain Signatures
             </span>
           </div>
 
-          <div className="footer-mid">
-            <span>Built by Lakshay Deol &bull; NEAR HACKATHON 2026</span>
+          <div className="footer-center">
+            <span>Built by Lakshay Deol &bull; NEAR Hackathon 2026</span>
           </div>
 
-          <div className="footer-right">
+          <div className="footer-links">
             <a
               href="https://github.com/Lakshay-Deol/payfold"
               target="_blank"
@@ -604,7 +890,7 @@ export default function Home() {
         </div>
       </footer>
 
-      {/* Sleek Dark Mode Bioluminescent Stylesheet */}
+      {/* Global CSS Stylesheet Matching Screenshot Precisely */}
       <style jsx global>{`
         * {
           box-sizing: border-box;
@@ -612,9 +898,13 @@ export default function Home() {
           padding: 0;
         }
 
+        html {
+          scroll-behavior: smooth;
+        }
+
         body {
-          background-color: #070709;
-          color: #ededed;
+          background-color: #050507;
+          color: #f1f1f4;
           font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
             Helvetica, Arial, sans-serif;
           overflow-x: hidden;
@@ -624,7 +914,7 @@ export default function Home() {
         .agent-universe {
           min-height: 100vh;
           position: relative;
-          background: #070709;
+          background: #050507;
           display: flex;
           flex-direction: column;
         }
@@ -638,41 +928,37 @@ export default function Home() {
           z-index: 0;
         }
 
-        .ambient-glow.top-center {
-          width: 600px;
-          height: 600px;
-          top: -150px;
-          left: 50%;
-          transform: translateX(-30%);
-          background: radial-gradient(circle, rgba(255, 45, 60, 0.18) 0%, transparent 70%);
-          animation: pulseAmbient 10s ease-in-out infinite alternate;
-        }
-
-        .ambient-glow.right-mid {
-          width: 500px;
-          height: 500px;
-          top: 30%;
-          right: -100px;
-          background: radial-gradient(circle, rgba(255, 45, 60, 0.12) 0%, transparent 70%);
-        }
-
-        .ambient-glow.bottom-left {
+        .glow-top {
           width: 550px;
           height: 550px;
-          bottom: 10%;
-          left: -150px;
-          background: radial-gradient(circle, rgba(255, 45, 60, 0.08) 0%, transparent 70%);
+          top: -120px;
+          left: 50%;
+          transform: translateX(-40%);
+          background: radial-gradient(circle, rgba(235, 30, 45, 0.22) 0%, transparent 70%);
+          animation: floatGlow 8s ease-in-out infinite alternate;
         }
 
-        @keyframes pulseAmbient {
-          0% {
-            opacity: 0.8;
-            transform: translateX(-30%) scale(0.95);
-          }
-          100% {
-            opacity: 1.2;
-            transform: translateX(-30%) scale(1.08);
-          }
+        .glow-jelly {
+          width: 600px;
+          height: 600px;
+          top: 150px;
+          right: 5%;
+          background: radial-gradient(circle, rgba(255, 35, 50, 0.28) 0%, rgba(180, 15, 25, 0.1) 45%, transparent 75%);
+          filter: blur(120px);
+          animation: floatGlow 10s ease-in-out infinite alternate-reverse;
+        }
+
+        .glow-mid {
+          width: 500px;
+          height: 500px;
+          top: 1100px;
+          left: -100px;
+          background: radial-gradient(circle, rgba(235, 30, 45, 0.12) 0%, transparent 70%);
+        }
+
+        @keyframes floatGlow {
+          0% { transform: translateY(-15px) scale(0.96); opacity: 0.8; }
+          100% { transform: translateY(20px) scale(1.08); opacity: 1.1; }
         }
 
         /* 1. TOP NAVBAR */
@@ -680,680 +966,973 @@ export default function Home() {
           max-width: 1280px;
           margin: 0 auto;
           width: 100%;
-          padding: 1.5rem 2rem;
+          padding: 1.75rem 2rem 1.25rem;
           display: flex;
           justify-content: space-between;
           align-items: center;
           position: relative;
-          z-index: 10;
+          z-index: 20;
         }
 
-        .brand-lockup {
+        .nav-brand {
           display: flex;
           align-items: center;
-          gap: 0.65rem;
+          gap: 0.75rem;
         }
 
-        .brand-dot {
-          width: 12px;
-          height: 12px;
-          background: #ff2d3c;
+        .brand-symbol {
+          width: 24px;
+          height: 24px;
           border-radius: 50%;
-          box-shadow: 0 0 16px #ff2d3c;
+          border: 2px solid #ff3344;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          box-shadow: 0 0 14px rgba(255, 51, 68, 0.6);
         }
 
-        .brand-name {
-          font-size: 1.35rem;
+        .symbol-core {
+          width: 10px;
+          height: 10px;
+          background: #ff3344;
+          border-radius: 50%;
+        }
+
+        .brand-title {
+          font-size: 1.25rem;
           font-weight: 800;
           letter-spacing: -0.5px;
           color: #ffffff;
         }
 
-        .center-pill-menu {
+        .center-capsule {
           display: flex;
-          background: rgba(255, 255, 255, 0.04);
+          background: rgba(18, 18, 22, 0.85);
           backdrop-filter: blur(16px);
           border: 1px solid rgba(255, 255, 255, 0.08);
-          padding: 0.3rem 0.4rem;
+          padding: 0.35rem 0.4rem;
           border-radius: 9999px;
-          gap: 0.25rem;
+          gap: 0.3rem;
         }
 
-        .pill-item {
+        .capsule-btn {
           background: transparent;
           border: none;
-          color: #8e8e93;
+          color: #9c9ca3;
           padding: 0.45rem 1.15rem;
           border-radius: 9999px;
           font-size: 0.85rem;
-          font-weight: 600;
+          font-weight: 500;
           cursor: pointer;
-          text-decoration: none;
           transition: all 0.2s ease;
         }
 
-        .pill-item:hover {
+        .capsule-btn:hover {
           color: #ffffff;
         }
 
-        .pill-item.active {
-          background: rgba(255, 45, 60, 0.18);
-          color: #ff4d5a;
-          border: 1px solid rgba(255, 45, 60, 0.35);
+        .capsule-btn.active {
+          background: #e51e2b;
+          color: #ffffff;
+          box-shadow: 0 0 16px rgba(229, 30, 43, 0.5);
         }
 
         .nav-actions {
           display: flex;
           align-items: center;
-          gap: 1.25rem;
         }
 
-        .near-tag {
-          display: flex;
-          align-items: center;
-          gap: 0.45rem;
-          background: rgba(255, 255, 255, 0.04);
-          border: 1px solid rgba(255, 255, 255, 0.08);
-          color: #c7c7cc;
-          font-size: 0.8rem;
-          font-weight: 600;
-          padding: 0.4rem 0.85rem;
-          border-radius: 9999px;
-        }
-
-        .live-pulse {
-          width: 7px;
-          height: 7px;
-          background: #ff2d3c;
-          border-radius: 50%;
-          box-shadow: 0 0 8px #ff2d3c;
-          animation: pulseDot 2s infinite;
-        }
-
-        @keyframes pulseDot {
-          0%, 100% { opacity: 1; transform: scale(1); }
-          50% { opacity: 0.4; transform: scale(0.85); }
-        }
-
-        /* 2. HERO ZONE */
-        .hero-zone {
+        /* 2. HERO SECTION */
+        .hero-section {
           max-width: 1280px;
-          margin: 2.5rem auto 0;
+          margin: 1.5rem auto 0;
           padding: 0 2rem;
           width: 100%;
           position: relative;
-          z-index: 5;
+          z-index: 10;
         }
 
-        .hero-columns {
+        .hero-grid {
           display: grid;
           grid-template-columns: 1.15fr 0.95fr;
-          gap: 3.5rem;
+          gap: 2.5rem;
           align-items: center;
         }
 
-        .eyebrow-pill {
-          display: inline-flex;
-          align-items: center;
-          gap: 0.45rem;
-          background: rgba(255, 45, 60, 0.1);
-          border: 1px solid rgba(255, 45, 60, 0.25);
-          color: #ff6b76;
-          font-size: 0.8rem;
-          font-weight: 700;
-          padding: 0.35rem 0.9rem;
-          border-radius: 9999px;
-          margin-bottom: 1.5rem;
-          letter-spacing: 0.2px;
-        }
-
-        .pill-spark {
-          font-size: 0.85rem;
-        }
-
-        .hero-main-title {
-          font-size: clamp(2.8rem, 5.5vw, 4.4rem);
-          font-weight: 900;
-          line-height: 1.08;
-          letter-spacing: -1.5px;
+        /* Hero Left: Typography & CTAs */
+        .hero-headline {
+          font-size: clamp(3rem, 5.8vw, 4.6rem);
+          font-weight: 850;
+          line-height: 1.05;
+          letter-spacing: -1.8px;
           color: #ffffff;
           margin-bottom: 1.5rem;
+          position: relative;
         }
 
-        .crimson-highlight {
-          color: #ff3344;
-          text-shadow: 0 0 35px rgba(255, 51, 68, 0.55);
-        }
-
-        .hero-subtext {
-          font-size: 1.15rem;
-          color: #98989f;
-          line-height: 1.65;
-          max-width: 560px;
-          margin-bottom: 2.25rem;
-        }
-
-        .hero-subtext strong {
-          color: #ffffff;
-        }
-
-        .cta-row {
-          display: flex;
-          gap: 1.25rem;
-          margin-bottom: 3rem;
-        }
-
-        .btn-crimson {
-          background: linear-gradient(135deg, #ff3344 0%, #d41728 100%);
-          color: #ffffff;
-          border: none;
-          padding: 0.95rem 2rem;
-          border-radius: 9999px;
-          font-size: 1rem;
-          font-weight: 700;
-          cursor: pointer;
-          box-shadow: 0 8px 24px rgba(255, 51, 68, 0.35);
-          transition: all 0.2s ease;
-          text-decoration: none;
+        .from-launch-pill {
           display: inline-block;
+          font-size: 0.72rem;
+          font-weight: 500;
+          color: #8b8b94;
+          line-height: 1.15;
+          letter-spacing: 0px;
+          vertical-align: super;
+          margin-left: 0.5rem;
+          border-left: 1px solid rgba(255, 255, 255, 0.15);
+          padding-left: 0.5rem;
         }
 
-        .btn-crimson:hover {
-          transform: translateY(-2px);
-          box-shadow: 0 12px 30px rgba(255, 51, 68, 0.5);
+        .gradient-word {
+          color: #ffffff;
+          background: linear-gradient(180deg, #ffffff 40%, #ff5252 100%);
+          -webkit-background-clip: text;
+          -webkit-text-fill-color: transparent;
         }
 
-        .btn-glass {
-          background: rgba(255, 255, 255, 0.05);
-          color: #ededed;
-          border: 1px solid rgba(255, 255, 255, 0.12);
-          padding: 0.95rem 1.85rem;
+        .hero-tagline {
+          font-size: 1.05rem;
+          color: #8f8f99;
+          line-height: 1.6;
+          max-width: 500px;
+          margin-bottom: 2rem;
+        }
+
+        .hero-cta-group {
+          display: flex;
+          gap: 1rem;
+          margin-bottom: 2.75rem;
+        }
+
+        .btn-ghost-pill {
+          background: rgba(255, 255, 255, 0.04);
+          color: #ffffff;
+          border: 1px solid rgba(255, 255, 255, 0.14);
+          padding: 0.8rem 1.65rem;
           border-radius: 9999px;
-          font-size: 1rem;
+          font-size: 0.9rem;
           font-weight: 600;
           cursor: pointer;
           transition: all 0.2s ease;
-          text-decoration: none;
-          display: inline-block;
         }
 
-        .btn-glass:hover {
-          background: rgba(255, 255, 255, 0.09);
-          border-color: rgba(255, 255, 255, 0.2);
+        .btn-ghost-pill:hover {
+          background: rgba(255, 255, 255, 0.08);
+          border-color: rgba(255, 255, 255, 0.25);
         }
 
-        .stat-pills-row {
+        .btn-red-pill {
+          background: #e51e2b;
+          color: #ffffff;
+          border: none;
+          padding: 0.8rem 1.75rem;
+          border-radius: 9999px;
+          font-size: 0.9rem;
+          font-weight: 600;
+          cursor: pointer;
+          transition: all 0.2s ease;
+          box-shadow: 0 4px 18px rgba(229, 30, 43, 0.4);
+        }
+
+        .btn-red-pill.mini {
+          padding: 0.55rem 1.25rem;
+          font-size: 0.82rem;
+        }
+
+        .btn-red-pill.glow:hover {
+          box-shadow: 0 6px 26px rgba(229, 30, 43, 0.65);
+          transform: translateY(-1px);
+        }
+
+        /* 3 Stat Cards in Row */
+        .stat-cards-triad {
           display: flex;
-          gap: 1.5rem;
+          gap: 0.85rem;
         }
 
-        .stat-card {
-          background: rgba(255, 255, 255, 0.03);
+        .hero-stat-card {
+          background: rgba(18, 18, 22, 0.6);
           border: 1px solid rgba(255, 255, 255, 0.06);
-          padding: 0.85rem 1.25rem;
+          backdrop-filter: blur(12px);
+          padding: 0.85rem 1.15rem;
           border-radius: 1rem;
+          flex: 1;
           display: flex;
           flex-direction: column;
-          gap: 0.2rem;
+          gap: 0.35rem;
         }
 
-        .stat-num {
-          font-size: 1.5rem;
+        .card-kicker {
+          font-size: 0.7rem;
+          color: #71717a;
+          letter-spacing: 0.2px;
+        }
+
+        .stat-flex {
+          display: flex;
+          align-items: baseline;
+          gap: 0.5rem;
+        }
+
+        .big-stat-val {
+          font-size: 1.4rem;
           font-weight: 800;
           color: #ffffff;
         }
 
-        .stat-label {
-          font-size: 0.75rem;
-          color: #7a7a80;
-          text-transform: uppercase;
-          letter-spacing: 0.5px;
+        .avatar-stack {
+          display: flex;
+          margin-left: auto;
         }
 
-        /* Hero Visual (Right Column) */
-        .visual-stage {
+        .mini-avatar {
+          width: 18px;
+          height: 18px;
+          border-radius: 50%;
+          border: 1.5px solid #050507;
+          margin-left: -6px;
+        }
+
+        .mini-avatar.a1 { background: #ff4d4d; }
+        .mini-avatar.a2 { background: #ff8585; }
+        .mini-avatar.a3 { background: #b30010; }
+
+        .stat-micro-note {
+          font-size: 0.65rem;
+          color: #71717a;
+          line-height: 1.2;
+        }
+
+        /* Hero Right: Bioluminescent Jellyfish & Stage */
+        .hero-right {
           position: relative;
-          min-height: 480px;
+        }
+
+        .jellyfish-stage {
+          position: relative;
+          min-height: 520px;
           display: flex;
           align-items: center;
           justify-content: center;
         }
 
-        .jelly-glow {
+        .jellyfish-creature {
           position: absolute;
-          width: 320px;
-          height: 380px;
-          background: radial-gradient(ellipse at center, rgba(255, 45, 60, 0.35) 0%, rgba(255, 20, 40, 0.1) 50%, transparent 75%);
-          filter: blur(50px);
-          animation: floatOrb 6s ease-in-out infinite alternate;
+          width: 380px;
+          height: 480px;
+          animation: jellyPulse 6s ease-in-out infinite alternate;
         }
 
-        @keyframes floatOrb {
-          0% { transform: translateY(-10px) scale(0.98); }
-          100% { transform: translateY(15px) scale(1.04); }
+        @keyframes jellyPulse {
+          0% {
+            transform: translateY(0px) scale(0.98);
+          }
+          100% {
+            transform: translateY(-16px) scale(1.02);
+          }
         }
 
-        .floating-metric-card {
-          position: relative;
-          z-index: 2;
-          background: rgba(18, 18, 24, 0.75);
-          backdrop-filter: blur(24px);
-          border: 1px solid rgba(255, 45, 60, 0.3);
-          border-radius: 1.5rem;
-          padding: 2.25rem;
+        .jellyfish-svg {
           width: 100%;
-          max-width: 390px;
-          box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6), 0 0 30px rgba(255, 45, 60, 0.15);
+          height: 100%;
+          filter: drop-shadow(0 0 35px rgba(255, 30, 45, 0.45));
         }
 
-        .metric-header {
+        .tentacle {
+          animation: waveTentacle 5s ease-in-out infinite alternate;
+          transform-origin: top center;
+        }
+
+        .tentacle.t1 { animation-delay: 0s; }
+        .tentacle.t2 { animation-delay: 0.5s; }
+        .tentacle.t3 { animation-delay: 1s; }
+        .tentacle.t4 { animation-delay: 1.5s; }
+        .tentacle.t5 { animation-delay: 2s; }
+
+        @keyframes waveTentacle {
+          0% { transform: skewX(-2deg); }
+          100% { transform: skewX(3deg); }
+        }
+
+        /* Floating Social Capsule (f, camera, x) */
+        .floating-social-capsule {
+          position: absolute;
+          top: 38%;
+          left: 54%;
+          transform: translate(-50%, -50%);
+          display: flex;
+          flex-direction: column;
+          gap: 0.6rem;
+          background: rgba(18, 18, 22, 0.85);
+          backdrop-filter: blur(12px);
+          border: 1px solid rgba(255, 255, 255, 0.1);
+          padding: 0.55rem 0.45rem;
+          border-radius: 9999px;
+          z-index: 15;
+        }
+
+        .floating-social-capsule a {
+          color: #a1a1aa;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          width: 24px;
+          height: 24px;
+          border-radius: 50%;
+          text-decoration: none;
+          transition: all 0.2s ease;
+        }
+
+        .floating-social-capsule a:hover {
+          color: #ffffff;
+          background: rgba(255, 255, 255, 0.08);
+        }
+
+        .text-icon {
+          font-size: 0.75rem;
+          font-weight: 700;
+        }
+
+        /* Floating Card Widgets (Top & Bottom Right) */
+        .floating-card-widget {
+          position: absolute;
+          background: rgba(14, 14, 18, 0.85);
+          backdrop-filter: blur(20px);
+          border: 1px solid rgba(255, 255, 255, 0.08);
+          border-radius: 1.25rem;
+          padding: 1.25rem;
+          z-index: 12;
+          box-shadow: 0 15px 35px rgba(0, 0, 0, 0.6);
+        }
+
+        .widget-top {
+          top: 40px;
+          right: 0px;
+          width: 170px;
+        }
+
+        .mini-thumb-jelly {
+          width: 100%;
+          height: 65px;
+          background: radial-gradient(circle at 50% 40%, rgba(255, 45, 60, 0.4) 0%, rgba(20, 20, 25, 0.9) 70%);
+          border-radius: 0.75rem;
+          margin-bottom: 0.75rem;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          border: 1px solid rgba(255, 45, 60, 0.2);
+        }
+
+        .mini-jelly-dot {
+          width: 16px;
+          height: 16px;
+          background: #ff3344;
+          border-radius: 50%;
+          box-shadow: 0 0 14px #ff3344;
+        }
+
+        .widget-bottom {
+          bottom: 20px;
+          right: 0px;
+          width: 190px;
+        }
+
+        .widget-num {
+          font-size: 1.6rem;
+          font-weight: 850;
+          color: #ffffff;
+          line-height: 1.1;
+        }
+
+        .widget-caption {
+          font-size: 0.72rem;
+          color: #8e8e96;
+          margin-top: 0.25rem;
+          margin-bottom: 0.75rem;
+        }
+
+        .partner-strip-chips {
+          display: flex;
+          flex-wrap: wrap;
+          gap: 0.35rem;
+          margin-bottom: 0.85rem;
+        }
+
+        .partner-chip {
+          font-size: 0.62rem;
+          background: rgba(255, 255, 255, 0.05);
+          color: #b0b0b8;
+          padding: 0.2rem 0.45rem;
+          border-radius: 4px;
+        }
+
+        .btn-card-action {
+          width: 100%;
+          background: #e51e2b;
+          color: #ffffff;
+          border: none;
+          padding: 0.55rem;
+          border-radius: 9999px;
+          font-size: 0.78rem;
+          font-weight: 700;
+          cursor: pointer;
+          box-shadow: 0 4px 12px rgba(229, 30, 43, 0.35);
+          transition: all 0.2s ease;
+        }
+
+        .btn-card-action:hover {
+          box-shadow: 0 6px 18px rgba(229, 30, 43, 0.55);
+        }
+
+        /* 3. EDITORIAL STATEMENT STRIP */
+        .statement-strip {
+          max-width: 1280px;
+          margin: 6rem auto 0;
+          padding: 0 2rem;
+          width: 100%;
+        }
+
+        .statement-container {
+          display: grid;
+          grid-template-columns: 180px 1fr;
+          gap: 2.5rem;
+          align-items: start;
+        }
+
+        .statement-pill-badge {
+          display: inline-flex;
+          align-items: center;
+          gap: 0.45rem;
+          background: rgba(255, 255, 255, 0.04);
+          border: 1px solid rgba(255, 255, 255, 0.1);
+          color: #c7c7cc;
+          font-size: 0.78rem;
+          font-weight: 600;
+          padding: 0.35rem 0.85rem;
+          border-radius: 9999px;
+          width: fit-content;
+        }
+
+        .badge-dot {
+          width: 6px;
+          height: 6px;
+          background: #ff3344;
+          border-radius: 50%;
+        }
+
+        .statement-quote {
+          font-size: clamp(1.8rem, 3.2vw, 2.7rem);
+          font-weight: 600;
+          line-height: 1.25;
+          letter-spacing: -0.8px;
+          color: #ededed;
+        }
+
+        .crimson-focus {
+          color: #ff3344;
+        }
+
+        /* 4. DUAL CARDS SECTION */
+        .proof-zone {
+          max-width: 1280px;
+          margin: 4.5rem auto 0;
+          padding: 0 2rem;
+          width: 100%;
+        }
+
+        .proof-grid {
+          display: grid;
+          grid-template-columns: 1fr 1fr;
+          gap: 1.75rem;
+        }
+
+        .proof-card {
+          background: rgba(14, 14, 18, 0.7);
+          backdrop-filter: blur(16px);
+          border: 1px solid rgba(255, 255, 255, 0.07);
+          border-radius: 1.75rem;
+          padding: 2.25rem;
+          display: flex;
+          flex-direction: column;
+        }
+
+        .card-top-row {
+          margin-bottom: 1.25rem;
+        }
+
+        .live-indicator {
+          display: inline-flex;
+          align-items: center;
+          gap: 0.45rem;
+          font-size: 0.75rem;
+          color: #9c9ca3;
+        }
+
+        .ping-dot {
+          width: 6px;
+          height: 6px;
+          background: #ff3344;
+          border-radius: 50%;
+          box-shadow: 0 0 6px #ff3344;
+        }
+
+        .card-primary-title {
+          font-size: 1.6rem;
+          font-weight: 750;
+          color: #ffffff;
+          letter-spacing: -0.5px;
+          margin-bottom: 1.25rem;
+        }
+
+        .card-button-row {
+          margin-bottom: 1.75rem;
+        }
+
+        .btn-dark-pill {
+          background: rgba(255, 255, 255, 0.06);
+          border: 1px solid rgba(255, 255, 255, 0.12);
+          color: #ededed;
+          padding: 0.55rem 1.25rem;
+          border-radius: 9999px;
+          font-size: 0.8rem;
+          font-weight: 600;
+          text-decoration: none;
+          display: inline-block;
+          transition: all 0.2s ease;
+        }
+
+        .btn-dark-pill:hover {
+          background: rgba(255, 255, 255, 0.1);
+        }
+
+        .media-screen-box {
+          background: #09090c;
+          border: 1px solid rgba(255, 45, 60, 0.2);
+          border-radius: 1rem;
+          overflow: hidden;
+          box-shadow: 0 10px 30px rgba(0, 0, 0, 0.7);
+        }
+
+        .terminal-header {
+          background: #111116;
+          padding: 0.6rem 0.85rem;
+          display: flex;
+          align-items: center;
+          gap: 0.45rem;
+          border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .terminal-circle {
+          width: 8px;
+          height: 8px;
+          border-radius: 50%;
+        }
+
+        .terminal-circle.c1 { background: #ff4d4d; }
+        .terminal-circle.c2 { background: #eab308; }
+        .terminal-circle.c3 { background: #22c55e; }
+
+        .terminal-title {
+          font-size: 0.7rem;
+          color: #71717a;
+          margin-left: 0.4rem;
+          font-family: monospace;
+        }
+
+        .terminal-body {
+          padding: 1rem;
+          font-family: "SFMono-Regular", Consolas, monospace;
+          font-size: 0.74rem;
+          color: #e2e8f0;
+          line-height: 1.55;
+          overflow-x: auto;
+        }
+
+        /* Card Right */
+        .card-right {
+          justify-content: space-between;
+        }
+
+        .card-right-header {
+          font-size: 0.95rem;
+          color: #9c9ca3;
+          line-height: 1.5;
+          max-width: 420px;
+        }
+
+        .giant-metric-row {
+          display: flex;
+          align-items: center;
+          gap: 1.5rem;
+          margin: 2.5rem 0;
+        }
+
+        .giant-metric-number {
+          font-size: clamp(3.5rem, 6vw, 5.2rem);
+          font-weight: 850;
+          color: #ffffff;
+          line-height: 1;
+          letter-spacing: -2px;
+        }
+
+        .five-stars {
+          color: #ff3344;
+          font-size: 1.15rem;
+          letter-spacing: 2px;
+        }
+
+        .quote-inset-card {
+          background: rgba(18, 18, 24, 0.85);
+          border: 1px solid rgba(255, 255, 255, 0.08);
+          border-radius: 1.25rem;
+          padding: 1.35rem;
+          display: flex;
+          gap: 1.15rem;
+          align-items: center;
+        }
+
+        .quote-avatar {
+          width: 48px;
+          height: 48px;
+          border-radius: 50%;
+          background: linear-gradient(135deg, #ff3344, #8b0000);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          flex-shrink: 0;
+        }
+
+        .avatar-initials {
+          color: #ffffff;
+          font-weight: 750;
+          font-size: 0.95rem;
+        }
+
+        .quote-text {
+          font-size: 0.88rem;
+          color: #ededed;
+          font-style: italic;
+          line-height: 1.45;
+          margin-bottom: 0.35rem;
+        }
+
+        .quote-author {
+          font-size: 0.72rem;
+          color: #71717a;
+        }
+
+        /* 5. TICKER STRIP */
+        .ticker-strip {
+          max-width: 1280px;
+          margin: 4.5rem auto 0;
+          padding: 0 2rem;
+          width: 100%;
+        }
+
+        .ticker-inner {
+          border-top: 1px solid rgba(255, 255, 255, 0.06);
+          border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+          padding: 1.5rem 0;
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+        }
+
+        .ticker-label {
+          font-size: 0.78rem;
+          color: #71717a;
+          text-transform: uppercase;
+          letter-spacing: 0.8px;
+        }
+
+        .ticker-logos {
+          display: flex;
+          align-items: center;
+          gap: 1.25rem;
+        }
+
+        .brand-logo-text {
+          font-size: 0.8rem;
+          font-weight: 750;
+          color: #a1a1aa;
+          letter-spacing: 0.5px;
+        }
+
+        .ticker-divider {
+          color: #ff3344;
+          font-size: 0.65rem;
+        }
+
+        /* 6. SERVICES & INTERACTIVE PROTOCOL CONSOLE */
+        .services-section {
+          max-width: 1280px;
+          margin: 5rem auto 0;
+          padding: 0 2rem;
+          width: 100%;
+        }
+
+        .section-kicker-pill {
+          display: inline-flex;
+          align-items: center;
+          gap: 0.45rem;
+          background: rgba(255, 255, 255, 0.04);
+          border: 1px solid rgba(255, 255, 255, 0.1);
+          color: #c7c7cc;
+          font-size: 0.78rem;
+          font-weight: 600;
+          padding: 0.35rem 0.85rem;
+          border-radius: 9999px;
+          margin-bottom: 1.5rem;
+        }
+
+        .services-main-grid {
+          display: grid;
+          grid-template-columns: 0.95fr 1.05fr;
+          gap: 3rem;
+          align-items: start;
+        }
+
+        .services-title {
+          font-size: clamp(2.4rem, 4.2vw, 3.4rem);
+          font-weight: 850;
+          line-height: 1.1;
+          letter-spacing: -1.2px;
+          color: #ffffff;
+          margin-bottom: 1.25rem;
+        }
+
+        .services-desc {
+          font-size: 1rem;
+          color: #8e8e96;
+          line-height: 1.6;
+          margin-bottom: 2.25rem;
+        }
+
+        /* Feature Card (Matching AI Strategy & Mapping 01 in screenshot) */
+        .service-feature-card {
+          background: rgba(18, 18, 22, 0.75);
+          backdrop-filter: blur(16px);
+          border: 1px solid rgba(255, 255, 255, 0.08);
+          border-radius: 1.5rem;
+          padding: 2rem;
+          margin-bottom: 1.5rem;
+        }
+
+        .service-header-row {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          margin-bottom: 0.75rem;
+        }
+
+        .service-name {
+          font-size: 1.25rem;
+          font-weight: 700;
+          color: #ffffff;
+        }
+
+        .service-step-index {
+          font-size: 0.85rem;
+          color: #71717a;
+          font-family: monospace;
+        }
+
+        .service-detail {
+          font-size: 0.88rem;
+          color: #9c9ca3;
+          line-height: 1.55;
+          margin-bottom: 1.5rem;
+        }
+
+        .service-tags-wrap {
+          display: flex;
+          flex-wrap: wrap;
+          gap: 0.5rem;
+        }
+
+        .service-tag {
+          font-size: 0.75rem;
+          background: rgba(255, 255, 255, 0.05);
+          border: 1px solid rgba(255, 255, 255, 0.08);
+          color: #c7c7cc;
+          padding: 0.4rem 0.85rem;
+          border-radius: 9999px;
+        }
+
+        .chain-info-box {
+          background: rgba(14, 14, 18, 0.6);
+          border: 1px solid rgba(255, 45, 60, 0.2);
+          border-radius: 1rem;
+          padding: 1rem 1.25rem;
+          display: flex;
+          flex-direction: column;
+          gap: 0.5rem;
+        }
+
+        .chain-info-row {
+          display: flex;
+          justify-content: space-between;
+          font-size: 0.82rem;
+          color: #8e8e96;
+        }
+
+        .chain-info-row strong {
+          color: #ffffff;
+        }
+
+        .chain-info-row code {
+          color: #ff4d4d;
+          font-family: monospace;
+        }
+
+        /* Right Column: Console Card */
+        .interactive-console-card {
+          background: rgba(16, 16, 20, 0.85);
+          backdrop-filter: blur(20px);
+          border: 1px solid rgba(255, 45, 60, 0.25);
+          border-radius: 1.75rem;
+          padding: 2.25rem;
+          box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6), 0 0 35px rgba(255, 45, 60, 0.1);
+        }
+
+        .console-top-bar {
           display: flex;
           justify-content: space-between;
           align-items: center;
           margin-bottom: 0.5rem;
         }
 
-        .metric-tag {
-          font-size: 0.7rem;
-          font-weight: 800;
-          letter-spacing: 1px;
-          color: #ff4d5a;
-        }
-
-        .metric-time {
-          font-size: 0.7rem;
-          color: #ff3344;
-          font-weight: 700;
-        }
-
-        .metric-big-num {
-          font-size: 2.5rem;
-          font-weight: 900;
-          color: #ffffff;
-          letter-spacing: -1px;
-          margin-bottom: 0.3rem;
-        }
-
-        .metric-sub {
-          font-size: 0.8rem;
-          color: #7a7a80;
-          margin-bottom: 1.25rem;
-        }
-
-        .metric-sub code {
-          color: #ededed;
-          background: rgba(255, 255, 255, 0.08);
-          padding: 0.1rem 0.35rem;
-          border-radius: 0.3rem;
-        }
-
-        .metric-divider {
-          height: 1px;
-          background: rgba(255, 255, 255, 0.08);
-          margin-bottom: 1.25rem;
-        }
-
-        .metric-row {
-          display: flex;
-          justify-content: space-between;
-          font-size: 0.85rem;
-          margin-bottom: 0.75rem;
-          color: #98989f;
-        }
-
-        .metric-row strong {
-          color: #ffffff;
-        }
-
-        .card-book-btn {
-          width: 100%;
-          background: linear-gradient(135deg, #ff3344 0%, #b80f1e 100%);
-          border: none;
-          color: #ffffff;
-          padding: 0.85rem;
-          border-radius: 0.85rem;
-          font-weight: 700;
-          font-size: 0.95rem;
-          cursor: pointer;
-          margin-top: 1rem;
-          transition: all 0.2s ease;
-        }
-
-        .card-book-btn:hover {
-          box-shadow: 0 0 20px rgba(255, 51, 68, 0.5);
-        }
-
-        /* 3. EDITORIAL STATEMENT ZONE */
-        .statement-zone {
-          max-width: 1100px;
-          margin: 5rem auto;
-          padding: 0 2rem;
-          text-align: center;
-          position: relative;
-          z-index: 5;
-        }
-
-        .statement-inner {
-          border-top: 1px solid rgba(255, 255, 255, 0.08);
-          border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-          padding: 3.5rem 1rem;
-        }
-
-        .statement-text {
-          font-size: clamp(1.5rem, 3vw, 2.3rem);
-          font-weight: 700;
-          line-height: 1.45;
-          letter-spacing: -0.5px;
-          color: #ffffff;
-          max-width: 880px;
-          margin: 0 auto;
-        }
-
-        .red-word {
-          color: #ff3344;
-          text-shadow: 0 0 20px rgba(255, 51, 68, 0.4);
-        }
-
-        /* 4. WORKSPACE / APP SECTION */
-        .app-workspace {
-          max-width: 1240px;
-          margin: 0 auto 5rem;
-          padding: 0 2rem;
-          width: 100%;
-          position: relative;
-          z-index: 5;
-        }
-
-        .workspace-inner {
-          width: 100%;
-        }
-
-        /* Workflow Cards Grid */
-        .workflow-deck {
-          display: grid;
-          grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-          gap: 1.75rem;
-        }
-
-        .deck-card {
-          background: rgba(18, 18, 24, 0.6);
-          backdrop-filter: blur(16px);
-          border: 1px solid rgba(255, 255, 255, 0.08);
-          border-radius: 1.5rem;
-          padding: 2.25rem;
-          display: flex;
-          flex-direction: column;
-          position: relative;
-          transition: all 0.3s ease;
-        }
-
-        .deck-card:hover {
-          border-color: rgba(255, 255, 255, 0.2);
-          transform: translateY(-4px);
-        }
-
-        .deck-card.glowing-border {
-          border-color: rgba(255, 51, 68, 0.4);
-          box-shadow: 0 0 35px rgba(255, 51, 68, 0.12);
-        }
-
-        .step-count {
-          font-size: 2.2rem;
-          font-weight: 900;
-          color: #ff3344;
-          margin-bottom: 1rem;
-          opacity: 0.9;
-        }
-
-        .deck-card h3 {
-          font-size: 1.35rem;
-          font-weight: 700;
-          color: #ffffff;
-          margin-bottom: 0.65rem;
-        }
-
-        .deck-card p {
-          color: #8e8e93;
-          font-size: 0.95rem;
-          line-height: 1.6;
-          flex: 1;
-        }
-
-        .deck-card code {
-          color: #ff6b76;
-          background: rgba(255, 51, 68, 0.1);
-          padding: 0.15rem 0.35rem;
-          border-radius: 0.3rem;
-        }
-
-        .card-badge {
-          margin-top: 1.75rem;
-          align-self: flex-start;
-          font-size: 0.75rem;
-          font-weight: 700;
-          background: rgba(255, 255, 255, 0.05);
-          color: #c7c7cc;
-          padding: 0.35rem 0.85rem;
-          border-radius: 9999px;
-          border: 1px solid rgba(255, 255, 255, 0.08);
-        }
-
-        .card-badge.red-badge {
-          background: rgba(255, 51, 68, 0.15);
-          color: #ff4d5a;
-          border-color: rgba(255, 51, 68, 0.3);
-        }
-
-        /* Console Split Layout */
-        .console-split {
-          display: grid;
-          grid-template-columns: 1fr 1.25fr;
-          gap: 2.5rem;
-          align-items: stretch;
-        }
-
-        .glass-summary-panel {
-          background: rgba(18, 18, 24, 0.75);
-          backdrop-filter: blur(20px);
-          border: 1px solid rgba(255, 255, 255, 0.08);
-          border-radius: 1.75rem;
-          padding: 2.5rem;
-          display: flex;
-          flex-direction: column;
-          justify-content: space-between;
-        }
-
-        .summary-header {
+        .console-title-group {
           display: flex;
           align-items: center;
           gap: 0.5rem;
-          color: #ff4d5a;
-          font-size: 0.8rem;
-          font-weight: 700;
-          letter-spacing: 0.5px;
-          margin-bottom: 1rem;
         }
 
-        .chip-bullet {
+        .live-dot-red {
           width: 8px;
           height: 8px;
-          background: #ff2d3c;
+          background: #ff3344;
           border-radius: 50%;
-          box-shadow: 0 0 8px #ff2d3c;
+          box-shadow: 0 0 10px #ff3344;
         }
 
-        .glass-summary-panel h2 {
-          font-size: 2rem;
-          font-weight: 800;
-          line-height: 1.25;
+        .console-title-group h3 {
+          font-size: 1.25rem;
+          font-weight: 750;
           color: #ffffff;
-          margin-bottom: 0.75rem;
         }
 
-        .summary-desc {
-          color: #8e8e93;
-          font-size: 1rem;
-          line-height: 1.6;
-          margin-bottom: 2rem;
+        .protocol-badge {
+          font-size: 0.72rem;
+          background: rgba(255, 45, 60, 0.15);
+          color: #ff5252;
+          border: 1px solid rgba(255, 45, 60, 0.3);
+          padding: 0.25rem 0.65rem;
+          border-radius: 9999px;
+          font-weight: 600;
         }
 
-        .protocol-pills {
-          display: flex;
-          flex-direction: column;
-          gap: 0.85rem;
-          margin-bottom: 2rem;
-        }
-
-        .proto-pill {
-          background: rgba(255, 255, 255, 0.03);
-          border: 1px solid rgba(255, 255, 255, 0.06);
-          padding: 0.85rem 1.15rem;
-          border-radius: 0.85rem;
-          display: flex;
-          justify-content: space-between;
-          align-items: center;
+        .console-sub {
           font-size: 0.85rem;
-        }
-
-        .proto-pill strong {
-          color: #ededed;
-        }
-
-        .proto-pill span {
-          color: #ff6b76;
-          font-family: monospace;
-        }
-
-        .audit-note {
-          font-size: 0.8rem;
-          color: #636366;
-          padding-top: 1rem;
-          border-top: 1px solid rgba(255, 255, 255, 0.06);
-        }
-
-        /* Form Panel */
-        .glass-form-panel {
-          background: rgba(18, 18, 24, 0.85);
-          backdrop-filter: blur(24px);
-          border: 1px solid rgba(255, 45, 60, 0.25);
-          border-radius: 1.75rem;
-          padding: 2.5rem;
-          box-shadow: 0 25px 60px rgba(0, 0, 0, 0.7), 0 0 40px rgba(255, 45, 60, 0.1);
-        }
-
-        .form-title-bar {
-          margin-bottom: 1.75rem;
-        }
-
-        .form-title-bar h3 {
-          font-size: 1.6rem;
-          font-weight: 800;
-          color: #ffffff;
-          margin-bottom: 0.35rem;
-        }
-
-        .form-title-bar p {
-          color: #8e8e93;
-          font-size: 0.9rem;
-        }
-
-        .feedback-msg {
-          padding: 0.85rem 1rem;
-          border-radius: 0.75rem;
-          font-size: 0.9rem;
+          color: #8e8e96;
+          line-height: 1.5;
           margin-bottom: 1.5rem;
         }
 
-        .feedback-msg.success {
-          background: rgba(0, 255, 135, 0.12);
-          border: 1px solid rgba(0, 255, 135, 0.3);
-          color: #00ff87;
+        .alert-box {
+          padding: 0.85rem 1.15rem;
+          border-radius: 0.75rem;
+          font-size: 0.85rem;
+          margin-bottom: 1.5rem;
         }
 
-        .feedback-msg.danger {
-          background: rgba(255, 45, 60, 0.12);
-          border: 1px solid rgba(255, 45, 60, 0.35);
-          color: #ff6b76;
+        .alert-success {
+          background: rgba(34, 197, 94, 0.12);
+          border: 1px solid rgba(34, 197, 94, 0.3);
+          color: #4ade80;
         }
 
-        .agent-form {
+        .alert-danger {
+          background: rgba(239, 68, 68, 0.12);
+          border: 1px solid rgba(239, 68, 68, 0.3);
+          color: #f87171;
+        }
+
+        .console-form {
           display: flex;
           flex-direction: column;
-          gap: 1.25rem;
+          gap: 1.15rem;
         }
 
-        .form-group {
+        .form-row {
           display: flex;
           flex-direction: column;
-          gap: 0.45rem;
-          flex: 1;
+          gap: 0.4rem;
         }
 
-        .form-group label {
-          font-size: 0.8rem;
-          font-weight: 700;
-          color: #c7c7cc;
+        .form-row label {
+          font-size: 0.75rem;
+          color: #9c9ca3;
+          font-weight: 600;
           text-transform: uppercase;
-          letter-spacing: 0.5px;
+          letter-spacing: 0.4px;
         }
 
-        .form-group input {
-          width: 100%;
+        .form-row input {
           background: rgba(255, 255, 255, 0.04);
           border: 1px solid rgba(255, 255, 255, 0.1);
-          padding: 0.9rem 1.15rem;
-          border-radius: 0.75rem;
           color: #ffffff;
-          font-size: 0.95rem;
+          padding: 0.75rem 1rem;
+          border-radius: 0.75rem;
+          font-size: 0.9rem;
+          outline: none;
           transition: all 0.2s ease;
         }
 
-        .form-group input:focus {
-          outline: none;
+        .form-row input:focus {
           border-color: #ff3344;
-          box-shadow: 0 0 0 3px rgba(255, 51, 68, 0.25);
-          background: rgba(255, 255, 255, 0.06);
+          background: rgba(255, 45, 60, 0.05);
+          box-shadow: 0 0 14px rgba(255, 51, 68, 0.25);
         }
 
-        .form-grid-2 {
-          display: flex;
-          gap: 1.15rem;
+        .form-grid-two {
+          display: grid;
+          grid-template-columns: 1fr 1fr;
+          gap: 1rem;
         }
 
-        .form-grid-3 {
+        .form-grid-three {
           display: grid;
           grid-template-columns: 1fr 1fr 1fr;
-          gap: 1.15rem;
+          gap: 0.75rem;
         }
 
-        .submit-action-btn {
-          width: 100%;
-          padding: 1.15rem;
-          background: linear-gradient(135deg, #ff3344 0%, #c41221 100%);
-          border: none;
+        .btn-submit-glow {
+          margin-top: 0.75rem;
+          background: linear-gradient(135deg, #e51e2b 0%, #a80d18 100%);
           color: #ffffff;
-          font-size: 1.05rem;
-          font-weight: 800;
+          border: none;
+          padding: 0.95rem;
           border-radius: 9999px;
+          font-size: 0.95rem;
+          font-weight: 700;
           cursor: pointer;
           transition: all 0.2s ease;
-          box-shadow: 0 10px 25px rgba(255, 51, 68, 0.35);
-          margin-top: 0.75rem;
+          box-shadow: 0 6px 20px rgba(229, 30, 43, 0.45);
         }
 
-        .submit-action-btn:hover:not(:disabled) {
-          transform: translateY(-2px);
-          box-shadow: 0 14px 35px rgba(255, 51, 68, 0.5);
+        .btn-submit-glow:hover:not(:disabled) {
+          box-shadow: 0 8px 30px rgba(229, 30, 43, 0.7);
+          transform: translateY(-1px);
         }
 
-        .submit-action-btn:disabled {
-          background: rgba(255, 255, 255, 0.08);
-          color: #55555c;
+        .btn-submit-glow:disabled {
+          opacity: 0.5;
           cursor: not-allowed;
           box-shadow: none;
         }
 
-        /* Modal */
+        /* Success Modal */
         .modal-backdrop {
           position: fixed;
           top: 0;
@@ -1365,156 +1944,154 @@ export default function Home() {
           display: flex;
           align-items: center;
           justify-content: center;
-          z-index: 9999;
+          z-index: 100;
           padding: 1.5rem;
         }
 
         .modal-glass {
-          background: #111117;
-          border: 1px solid rgba(255, 51, 68, 0.35);
+          background: #0f0f14;
+          border: 1px solid rgba(255, 45, 60, 0.35);
           border-radius: 1.5rem;
-          padding: 2.5rem;
-          max-width: 500px;
+          padding: 2.25rem;
+          max-width: 520px;
           width: 100%;
-          text-align: center;
-          box-shadow: 0 25px 60px rgba(0, 0, 0, 0.8), 0 0 40px rgba(255, 51, 68, 0.2);
+          box-shadow: 0 25px 60px rgba(0, 0, 0, 0.8), 0 0 40px rgba(255, 45, 60, 0.2);
         }
 
         .modal-pill {
-          display: inline-block;
-          font-size: 0.75rem;
-          font-weight: 800;
-          color: #ff4d5a;
-          background: rgba(255, 51, 68, 0.15);
-          padding: 0.35rem 0.85rem;
-          border-radius: 9999px;
-          margin-bottom: 1rem;
+          font-size: 0.7rem;
+          font-weight: 750;
+          color: #ff4d4d;
+          letter-spacing: 0.8px;
+          margin-bottom: 0.75rem;
         }
 
         .modal-title {
-          font-size: 1.8rem;
-          font-weight: 800;
+          font-size: 1.5rem;
           color: #ffffff;
-          margin-bottom: 0.5rem;
+          margin-bottom: 0.75rem;
         }
 
         .modal-text {
-          font-size: 0.95rem;
-          color: #8e8e93;
-          line-height: 1.55;
-          margin-bottom: 1.5rem;
+          font-size: 0.9rem;
+          color: #9c9ca3;
+          line-height: 1.5;
+          margin-bottom: 1.25rem;
         }
 
         .modal-code {
-          background: rgba(255, 255, 255, 0.04);
-          border: 1px solid rgba(255, 255, 255, 0.08);
+          background: #060608;
+          border: 1px solid rgba(255, 255, 255, 0.1);
+          color: #4ade80;
+          font-family: monospace;
           padding: 0.85rem;
           border-radius: 0.75rem;
-          font-family: monospace;
-          color: #ff6b76;
           font-size: 0.85rem;
           word-break: break-all;
-          margin-bottom: 1.75rem;
+          margin-bottom: 1.5rem;
         }
 
         .modal-button-row {
           display: flex;
           gap: 1rem;
-          justify-content: center;
         }
 
-        /* 5. FOOTER */
-        .agent-footer {
-          border-top: 1px solid rgba(255, 255, 255, 0.06);
-          padding: 2.5rem 2rem;
-          position: relative;
-          z-index: 5;
-        }
-
-        .footer-container {
+        /* 7. FOOTER */
+        .universe-footer {
           max-width: 1280px;
-          margin: 0 auto;
+          margin: 6rem auto 2.5rem;
+          padding: 2rem;
+          width: 100%;
+          border-top: 1px solid rgba(255, 255, 255, 0.06);
+        }
+
+        .footer-content {
           display: flex;
           justify-content: space-between;
           align-items: center;
-          font-size: 0.9rem;
-          color: #7a7a80;
+          gap: 1.5rem;
+          flex-wrap: wrap;
         }
 
         .footer-left {
           display: flex;
-          align-items: center;
-          gap: 0.75rem;
+          flex-direction: column;
+          gap: 0.25rem;
         }
 
-        .f-logo {
+        .footer-brand {
+          font-size: 1.15rem;
           font-weight: 800;
           color: #ffffff;
         }
 
-        .f-tagline {
-          color: #55555c;
+        .footer-sub {
+          font-size: 0.75rem;
+          color: #71717a;
         }
 
-        .footer-mid {
-          color: #8e8e93;
+        .footer-center {
+          font-size: 0.78rem;
+          color: #71717a;
         }
 
-        .footer-right {
+        .footer-links {
           display: flex;
           gap: 1.25rem;
         }
 
-        .footer-right a {
-          color: #98989f;
+        .footer-links a {
+          color: #a1a1aa;
           text-decoration: none;
-          transition: color 0.2s;
+          font-size: 0.82rem;
+          transition: all 0.2s ease;
         }
 
-        .footer-right a:hover {
+        .footer-links a:hover {
           color: #ff3344;
         }
 
-        /* RESPONSIVE */
-        @media (max-width: 960px) {
-          .hero-columns {
-            grid-template-columns: 1fr;
-            text-align: center;
-          }
-          .hero-subtext {
-            margin: 0 auto 2rem;
-          }
-          .cta-row {
-            justify-content: center;
-          }
-          .stat-pills-row {
-            justify-content: center;
-          }
-          .console-split {
+        /* Responsive */
+        @media (max-width: 1024px) {
+          .hero-grid {
             grid-template-columns: 1fr;
           }
-          .top-nav {
-            flex-direction: column;
-            gap: 1.25rem;
+
+          .hero-right {
+            order: -1;
           }
-          .footer-container {
-            flex-direction: column;
-            gap: 1rem;
-            text-align: center;
+
+          .proof-grid {
+            grid-template-columns: 1fr;
+          }
+
+          .services-main-grid {
+            grid-template-columns: 1fr;
+          }
+
+          .statement-container {
+            grid-template-columns: 1fr;
           }
         }
 
         @media (max-width: 640px) {
-          .form-grid-2,
-          .form-grid-3 {
+          .top-nav {
+            flex-direction: column;
+            gap: 1rem;
+          }
+
+          .stat-cards-triad {
+            flex-direction: column;
+          }
+
+          .form-grid-two,
+          .form-grid-three {
             grid-template-columns: 1fr;
-            flex-direction: column;
           }
-          .cta-row {
+
+          .footer-content {
             flex-direction: column;
-          }
-          .stat-pills-row {
-            flex-direction: column;
+            text-align: center;
           }
         }
       `}</style>
