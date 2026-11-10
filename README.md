@@ -2,7 +2,7 @@
   <img src="public/logo.png" alt="PayFold Logo" width="120" />
 </p>
 
-# PayFold 💳
+# PayFold
 
 > **Autonomous Hackathon Prize Distribution & Web3 Payout Automation Platform**  
 > *Developed & Maintained by **Lakshay Deol** (<lakshayld26@gmail.com>)*  
@@ -10,7 +10,7 @@
 
 ---
 
-## 🌟 Overview
+## Overview
 
 **PayFold** is a decentralized, autonomous payout execution system designed for hackathon organizers, grant programs, and Web3 event managers. It eliminates the friction of collecting wallet addresses, validating recipients, and sending prize payouts one-by-one.
 
@@ -24,7 +24,7 @@ With PayFold:
 
 ---
 
-## 🌐 How NEAR is Utilized in PayFold (NEAR Hackathon Architecture)
+## How NEAR is Utilized in PayFold (NEAR Hackathon Architecture)
 
 PayFold is architected around NEAR Protocol's core capabilities: **Chain Signatures (MPC)**, **Shade Agents (TEE)**, and **Aurora EVM**.
 
@@ -63,7 +63,7 @@ If you build an autonomous AI agent to disburse prize money, **where do you stor
 
 ---
 
-## 🎯 NEAR Hackathon Track Alignment
+## NEAR Hackathon Track Alignment
 
 | Track | Alignment in PayFold |
 | :--- | :--- |
@@ -74,7 +74,7 @@ If you build an autonomous AI agent to disburse prize money, **where do you stor
 
 ---
 
-## 🏗️ System Architecture
+## System Architecture
 
 ```
                                   +---------------------------+
@@ -111,7 +111,7 @@ If you build an autonomous AI agent to disburse prize money, **where do you stor
 
 ---
 
-## 📜 Smart Contract Architecture
+## Smart Contract Architecture
 
 The [`contracts/PayFoldEscrow.sol`](contracts/PayFoldEscrow.sol) contract manages all prize escrow:
 
@@ -127,7 +127,7 @@ function setAgentSigner(address newSigner) external onlyOwner;
 
 ---
 
-## ⚙️ Environment Configuration
+## Environment Configuration
 
 Create a `.env.development.local` file in the root directory (based on `.env.development.local.example`):
 
@@ -154,13 +154,13 @@ NEXT_PUBLIC_ESCROW_CONTRACT=0xFcAaf9F83875C2c4fEF050af893e90061254c660
 
 ---
 
-## 🧪 Judge & Evaluator Verification ("Do X — See Y")
+## Judge & Evaluator Verification ("Do X — See Y")
 
 This project is built for automated reproducibility check per NEAR Hackathon guidelines:
 
 1. **Step 1: Run Automated Test Suite**
    - **Do**: `yarn test`
-   - **See**: All 8 tests pass across data models, decimal conversions, AI provider fallbacks, public brand logo, and NEAR hackathon vault querying.
+   - **See**: All 9 tests pass across data models, decimal conversions, AI provider fallbacks, public brand logo, NEAR hackathon vault querying, and zero-emoji typography enforcement.
 2. **Step 2: Build Production Bundle**
    - **Do**: `yarn build`
    - **See**: Full Next.js production compilation with 0 errors across all static and dynamic API routes.
@@ -203,7 +203,7 @@ This project is built for automated reproducibility check per NEAR Hackathon gui
 
 ---
 
-## 📦 Getting Started
+## Getting Started
 
 ### 1. Prerequisites
 - **Node.js**: v18.0.0+ (v20 or v22 recommended)
@@ -228,7 +228,7 @@ Open [http://localhost:3000](http://localhost:3000) in your browser.
 
 ---
 
-## 📜 License
+## License
 
 Licensed under the Apache License, Version 2.0. See [LICENSE](LICENSE) for details.
 
