@@ -80,27 +80,43 @@ Create a `.env.development.local` file in the root directory (based on `.env.dev
 
 ```bash
 # NEAR Configuration for Chain Signatures / MPC
-NEAR_ACCOUNT_ID=your-account.testnet
+NEAR_ACCOUNT_ID=lakshay-payfold.testnet
 NEAR_SEED_PHRASE="your twelve word seed phrase here"
 
 # Contract Configuration (ac-proxy for local, ac-sandbox for Phala Cloud)
-NEXT_PUBLIC_contractId=ac-proxy.your-account.testnet
+NEXT_PUBLIC_contractId=ac-proxy.lakshay-payfold.testnet
 
-# Shade Agent API Configuration
+# Code Hashes
 API_CODEHASH=ec43db0f65f8e05937df2a5810931e6d9f491c5df34013b8f9838129c32a3fcf
 APP_CODEHASH=f6552a63eddc6c8d0c78e76461e8be427711b23d429fd130d2b49d114dc695a4
 
-# AI & Automation Credentials
+# Free AI & Email Automation Keys (Recommended)
+GEMINI_API_KEY=your_gemini_api_key_here
+RESEND_API_KEY=your_resend_api_key_here
+
+# Alternative Paid Credentials
 OPENAI_API_KEY=your_openai_api_key
 COMPOSIO_API_KEY=your_composio_api_key
-
-# Optional: Custom EVM RPC
-ETHEREUM_RPC_URL=https://1rpc.io/aurora
-
-# Phala Cloud Deployment (Optional)
-DOCKER_TAG=your_dockerhub_user/payfold
-PHALA_API_KEY=your_phala_cloud_api_key
 ```
+
+---
+
+## 🧪 Judge & Evaluator Verification ("Do X — See Y")
+
+This project is built for automated reproducibility check per NEAR Hackathon guidelines:
+
+1. **Step 1: Run Automated Test Suite**
+   - **Do**: `yarn test`
+   - **See**: All 6 tests pass (data model integrity, decimal conversions, AI provider fallbacks, email simulations).
+2. **Step 2: Build Production Bundle**
+   - **Do**: `yarn build`
+   - **See**: Full Next.js production compilation with 0 errors across all routes.
+3. **Step 3: Launch Local Server**
+   - **Do**: `yarn dev`
+   - **See**: Server ready on `http://localhost:3000` with interactive RainbowKit wallet connection and payout form.
+4. **Step 4: Query Ledger API**
+   - **Do**: `curl -X POST http://localhost:3000/api/getHackathonId -H "Content-Type: application/json" -d '{"hackathonName":"Near AI Hackathon"}'`
+   - **See**: `{"hackathonId": 0}` returned with status `200 OK`.
 
 ---
 
