@@ -67,7 +67,7 @@ export default function Home() {
   const [showModal, setShowModal] = useState(false);
   const [hackathonAddress, setHackathonAddress] = useState("");
 
-  // ⚡ NEAR Live Execution Playground & Ledger States
+  // NEAR Live Execution Playground & Ledger States
   const [hackathons, setHackathons] = useState([]);
   const [loadingHackathons, setLoadingHackathons] = useState(false);
   const [ledgerFilter, setLedgerFilter] = useState("all");
@@ -114,9 +114,9 @@ export default function Home() {
     if (!simSelectedWinner || !simSelectedHackathon) return;
     setSimStage("ai");
     setSimLogs([
-      "▶ Initializing PayFold Autonomous Execution Agent...",
-      `📥 Inbound Email Reply from: ${simSelectedWinner.email}`,
-      "🤖 [Google Gemini AI] Extracting & validating EVM hex address from natural language text...",
+      "[INIT] Initializing PayFold Autonomous Execution Agent...",
+      `[INBOUND] Email reply received from: ${simSelectedWinner.email}`,
+      "[AI ENGINE] Google Gemini extracting & validating EVM hex address from natural language text...",
     ]);
 
     try {
@@ -124,17 +124,17 @@ export default function Home() {
       setSimStage("mpc");
       setSimLogs((prev) => [
         ...prev,
-        "✔ [Gemini AI] Valid EVM recipient address detected",
-        "🌐 [NEAR Chain Signatures] Requesting threshold co-signature from v1.signer-prod.testnet",
-        `🔐 Deriving key path: ["ethereum", "${simSelectedHackathon.name}", 0] via lakshay-payfold.testnet`,
+        "[VERIFIED] Valid EVM recipient address detected",
+        "[NEAR MPC] Requesting threshold co-signature from v1.signer-prod.testnet",
+        `[DERIVATION] Deriving key path: ["ethereum", "${simSelectedHackathon.name}", 0] via lakshay-payfold.testnet`,
       ]);
 
       await new Promise((r) => setTimeout(r, 650));
       setSimStage("signing");
       setSimLogs((prev) => [
         ...prev,
-        "⚡ [MPC Consensus] Threshold nodes generating secp256k1 signature shares...",
-        "🔏 Assembling raw RSV signature components without server private key...",
+        "[CONSENSUS] Threshold nodes generating secp256k1 signature shares...",
+        "[SIGNATURE] Assembling raw RSV signature components without server private key...",
       ]);
 
       const res = await fetch("/api/webhook", {
@@ -155,9 +155,9 @@ export default function Home() {
       setSimStage("broadcast");
       setSimLogs((prev) => [
         ...prev,
-        "🚀 [Aurora EVM] Broadcasting signed raw transaction to PayFoldEscrow.sol...",
-        `🔗 On-chain TX: ${data.transactionHash || "Confirmed"}`,
-        `✉️ [Resend] Dispatched confirmation receipt to ${simSelectedWinner.email}`,
+        "[BROADCAST] Broadcasting signed raw transaction to Aurora EVM (PayFoldEscrow.sol)...",
+        `[TX RECEIPT] On-chain TX: ${data.transactionHash || "Confirmed"}`,
+        `[DISPATCH] Dispatched confirmation receipt via Resend to ${simSelectedWinner.email}`,
       ]);
 
       await new Promise((r) => setTimeout(r, 600));
@@ -165,7 +165,7 @@ export default function Home() {
       setSimResult(data);
       setSimLogs((prev) => [
         ...prev,
-        "🎉 [Complete] Autonomous prize payout settled on-chain via NEAR Protocol Chain Signatures!",
+        "[COMPLETE] Autonomous prize payout settled on-chain via NEAR Protocol Chain Signatures.",
       ]);
 
       // Refresh live ledger table
@@ -175,7 +175,7 @@ export default function Home() {
       setSimStage("error");
       setSimLogs((prev) => [
         ...prev,
-        `❌ [Error] ${simErr.message || "Failed to process simulation"}`,
+        `[ERROR] ${simErr.message || "Failed to process simulation"}`,
       ]);
     }
   };
