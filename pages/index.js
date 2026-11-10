@@ -580,7 +580,7 @@ export default function Home() {
                     <g className="payout-coin coin-sparkle">
                       <circle cx="265" cy="55" r="18" fill="url(#tokenRed)" filter="url(#payoutDropGlow)" />
                       <circle cx="265" cy="55" r="15" fill="#180206" stroke="#ff4d5a" strokeWidth="1" />
-                      <text x="260" y="60" fill="#ffffff" fontSize="13" fontWeight="bold">⚡</text>
+                      <polygon points="266,48 261,56 265,56 264,62 269,54 265,54" fill="#ffffff" />
                     </g>
 
                     {/* Radiant Particles */}
