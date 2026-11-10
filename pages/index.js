@@ -24,45 +24,8 @@ const CONTRACT_ABI = [
   },
 ];
 
-const TOUR_STEPS = [
-  {
-    step: 1,
-    badge: "STEP 01 • ESCROW DEPOSIT",
-    title: "Lock Prize Funds in Trustless Vault",
-    desc: "Organizers deposit prize tokens directly into the on-chain PayFoldEscrow contract on Aurora or Sepolia. Funds remain cryptographically locked with zero counterparty risk.",
-    highlight: "Aurora & Sepolia EVM Escrow",
-    icon: "🔒",
-  },
-  {
-    step: 2,
-    badge: "STEP 02 • AUTONOMOUS AI OUTREACH",
-    title: "AI Emails Winner & Extracts Address",
-    desc: "No Google forms or Discord DMs. Google Gemini AI contacts the winner via personalized email, verifies their identity, and extracts their EVM address directly from their natural language reply.",
-    highlight: "Google Gemini 1.5 Flash + Resend",
-    icon: "⚡",
-  },
-  {
-    step: 3,
-    badge: "STEP 03 • NEAR CHAIN SIGNATURES",
-    title: "Keyless Threshold MPC Co-Signing",
-    desc: "Zero private keys exist on server disk. The decentralized NEAR validator threshold network (v1.signer-prod) co-signs the release transaction directly from lakshay-payfold.testnet.",
-    highlight: "NEAR MPC (v1.signer-prod.testnet)",
-    icon: "🌐",
-  },
-  {
-    step: 4,
-    badge: "STEP 04 • INSTANT ON-CHAIN RELEASE",
-    title: "Sub-Second Payout Settlement",
-    desc: "The signed transaction is broadcast to Aurora, instantly transferring prize tokens to the winner's wallet with ~1s finality. Organizers and winners receive real-time receipts.",
-    highlight: "Sub-Cent Gas & Instant Settlement",
-    icon: "🚀",
-  },
-];
-
 export default function Home() {
   const [mounted, setMounted] = useState(false);
-  const [showTour, setShowTour] = useState(false);
-  const [tourStep, setTourStep] = useState(1);
   const { address, isConnected } = useAccount();
   const chainId = useChainId();
   const currentChain =
@@ -234,93 +197,6 @@ export default function Home() {
       <div className="ambient-glow glow-jelly"></div>
       <div className="ambient-glow glow-mid"></div>
 
-      {/* Onboarding / Walkthrough Modal */}
-      {showTour && (
-        <div className="modal-backdrop" onClick={() => setShowTour(false)}>
-          <div className="modal-glass tour-modal" onClick={(e) => e.stopPropagation()}>
-            <div className="tour-top-bar">
-              <div className="tour-brand-group">
-                <img src="/logo.png" alt="PayFold" className="tour-logo" />
-                <span className="tour-brand-name">PayFold Onboarding Walkthrough</span>
-              </div>
-              <button
-                onClick={() => setShowTour(false)}
-                className="tour-close-btn"
-                aria-label="Close tour"
-              >
-                ✕
-              </button>
-            </div>
-
-            {/* Step Indicator Progress Bar */}
-            <div className="tour-progress-track">
-              <div
-                className="tour-progress-bar"
-                style={{ width: `${(tourStep / 4) * 100}%` }}
-              ></div>
-            </div>
-
-            <div className="tour-step-indicators">
-              {[1, 2, 3, 4].map((s) => (
-                <button
-                  key={s}
-                  onClick={() => setTourStep(s)}
-                  className={`tour-dot-btn ${
-                    tourStep === s ? "active" : tourStep > s ? "completed" : ""
-                  }`}
-                >
-                  Step {s}
-                </button>
-              ))}
-            </div>
-
-            {/* Tour Step Content */}
-            <div className="tour-body-card">
-              <div className="tour-icon-row">
-                <span className="tour-step-icon">{TOUR_STEPS[tourStep - 1].icon}</span>
-                <span className="tour-step-badge">{TOUR_STEPS[tourStep - 1].badge}</span>
-              </div>
-              <h3 className="tour-step-title">{TOUR_STEPS[tourStep - 1].title}</h3>
-              <p className="tour-step-desc">{TOUR_STEPS[tourStep - 1].desc}</p>
-              <div className="tour-step-highlight">
-                <span className="highlight-spark">⚡</span>
-                <span>{TOUR_STEPS[tourStep - 1].highlight}</span>
-              </div>
-            </div>
-
-            {/* Tour Action Buttons */}
-            <div className="tour-nav-buttons">
-              <button
-                onClick={() => setTourStep((prev) => Math.max(1, prev - 1))}
-                disabled={tourStep === 1}
-                className="btn-tour-secondary"
-              >
-                Back
-              </button>
-              {tourStep < 4 ? (
-                <button
-                  onClick={() => setTourStep((prev) => Math.min(4, prev + 1))}
-                  className="btn-tour-primary"
-                >
-                  Next Step ↗
-                </button>
-              ) : (
-                <button
-                  onClick={() => {
-                    setShowTour(false);
-                    setActiveTab("console");
-                    scrollToSection("services-console");
-                  }}
-                  className="btn-tour-primary finish"
-                >
-                  Launch Console 🚀
-                </button>
-              )}
-            </div>
-          </div>
-        </div>
-      )}
-
       {/* Success Modal */}
       {showModal && (
         <div className="modal-backdrop">
@@ -385,15 +261,6 @@ export default function Home() {
             Architecture
           </button>
           <button
-            onClick={() => {
-              setTourStep(1);
-              setShowTour(true);
-            }}
-            className="capsule-btn tour-btn"
-          >
-            ✨ Tour
-          </button>
-          <button
             onClick={() => scrollToSection("services-console")}
             className="capsule-btn"
           >
@@ -403,15 +270,6 @@ export default function Home() {
 
         {/* Right CTA / Wallet */}
         <div className="nav-actions">
-          <button
-            onClick={() => {
-              setTourStep(1);
-              setShowTour(true);
-            }}
-            className="btn-tour-pill"
-          >
-            Walkthrough
-          </button>
           {mounted ? (
             <ConnectButton />
           ) : (
@@ -453,13 +311,10 @@ export default function Home() {
             {/* CTA Button Row */}
             <div className="hero-cta-group">
               <button
-                onClick={() => {
-                  setTourStep(1);
-                  setShowTour(true);
-                }}
+                onClick={() => scrollToSection("statement")}
                 className="btn-ghost-pill"
               >
-                ✨ View Walkthrough
+                Explore Protocol
               </button>
               <button
                 onClick={() => {
@@ -1144,10 +999,6 @@ NEAR_MPC.sign({
           color: #ffffff;
         }
 
-        .capsule-btn.tour-btn {
-          color: #ff6b76;
-        }
-
         .capsule-btn.active {
           background: #e51e2b;
           color: #ffffff;
@@ -1158,25 +1009,6 @@ NEAR_MPC.sign({
           display: flex;
           align-items: center;
           gap: 0.85rem;
-        }
-
-        .btn-tour-pill {
-          background: rgba(255, 45, 60, 0.12);
-          border: 1px solid rgba(255, 45, 60, 0.35);
-          color: #ff5252;
-          padding: 0.5rem 1rem;
-          border-radius: 9999px;
-          font-size: 0.82rem;
-          font-weight: 600;
-          cursor: pointer;
-          transition: all 0.2s ease;
-        }
-
-        .btn-tour-pill:hover {
-          background: rgba(255, 45, 60, 0.25);
-          border-color: #ff3344;
-          color: #ffffff;
-          box-shadow: 0 0 14px rgba(255, 45, 60, 0.4);
         }
 
         /* 2. HERO SECTION */
@@ -2068,209 +1900,6 @@ NEAR_MPC.sign({
         .modal-button-row {
           display: flex;
           gap: 1rem;
-        }
-
-        /* Onboarding Tour Modal */
-        .tour-modal {
-          max-width: 580px;
-        }
-
-        .tour-top-bar {
-          display: flex;
-          justify-content: space-between;
-          align-items: center;
-          margin-bottom: 1.25rem;
-        }
-
-        .tour-brand-group {
-          display: flex;
-          align-items: center;
-          gap: 0.75rem;
-        }
-
-        .tour-logo {
-          width: 30px;
-          height: 30px;
-          object-fit: contain;
-          border-radius: 8px;
-          box-shadow: 0 0 14px rgba(255, 45, 60, 0.6);
-        }
-
-        .tour-brand-name {
-          font-size: 0.95rem;
-          font-weight: 750;
-          color: #ffffff;
-        }
-
-        .tour-close-btn {
-          background: rgba(255, 255, 255, 0.06);
-          border: 1px solid rgba(255, 255, 255, 0.1);
-          color: #a1a1aa;
-          width: 28px;
-          height: 28px;
-          border-radius: 50%;
-          cursor: pointer;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          font-size: 0.85rem;
-          transition: all 0.2s ease;
-        }
-
-        .tour-close-btn:hover {
-          background: rgba(255, 45, 60, 0.2);
-          color: #ffffff;
-          border-color: #ff3344;
-        }
-
-        .tour-progress-track {
-          width: 100%;
-          height: 4px;
-          background: rgba(255, 255, 255, 0.08);
-          border-radius: 9999px;
-          overflow: hidden;
-          margin-bottom: 1.25rem;
-        }
-
-        .tour-progress-bar {
-          height: 100%;
-          background: linear-gradient(90deg, #ff3344, #ff6b76);
-          transition: width 0.35s cubic-bezier(0.16, 1, 0.3, 1);
-          box-shadow: 0 0 12px rgba(255, 51, 68, 0.8);
-        }
-
-        .tour-step-indicators {
-          display: flex;
-          gap: 0.5rem;
-          margin-bottom: 1.5rem;
-        }
-
-        .tour-dot-btn {
-          flex: 1;
-          background: rgba(255, 255, 255, 0.04);
-          border: 1px solid rgba(255, 255, 255, 0.08);
-          color: #8e8e96;
-          padding: 0.45rem 0.2rem;
-          border-radius: 8px;
-          font-size: 0.75rem;
-          font-weight: 600;
-          cursor: pointer;
-          transition: all 0.2s ease;
-        }
-
-        .tour-dot-btn.active {
-          background: rgba(255, 45, 60, 0.18);
-          border-color: #ff3344;
-          color: #ff4d4d;
-        }
-
-        .tour-dot-btn.completed {
-          color: #4ade80;
-          border-color: rgba(74, 222, 128, 0.3);
-        }
-
-        .tour-body-card {
-          background: rgba(8, 8, 12, 0.7);
-          border: 1px solid rgba(255, 45, 60, 0.25);
-          border-radius: 1.25rem;
-          padding: 1.75rem;
-          margin-bottom: 1.75rem;
-          box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-        }
-
-        .tour-icon-row {
-          display: flex;
-          align-items: center;
-          gap: 0.75rem;
-          margin-bottom: 1rem;
-        }
-
-        .tour-step-icon {
-          font-size: 1.8rem;
-        }
-
-        .tour-step-badge {
-          font-size: 0.72rem;
-          font-weight: 800;
-          color: #ff4d4d;
-          letter-spacing: 0.8px;
-          background: rgba(255, 45, 60, 0.12);
-          border: 1px solid rgba(255, 45, 60, 0.25);
-          padding: 0.25rem 0.65rem;
-          border-radius: 9999px;
-        }
-
-        .tour-step-title {
-          font-size: 1.35rem;
-          font-weight: 750;
-          color: #ffffff;
-          margin-bottom: 0.75rem;
-          letter-spacing: -0.4px;
-        }
-
-        .tour-step-desc {
-          font-size: 0.92rem;
-          color: #a1a1aa;
-          line-height: 1.6;
-          margin-bottom: 1.25rem;
-        }
-
-        .tour-step-highlight {
-          display: flex;
-          align-items: center;
-          gap: 0.5rem;
-          background: rgba(255, 255, 255, 0.04);
-          border: 1px solid rgba(255, 255, 255, 0.08);
-          padding: 0.55rem 0.85rem;
-          border-radius: 8px;
-          font-size: 0.8rem;
-          color: #ededed;
-          font-weight: 600;
-        }
-
-        .highlight-spark {
-          color: #ff3344;
-        }
-
-        .tour-nav-buttons {
-          display: flex;
-          justify-content: space-between;
-          gap: 1rem;
-        }
-
-        .btn-tour-secondary {
-          background: rgba(255, 255, 255, 0.05);
-          border: 1px solid rgba(255, 255, 255, 0.1);
-          color: #ededed;
-          padding: 0.75rem 1.5rem;
-          border-radius: 9999px;
-          font-size: 0.88rem;
-          font-weight: 600;
-          cursor: pointer;
-          transition: all 0.2s ease;
-        }
-
-        .btn-tour-secondary:disabled {
-          opacity: 0.3;
-          cursor: not-allowed;
-        }
-
-        .btn-tour-primary {
-          background: linear-gradient(135deg, #e51e2b, #b30010);
-          border: none;
-          color: #ffffff;
-          padding: 0.75rem 1.75rem;
-          border-radius: 9999px;
-          font-size: 0.88rem;
-          font-weight: 700;
-          cursor: pointer;
-          box-shadow: 0 4px 16px rgba(229, 30, 43, 0.4);
-          transition: all 0.2s ease;
-        }
-
-        .btn-tour-primary:hover {
-          box-shadow: 0 6px 24px rgba(229, 30, 43, 0.65);
-          transform: translateY(-1px);
         }
 
         /* Scroll Reveal Animations */
