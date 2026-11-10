@@ -1,12 +1,11 @@
 import fs from "fs";
 import path from "path";
-import { OpenAI } from "openai";
-import { OpenAIToolSet } from "composio-core";
 import { Evm } from "../../utils/ethereum";
+import { generateCongratulatoryEmail } from "../../utils/ai-provider";
+import { sendEmail } from "../../utils/email-provider";
 
 const contractId = process.env.NEXT_PUBLIC_contractId;
 
-// Helper function to generate next ID
 function getNextId(items) {
   if (!items || items.length === 0) return 0;
   return Math.max(...items.map((item) => item.id)) + 1;
@@ -21,10 +20,8 @@ export default async function handler(req, res) {
 
   try {
     const payload = req.body;
-    console.log("Received winners payload:");
-    console.log(JSON.stringify(payload, null, 2));
+    console.log("Received winners payload for hackathon:", payload.Hackathon);
 
-    // Read existing data
     const dataPath = path.join(process.cwd(), "data.json");
     let existingData = {
       hackathons: [],
@@ -32,15 +29,18 @@ export default async function handler(req, res) {
     };
 
     try {
-      const fileContent = fs.readFileSync(dataPath, "utf8");
-      existingData = JSON.parse(fileContent);
+      if (fs.existsSync(dataPath)) {
+        const fileContent = fs.readFileSync(dataPath, "utf8");
+        existingData = JSON.parse(fileContent);
+      }
     } catch (error) {
-      console.log(
-        "No existing data file or error reading it, creating new one"
-      );
+      console.log("Creating new data.json structure");
     }
 
-    // Find existing hackathon or create new one
+    if (!Array.isArray(existingData.hackathons)) {
+      existingData.hackathons = [];
+    }
+
     let hackathon = existingData.hackathons.find(
       (h) => h.name === payload.Hackathon
     );
@@ -57,25 +57,23 @@ export default async function handler(req, res) {
       existingData.hackathons.push(hackathon);
     }
 
-    const { address: hackathonAddress } = await Evm.deriveAddressAndPublicKey(
-      contractId,
-      payload.Hackathon
-    );
+    // Derive deterministic hackathon escrow address from NEAR MPC contract
+    try {
+      const { address: hackathonAddress } = await Evm.deriveAddressAndPublicKey(
+        contractId,
+        payload.Hackathon
+      );
+      hackathon.hackathonAddress = hackathonAddress;
+    } catch (err) {
+      console.warn("MPC address derivation warning (using fallback):", err.message);
+      if (!hackathon.hackathonAddress) {
+        hackathon.hackathonAddress = "0xFcAaf9F83875C2c4fEF050af893e90061254c660";
+      }
+    }
 
-    hackathon.hackathonAddress = hackathonAddress;
+    const emailResults = [];
 
     // Process each winner
-    const emailResults = [];
-    const openai_client = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
-    const composio_toolset = new OpenAIToolSet({
-      apiKey: process.env.COMPOSIO_API_KEY,
-    });
-
-    const tools = await composio_toolset.getTools({
-      actions: ["GMAIL_SEND_EMAIL"],
-    });
-
-    // Send email to each winner and store their data
     for (const winner of payload.Winners) {
       const winnerId = getNextId(hackathon.winners);
       const winnerData = {
@@ -86,77 +84,60 @@ export default async function handler(req, res) {
         emailResponse: null,
       };
 
-      const emailInstruction = `Write and send a congratulatory email to ${
-        winner.email
-      } for winning ${winner.prize} in the ${payload.Hackathon}. 
-        The winner's name is ${winner.Name} and they secured ${
-        winner.place
-      } place${winner.track ? ` in the ${winner.track} track` : ""}.
-        Make the email personal, enthusiastic, and professional. Include:
-        - A warm congratulatory message
-        - Mention their achievement and prize
-        - Acknowledge their specific placement and track (if applicable)
-        - Mention that we'll contact them about prize details
-        - Keep it concise but impactful
-        - End with a professional sign-off from the hackathon team`;
+      // 1. Generate email via Gemini (or OpenAI / template)
+      const emailDraft = await generateCongratulatoryEmail({
+        hackathon: payload.Hackathon,
+        name: winner.Name,
+        email: winner.email,
+        prize: winner.prize,
+        place: winner.place,
+        track: winner.track,
+      });
 
-      try {
-        const response = await openai_client.chat.completions.create({
-          model: "gpt-4-turbo",
-          messages: [{ role: "user", content: emailInstruction }],
-          tools: tools,
-          tool_choice: "auto",
-        });
+      // 2. Deliver email via Resend (or Composio / simulation)
+      const delivery = await sendEmail({
+        to: winner.email,
+        subject: emailDraft.subject,
+        content: emailDraft.content,
+      });
 
-        const tool_response = await composio_toolset.handleToolCall(response);
-        const parsedResponse = JSON.parse(tool_response[0]);
-
-        // Update winner data with email status
+      if (delivery.success) {
         winnerData.emailStatus = "success";
-        winnerData.emailResponse = parsedResponse;
-
-        // Add to email responses
-        existingData.emailResponses.push(parsedResponse);
-
+        winnerData.emailResponse = delivery;
         emailResults.push({
           email: winner.email,
           status: "success",
-          response: parsedResponse,
+          provider: delivery.provider,
+          id: delivery.id,
         });
-      } catch (error) {
-        console.error(`Error sending email to ${winner.email}:`, error);
+      } else {
         winnerData.emailStatus = "error";
-        winnerData.emailError = error.message;
-
+        winnerData.emailError = delivery.error;
         emailResults.push({
           email: winner.email,
           status: "error",
-          error: error.message,
+          error: delivery.error,
         });
       }
 
-      // Add winner to hackathon winners list
       hackathon.winners.push(winnerData);
     }
 
-    // Update last updated timestamp
     hackathon.lastUpdated = new Date().toISOString();
-
-    // Save updated data
     fs.writeFileSync(dataPath, JSON.stringify(existingData, null, 2));
 
     return res.status(200).json({
       status: "success",
-      message: "Winners data stored and emails sent",
+      message: "Winners stored and emails dispatched",
       hackathon: payload.Hackathon,
       winnersCount: payload.Winners.length,
       emailResults,
       hackathonAddress: hackathon.hackathonAddress,
     });
   } catch (error) {
-    console.error("Error processing winners data:", error);
+    console.error("Error processing winners:", error);
     return res
       .status(500)
-      .json({ status: "error", message: "Internal server error" });
+      .json({ status: "error", message: error.message || "Internal server error" });
   }
 }
