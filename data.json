@@ -1,0 +1,147 @@
+{
+  "hackathons": [
+    {
+      "id": 0,
+      "name": "Near AI Hackathon",
+      "winners": [
+        {
+          "id": 0,
+          "Name": "Leo",
+          "email": "leofranklin1509@gmail.com",
+          "prize": "0.01",
+          "place": "1 st place",
+          "track": "DeFi",
+          "addedAt": "2025-06-16T06:28:53.865Z",
+          "emailStatus": "success",
+          "emailResponse": {
+            "data": {
+              "response_data": {
+                "id": "197776d572346cf7",
+                "labelIds": [
+                  "SENT"
+                ],
+                "threadId": "197776d572346cf7"
+              }
+            },
+            "error": null,
+            "successfull": true,
+            "successful": true,
+            "logId": "log_2RisHnpJAB3i"
+          },
+          "paymentStatus": "success",
+          "transactionHash": "https://sepolia.etherscan.io/tx/0x15b0b8f1c4d6e5317d26700725aef268c4413fbf763c9d904a820d8e43d59b63",
+          "paymentDate": "2025-06-16T07:05:28.643Z"
+        },
+        {
+          "id": 1,
+          "Name": "Leo",
+          "email": "leofranklin1509@gmail.com",
+          "prize": "0.0000001",
+          "place": "1 st place",
+          "track": "Bitte",
+          "addedAt": "2025-06-16T08:19:13.725Z",
+          "emailStatus": "success",
+          "emailResponse": {
+            "data": {
+              "response_data": {
+                "id": "19777d25604f767f",
+                "labelIds": [
+                  "SENT"
+                ],
+                "threadId": "19777d25604f767f"
+              }
+            },
+            "error": null,
+            "successfull": true,
+            "successful": true,
+            "logId": "log_NltPE-d_6K_v"
+          }
+        }
+      ],
+      "createdAt": "2025-06-16T06:28:52.604Z",
+      "lastUpdated": "2025-06-16T08:19:23.312Z",
+      "hackathonAddress": "0xB649da86282E8De36C3A389cDeC160c5B7BA6110"
+    },
+    {
+      "id": 1,
+      "name": "ETH Global",
+      "winners": [
+        {
+          "id": 0,
+          "Name": "Romario",
+          "email": "romario7kavin@gmail.com",
+          "prize": "0.01",
+          "place": "1 st place",
+          "track": "Bitte",
+          "addedAt": "2025-06-16T07:34:47.477Z",
+          "emailStatus": "success",
+          "emailResponse": {
+            "data": {
+              "response_data": {
+                "id": "19777a9a807f9e8d",
+                "labelIds": [
+                  "SENT"
+                ],
+                "threadId": "19777a9a807f9e8d"
+              }
+            },
+            "error": null,
+            "successfull": true,
+            "successful": true,
+            "logId": "log_eNzURjmIiyLm"
+          }
+        }
+      ],
+      "createdAt": "2025-06-16T07:34:46.222Z",
+      "lastUpdated": "2025-06-16T07:34:57.403Z",
+      "hackathonAddress": "0xE0B84570ae81D7C234B32fd9c36d4CFdf2e40Aef"
+    }
+  ],
+  "emailResponses": [
+    {
+      "data": {
+        "response_data": {
+          "id": "197776d572346cf7",
+          "labelIds": [
+            "SENT"
+          ],
+          "threadId": "197776d572346cf7"
+        }
+      },
+      "error": null,
+      "successfull": true,
+      "successful": true,
+      "logId": "log_2RisHnpJAB3i"
+    },
+    {
+      "data": {
+        "response_data": {
+          "id": "19777a9a807f9e8d",
+          "labelIds": [
+            "SENT"
+          ],
+          "threadId": "19777a9a807f9e8d"
+        }
+      },
+      "error": null,
+      "successfull": true,
+      "successful": true,
+      "logId": "log_eNzURjmIiyLm"
+    },
+    {
+      "data": {
+        "response_data": {
+          "id": "19777d25604f767f",
+          "labelIds": [
+            "SENT"
+          ],
+          "threadId": "19777d25604f767f"
+        }
+      },
+      "error": null,
+      "successfull": true,
+      "successful": true,
+      "logId": "log_NltPE-d_6K_v"
+    }
+  ]
+}
