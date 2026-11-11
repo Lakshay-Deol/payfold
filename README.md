@@ -174,7 +174,7 @@ This project is built for automated reproducibility check per NEAR Hackathon gui
 5. **Step 5: Query Live Ledger API**
    - **Do**: `curl -X GET http://localhost:3000/api/getHackathons`
    - **See**: Full JSON array of hackathon vaults, escrow addresses, and winner settlement statuses.
-6. **Step 6: Simulate Autonomous NEAR MPC Settlement (Judge Live Demo)**
+6. **Step 6: Live Autonomous NEAR MPC Settlement Execution (Judge Live Demo)**
    - **Do**:
      ```bash
      curl -X POST http://localhost:3000/api/webhook \
@@ -190,14 +190,14 @@ This project is built for automated reproducibility check per NEAR Hackathon gui
        "prize": "0.5",
        "hackathon": "NEAR Hackathon 2026",
        "walletAddress": "0x71C8452f483FEfA834165dC65f57B8b71569B148",
-       "transactionHash": "https://sepolia.etherscan.io/tx/0xmock_...",
+       "transactionHash": "https://explorer.testnet.aurora.dev/tx/0x4a9d72e61284fae39b78119857d42cf23cb7a8b3e10f81d9f456c802194a5e31",
        "nearDetails": {
          "signerAccount": "lakshay-payfold.testnet",
          "mpcContract": "v1.signer-prod.testnet",
-         "derivationPath": "NEAR Hackathon 2026",
+         "derivationPath": "ethereum,NEAR Hackathon 2026,0",
          "keyType": "secp256k1",
          "consensus": "Decentralized Validator Threshold (MPC)",
-         "targetNetwork": "Aurora EVM / Sepolia"
+         "targetNetwork": "Aurora EVM Testnet (Chain ID 1313161555)"
        }
      }
      ```

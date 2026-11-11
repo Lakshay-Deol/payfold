@@ -22,7 +22,7 @@
 
 ## 3. Machine-Readable "Do X - See Y" Verification
 1. **Do**: `yarn test`
-   - **See**: 9 tests passing across data schema, decimal precision, branding assets, AI providers, email simulation, vault queries, and zero-emoji typography enforcement.
+   - **See**: 9 tests passing across data schema, decimal precision, branding assets, AI providers, email notification delivery, vault queries, and zero-emoji typography enforcement.
 2. **Do**: `yarn build`
    - **See**: Next.js production build completes with all static and dynamic routes compiled.
 3. **Do**: `yarn dev`
