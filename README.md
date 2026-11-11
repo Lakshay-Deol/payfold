@@ -7,7 +7,7 @@
 > **Autonomous Hackathon Prize Distribution & Web3 Payout Automation Platform**  
 > *Developed & Maintained by **Lakshay Deol** (<lakshayld26@gmail.com>)*  
 > *Built for **NEAR HACKATHON 2026***  
-> **Links**: [GitHub Repository](https://github.com/Lakshay-Deol/payfold) | [Demo Video Walkthrough](https://youtu.be/payfold-demo)
+> **Links**: [GitHub Repository](https://github.com/Lakshay-Deol/payfold) | [Demo Video Walkthrough](https://youtu.be/5SJBNoVdxaU)
 
 ---
 

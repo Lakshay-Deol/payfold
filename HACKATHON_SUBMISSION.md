@@ -10,8 +10,9 @@
   - `business` (Autonomous Business: zero-friction cross-chain treasury settlement)
   - `privacy` (Private AI: confidential execution with NEAR TEE / Phala Cloud)
 - **Repository**: [https://github.com/Lakshay-Deol/payfold](https://github.com/Lakshay-Deol/payfold)
-- **Demo Video**: [https://youtu.be/payfold-demo](https://youtu.be/payfold-demo) *(link placeholder to be updated)*
-- **Remotion Pitch Film**: `public/PayFold-Pitch.mp4` (100-second 1080p cinematic launch video authored with Remotion & React)
+- **Demo Video**: [https://youtu.be/5SJBNoVdxaU](https://youtu.be/5SJBNoVdxaU)
+- **Remotion Pitch Film**: `public/PayFold-Pitch.mp4` (131-second 1080p cinematic launch video authored with Remotion & React)
+- **Official Thumbnail**: `public/thumbnail.png`
 
 ## 2. The Problem & Solution
 - **The Problem**: Hackathons, grant programs, and DAO bounties lose weeks manually collecting winner wallet addresses through Google Forms and spreadsheets, chasing email threads, verifying identities, and executing individual wallet transfers.

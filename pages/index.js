@@ -24,7 +24,7 @@ const CONTRACT_ABI = [
   },
 ];
 
-const DEMO_VIDEO_URL = "https://youtu.be/payfold-demo"; // Replace with your final Loom / YouTube demo video URL
+const DEMO_VIDEO_URL = "https://youtu.be/5SJBNoVdxaU";
 const GITHUB_REPO_URL = "https://github.com/Lakshay-Deol/payfold";
 
 export default function Home() {
