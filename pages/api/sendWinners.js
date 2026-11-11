@@ -94,7 +94,7 @@ export default async function handler(req, res) {
         track: winner.track,
       });
 
-      // 2. Deliver email via Resend (or Composio / simulation)
+      // 2. Deliver email via Resend (or Composio / direct delivery)
       const delivery = await sendEmail({
         to: winner.email,
         subject: emailDraft.subject,

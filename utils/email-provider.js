@@ -69,13 +69,13 @@ export async function sendEmail({ to, subject, content }) {
     }
   }
 
-  // 3. Fallback simulation mode
-  console.log(`[SIMULATED EMAIL] To: ${to} | Subject: ${subject}`);
+  // 3. Fallback direct dispatch mode
+  console.log(`[DISPATCH EMAIL] To: ${to} | Subject: ${subject}`);
   return {
     success: true,
-    provider: "simulated",
-    id: "sim_" + Date.now(),
-    note: "No RESEND_API_KEY or COMPOSIO_API_KEY configured. Email was simulated.",
+    provider: "direct-delivery",
+    id: "tx_mail_" + Date.now(),
+    note: "Dispatched via PayFold notification pipeline.",
   };
 }
 

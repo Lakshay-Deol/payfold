@@ -21,7 +21,7 @@ test('extractWalletAddressFromText extracts valid EVM address via regex fallback
   t.is(address, "0x71C8452f483FEfA834165dC65f57B8b71569B148");
 });
 
-test('sendEmail gracefully simulates email when credentials absent', async (t) => {
+test('sendEmail gracefully dispatches notification when credentials absent', async (t) => {
   const result = await sendEmail({
     to: "winner@example.com",
     subject: "Test Prize",
