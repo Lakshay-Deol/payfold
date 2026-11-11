@@ -317,7 +317,7 @@ export default function Home() {
           <div className="modal-glass">
             <div className="modal-header-brand">
               <img src="/logo.png" alt="PayFold" className="modal-logo-img" />
-              <div className="modal-pill">NEAR MPC ESCROW INITIALIZED</div>
+              
             </div>
             <h3 className="modal-title">Vault Active On-Chain</h3>
             <p className="modal-text">
@@ -629,10 +629,7 @@ export default function Home() {
       {/* 3. EDITORIAL STATEMENT */}
       <section className="statement-strip scroll-reveal" id="statement">
         <div className="statement-container">
-          <div className="statement-pill-badge">
-            <span className="badge-dot"></span>
-            <span>Why NEAR Protocol?</span>
-          </div>
+          
 
           <h2 className="statement-quote">
             We leverage <span className="crimson-focus">NEAR Chain Signatures</span> and{" "}
@@ -768,11 +765,7 @@ NEAR_MPC.sign({
       {/* 6. SERVICES & INTERACTIVE PROTOCOL CONSOLE */}
       <section className="services-section scroll-reveal" id="services-console" ref={formRef}>
         <div className="services-container">
-          {/* Section Kicker */}
-          <div className="section-kicker-pill">
-            <span className="badge-dot"></span>
-            <span>Architecture</span>
-          </div>
+          
 
           <div className="services-main-grid">
             {/* Left Column: Heading, Description & NEAR Architecture Flow */}
@@ -830,7 +823,7 @@ NEAR_MPC.sign({
                     <span className="live-dot-red"></span>
                     <h3>Announce Winner &amp; Deposit Escrow</h3>
                   </div>
-                  <span className="protocol-badge">NEAR MPC Escrow</span>
+                  
                 </div>
 
                 <p className="console-sub">
@@ -951,11 +944,7 @@ NEAR_MPC.sign({
       {/* 7. NEAR CHAIN SIGNATURES LIVE PLAYGROUND & HACKATHON VAULT LEDGER */}
       <section className="playground-section scroll-reveal" id="near-playground">
         <div className="playground-container">
-          {/* Header */}
-          <div className="section-kicker-pill">
-            <span className="badge-dot"></span>
-            <span>NEAR Protocol Hackathon Feature</span>
-          </div>
+          
 
           <div className="playground-header-row">
             <div>
@@ -1778,26 +1767,7 @@ NEAR_MPC.sign({
           align-items: start;
         }
 
-        .statement-pill-badge {
-          display: inline-flex;
-          align-items: center;
-          gap: 0.45rem;
-          background: rgba(255, 255, 255, 0.04);
-          border: 1px solid rgba(255, 255, 255, 0.1);
-          color: #c7c7cc;
-          font-size: 0.78rem;
-          font-weight: 600;
-          padding: 0.35rem 0.85rem;
-          border-radius: 9999px;
-          width: fit-content;
-        }
-
-        .badge-dot {
-          width: 6px;
-          height: 6px;
-          background: #ff3344;
-          border-radius: 50%;
-        }
+        
 
         .statement-quote {
           font-size: clamp(1.8rem, 3.2vw, 2.7rem);
@@ -2039,19 +2009,7 @@ NEAR_MPC.sign({
           width: 100%;
         }
 
-        .section-kicker-pill {
-          display: inline-flex;
-          align-items: center;
-          gap: 0.45rem;
-          background: rgba(255, 255, 255, 0.04);
-          border: 1px solid rgba(255, 255, 255, 0.1);
-          color: #c7c7cc;
-          font-size: 0.78rem;
-          font-weight: 600;
-          padding: 0.35rem 0.85rem;
-          border-radius: 9999px;
-          margin-bottom: 1.5rem;
-        }
+        
 
         .services-main-grid {
           display: grid;
@@ -2190,15 +2148,7 @@ NEAR_MPC.sign({
           color: #ffffff;
         }
 
-        .protocol-badge {
-          font-size: 0.72rem;
-          background: rgba(255, 45, 60, 0.15);
-          color: #ff5252;
-          border: 1px solid rgba(255, 45, 60, 0.3);
-          padding: 0.25rem 0.65rem;
-          border-radius: 9999px;
-          font-weight: 600;
-        }
+        
 
         .console-sub {
           font-size: 0.85rem;
@@ -2341,12 +2291,7 @@ NEAR_MPC.sign({
           box-shadow: 0 0 12px rgba(255, 45, 60, 0.5);
         }
 
-        .modal-pill {
-          font-size: 0.7rem;
-          font-weight: 750;
-          color: #ff4d4d;
-          letter-spacing: 0.8px;
-        }
+        
 
         .modal-title {
           font-size: 1.5rem;
