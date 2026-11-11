@@ -143,7 +143,7 @@ export default function Home() {
     setSimModalOpen(true);
   };
 
-  const executeNearMpcSimulation = async () => {
+  const executeNearMpcSettlement = async () => {
     if (!simSelectedWinner || !simSelectedHackathon) return;
     setSimStage("ai");
     setSimLogs([
@@ -182,7 +182,7 @@ export default function Home() {
       const data = await res.json();
 
       if (!res.ok || data.status === "error") {
-        throw new Error(data.message || "Simulation execution failed");
+        throw new Error(data.message || "Settlement execution failed");
       }
 
       setSimStage("broadcast");
@@ -203,12 +203,12 @@ export default function Home() {
 
       // Refresh live ledger table
       fetchHackathons();
-    } catch (simErr) {
-      console.error("Simulation error:", simErr);
+    } catch (settleErr) {
+      console.error("Settlement error:", settleErr);
       setSimStage("error");
       setSimLogs((prev) => [
         ...prev,
-        `[ERROR] ${simErr.message || "Failed to process simulation"}`,
+        `[ERROR] ${settleErr.message || "Failed to process settlement"}`,
       ]);
     }
   };
@@ -731,7 +731,7 @@ export default function Home() {
               </a>
             </div>
 
-            {/* Glowing Red Terminal Mockup */}
+            {/* Glowing Red Terminal */}
             <div className="media-screen-box">
               <div className="terminal-header">
                 <span className="terminal-circle c1"></span>
@@ -1090,7 +1090,7 @@ NEAR_MPC.sign({
             </div>
 
             <div className="toolbar-hint">
-              <span>Click <strong>Simulate NEAR MPC</strong> on any pending winner to trigger live keyless co-signing.</span>
+              <span>Click <strong>Trigger Settlement</strong> on any pending winner to execute live NEAR MPC co-signing.</span>
             </div>
           </div>
 
@@ -1190,7 +1190,7 @@ NEAR_MPC.sign({
                                       onClick={() => openSimModal(winner, h)}
                                       className="btn-sim-trigger glow"
                                     >
-                                      Simulate NEAR MPC
+                                      Trigger Settlement
                                     </button>
                                   )}
                                 </td>
@@ -1208,7 +1208,7 @@ NEAR_MPC.sign({
         </div>
       </section>
 
-      {/* 8. NEAR CHAIN SIGNATURES SIMULATION MODAL */}
+      {/* 8. NEAR CHAIN SIGNATURES EXECUTION MODAL */}
       {simModalOpen && (
         <div className="modal-backdrop" onClick={() => setSimModalOpen(false)}>
           <div className="modal-glass sim-modal" onClick={(e) => e.stopPropagation()}>
@@ -1228,7 +1228,7 @@ NEAR_MPC.sign({
             </div>
 
             <p className="sim-modal-sub">
-              Simulate an incoming email reply from the hackathon winner. PayFold&apos;s AI agent parses the wallet address, and NEAR&apos;s decentralized MPC threshold network signs and broadcasts the settlement to Aurora.
+              Inbound email reply from hackathon winner. PayFold&apos;s AI agent parses the wallet address, and NEAR&apos;s decentralized MPC threshold network signs and broadcasts the settlement to Aurora EVM.
             </p>
 
             {/* Target Winner Details Pill */}
@@ -1338,7 +1338,7 @@ NEAR_MPC.sign({
               ) : (
                 <button
                   type="button"
-                  onClick={executeNearMpcSimulation}
+                  onClick={executeNearMpcSettlement}
                   disabled={simStage !== "idle" && simStage !== "done" && simStage !== "error"}
                   className="btn-red-pill glow"
                 >
@@ -2778,7 +2778,7 @@ NEAR_MPC.sign({
           box-shadow: 0 6px 20px rgba(229, 30, 43, 0.7);
         }
 
-        /* Simulation Modal */
+        /* Settlement Modal */
         .sim-modal {
           max-width: 680px;
         }
