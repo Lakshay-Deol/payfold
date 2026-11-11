@@ -24,6 +24,9 @@ const CONTRACT_ABI = [
   },
 ];
 
+const DEMO_VIDEO_URL = "https://youtu.be/payfold-demo"; // Replace with your final Loom / YouTube demo video URL
+const GITHUB_REPO_URL = "https://github.com/Lakshay-Deol/payfold";
+
 export default function Home() {
   const [mounted, setMounted] = useState(false);
   const [scrollProgress, setScrollProgress] = useState(0);
@@ -37,12 +40,22 @@ export default function Home() {
     setMounted(true);
 
     const handleScroll = () => {
-      const totalScroll = document.documentElement.scrollHeight - window.innerHeight;
+      // 1. Calculate scroll percentage
+      const totalScroll =
+        document.documentElement.scrollHeight - window.innerHeight;
       if (totalScroll > 0) {
         const currentScroll = window.scrollY;
         setScrollProgress(Math.min(100, Math.max(0, (currentScroll / totalScroll) * 100)));
       }
-      const sections = ["hero", "statement", "proof", "services-console", "near-playground"];
+
+      // 2. Track active section
+      const sections = [
+        "hero",
+        "statement",
+        "proof",
+        "services-console",
+        "near-playground",
+      ];
       const scrollPos = window.scrollY + 220;
       for (const sectionId of sections) {
         const el = document.getElementById(sectionId);
@@ -54,6 +67,8 @@ export default function Home() {
           }
         }
       }
+
+      // 3. Smooth viewport reveals
       const reveals = document.querySelectorAll(".scroll-reveal");
       const windowHeight = window.innerHeight;
       reveals.forEach((el) => {
@@ -63,8 +78,10 @@ export default function Home() {
         }
       });
     };
+
     window.addEventListener("scroll", handleScroll, { passive: true });
     setTimeout(handleScroll, 100);
+
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
@@ -322,8 +339,13 @@ export default function Home() {
         <link rel="apple-touch-icon" href="/logo.png" />
       </Head>
 
+      {/* Crimson Scroll Progress Indicator */}
+      <div
+        className="scroll-progress-line"
+        style={{ width: `${scrollProgress}%` }}
+      />
+
       {/* Bioluminescent Volumetric Ambient Glows */}
-      <div className="scroll-progress-line" style={{ width: `${scrollProgress}%` }} />
       <div className="ambient-glow glow-top"></div>
       <div className="ambient-glow glow-jelly"></div>
       <div className="ambient-glow glow-mid"></div>
@@ -334,7 +356,6 @@ export default function Home() {
           <div className="modal-glass">
             <div className="modal-header-brand">
               <img src="/logo.png" alt="PayFold" className="modal-logo-img" />
-              
             </div>
             <h3 className="modal-title">Vault Active On-Chain</h3>
             <p className="modal-text">
@@ -375,38 +396,56 @@ export default function Home() {
         <nav className="center-capsule">
           <button
             onClick={() => scrollToSection("hero")}
-            className="capsule-btn active"
+            className={`capsule-btn ${activeSection === "hero" ? "active" : ""}`}
           >
             Home
           </button>
           <button
             onClick={() => scrollToSection("statement")}
-            className="capsule-btn"
+            className={`capsule-btn ${activeSection === "statement" ? "active" : ""}`}
           >
             Benefits
           </button>
           <button
             onClick={() => scrollToSection("proof")}
-            className="capsule-btn"
+            className={`capsule-btn ${activeSection === "proof" ? "active" : ""}`}
           >
             Architecture
           </button>
           <button
             onClick={() => scrollToSection("services-console")}
-            className="capsule-btn"
+            className={`capsule-btn ${activeSection === "services-console" ? "active" : ""}`}
           >
             Console
           </button>
           <button
             onClick={() => scrollToSection("near-playground")}
-            className="capsule-btn"
+            className={`capsule-btn ${activeSection === "near-playground" ? "active" : ""}`}
           >
             NEAR Live
           </button>
         </nav>
 
-        {/* Right CTA / Wallet */}
+        {/* Right CTA / External Links / Wallet */}
         <div className="nav-actions">
+          <a
+            href={DEMO_VIDEO_URL}
+            target="_blank"
+            rel="noreferrer"
+            className="nav-link-btn"
+            title="Watch Project Demo Video"
+          >
+            Demo Video
+          </a>
+          <a
+            href={GITHUB_REPO_URL}
+            target="_blank"
+            rel="noreferrer"
+            className="nav-link-btn"
+            title="Inspect GitHub Repository"
+          >
+            GitHub
+          </a>
           {mounted ? (
             <ConnectButton />
           ) : (
@@ -448,12 +487,6 @@ export default function Home() {
             {/* CTA Button Row */}
             <div className="hero-cta-group">
               <button
-                onClick={() => scrollToSection("statement")}
-                className="btn-ghost-pill"
-              >
-                Explore Protocol
-              </button>
-              <button
                 onClick={() => {
                   setActiveTab("console");
                   scrollToSection("services-console");
@@ -462,6 +495,22 @@ export default function Home() {
               >
                 Announce Winner
               </button>
+              <a
+                href={DEMO_VIDEO_URL}
+                target="_blank"
+                rel="noreferrer"
+                className="btn-ghost-pill"
+              >
+                Watch Demo
+              </a>
+              <a
+                href={GITHUB_REPO_URL}
+                target="_blank"
+                rel="noreferrer"
+                className="btn-ghost-pill"
+              >
+                GitHub
+              </a>
             </div>
 
             {/* 3 Real Technical Metric Cards */}
@@ -646,8 +695,6 @@ export default function Home() {
       {/* 3. EDITORIAL STATEMENT */}
       <section className="statement-strip scroll-reveal" id="statement">
         <div className="statement-container">
-          
-
           <h2 className="statement-quote">
             We leverage <span className="crimson-focus">NEAR Chain Signatures</span> and{" "}
             <span className="crimson-focus">Aurora EVM</span> to build a truly{" "}
@@ -782,8 +829,6 @@ NEAR_MPC.sign({
       {/* 6. SERVICES & INTERACTIVE PROTOCOL CONSOLE */}
       <section className="services-section scroll-reveal" id="services-console" ref={formRef}>
         <div className="services-container">
-          
-
           <div className="services-main-grid">
             {/* Left Column: Heading, Description & NEAR Architecture Flow */}
             <div className="services-left">
@@ -840,7 +885,6 @@ NEAR_MPC.sign({
                     <span className="live-dot-red"></span>
                     <h3>Announce Winner &amp; Deposit Escrow</h3>
                   </div>
-                  
                 </div>
 
                 <p className="console-sub">
@@ -961,8 +1005,6 @@ NEAR_MPC.sign({
       {/* 7. NEAR CHAIN SIGNATURES LIVE PLAYGROUND & HACKATHON VAULT LEDGER */}
       <section className="playground-section scroll-reveal" id="near-playground">
         <div className="playground-container">
-          
-
           <div className="playground-header-row">
             <div>
               <h2 className="services-title">
@@ -1329,11 +1371,18 @@ NEAR_MPC.sign({
 
           <div className="footer-links">
             <a
-              href="https://github.com/Lakshay-Deol/payfold"
+              href={GITHUB_REPO_URL}
               target="_blank"
               rel="noreferrer"
             >
               GitHub
+            </a>
+            <a
+              href={DEMO_VIDEO_URL}
+              target="_blank"
+              rel="noreferrer"
+            >
+              Demo Video
             </a>
             <a href="https://near.org" target="_blank" rel="noreferrer">
               NEAR
@@ -1490,7 +1539,39 @@ NEAR_MPC.sign({
         .nav-actions {
           display: flex;
           align-items: center;
-          gap: 0.85rem;
+          gap: 0.75rem;
+        }
+
+        .nav-link-btn {
+          color: #a1a1aa;
+          font-size: 0.82rem;
+          font-weight: 600;
+          text-decoration: none;
+          padding: 0.45rem 0.95rem;
+          border-radius: 9999px;
+          background: rgba(255, 255, 255, 0.04);
+          border: 1px solid rgba(255, 255, 255, 0.08);
+          transition: all 0.2s ease;
+          display: inline-flex;
+          align-items: center;
+        }
+
+        .nav-link-btn:hover {
+          color: #ffffff;
+          border-color: rgba(255, 51, 68, 0.4);
+          background: rgba(255, 51, 68, 0.12);
+        }
+
+        .scroll-progress-line {
+          position: fixed;
+          top: 0;
+          left: 0;
+          height: 3px;
+          background: linear-gradient(90deg, #e51e2b 0%, #ff4d5a 50%, #ffffff 100%);
+          box-shadow: 0 0 10px rgba(229, 30, 43, 0.8);
+          z-index: 9999;
+          transition: width 0.08s ease-out;
+          pointer-events: none;
         }
 
         /* 2. HERO SECTION */
@@ -1778,13 +1859,9 @@ NEAR_MPC.sign({
         }
 
         .statement-container {
-          display: grid;
-          grid-template-columns: 180px 1fr;
-          gap: 2.5rem;
-          align-items: start;
+          max-width: 1060px;
+          margin: 0 auto;
         }
-
-        
 
         .statement-quote {
           font-size: clamp(1.8rem, 3.2vw, 2.7rem);
@@ -2026,8 +2103,6 @@ NEAR_MPC.sign({
           width: 100%;
         }
 
-        
-
         .services-main-grid {
           display: grid;
           grid-template-columns: 0.95fr 1.05fr;
@@ -2164,8 +2239,6 @@ NEAR_MPC.sign({
           font-weight: 750;
           color: #ffffff;
         }
-
-        
 
         .console-sub {
           font-size: 0.85rem;
@@ -2308,8 +2381,6 @@ NEAR_MPC.sign({
           box-shadow: 0 0 12px rgba(255, 45, 60, 0.5);
         }
 
-        
-
         .modal-title {
           font-size: 1.5rem;
           color: #ffffff;
@@ -2341,7 +2412,6 @@ NEAR_MPC.sign({
         }
 
         /* Scroll Reveal Animations */
-        .scroll-progress-line { position: fixed; top: 0; left: 0; height: 3px; background: linear-gradient(90deg, #e51e2b 0%, #ff4d5a 50%, #ffffff 100%); box-shadow: 0 0 10px rgba(229, 30, 43, 0.8); z-index: 9999; transition: width 0.08s ease-out; pointer-events: none; }
         .scroll-reveal {
           opacity: 0;
           transform: translateY(35px);
