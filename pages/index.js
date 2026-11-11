@@ -26,6 +26,8 @@ const CONTRACT_ABI = [
 
 export default function Home() {
   const [mounted, setMounted] = useState(false);
+  const [scrollProgress, setScrollProgress] = useState(0);
+  const [activeSection, setActiveSection] = useState("hero");
   const { address, isConnected } = useAccount();
   const chainId = useChainId();
   const currentChain =
@@ -34,22 +36,36 @@ export default function Home() {
   useEffect(() => {
     setMounted(true);
 
-    const handleScrollReveal = () => {
+    const handleScroll = () => {
+      const totalScroll = document.documentElement.scrollHeight - window.innerHeight;
+      if (totalScroll > 0) {
+        const currentScroll = window.scrollY;
+        setScrollProgress(Math.min(100, Math.max(0, (currentScroll / totalScroll) * 100)));
+      }
+      const sections = ["hero", "statement", "proof", "services-console", "near-playground"];
+      const scrollPos = window.scrollY + 220;
+      for (const sectionId of sections) {
+        const el = document.getElementById(sectionId);
+        if (el) {
+          const top = el.offsetTop;
+          const height = el.offsetHeight;
+          if (scrollPos >= top && scrollPos < top + height) {
+            setActiveSection(sectionId);
+          }
+        }
+      }
       const reveals = document.querySelectorAll(".scroll-reveal");
       const windowHeight = window.innerHeight;
       reveals.forEach((el) => {
         const top = el.getBoundingClientRect().top;
-        if (top < windowHeight - 50) {
+        if (top < windowHeight - 40) {
           el.classList.add("revealed");
         }
       });
     };
-
-    window.addEventListener("scroll", handleScrollReveal, { passive: true });
-    // Trigger initial check
-    setTimeout(handleScrollReveal, 100);
-
-    return () => window.removeEventListener("scroll", handleScrollReveal);
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    setTimeout(handleScroll, 100);
+    return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
   const formRef = useRef(null);
@@ -307,6 +323,7 @@ export default function Home() {
       </Head>
 
       {/* Bioluminescent Volumetric Ambient Glows */}
+      <div className="scroll-progress-line" style={{ width: `${scrollProgress}%` }} />
       <div className="ambient-glow glow-top"></div>
       <div className="ambient-glow glow-jelly"></div>
       <div className="ambient-glow glow-mid"></div>
@@ -2324,6 +2341,7 @@ NEAR_MPC.sign({
         }
 
         /* Scroll Reveal Animations */
+        .scroll-progress-line { position: fixed; top: 0; left: 0; height: 3px; background: linear-gradient(90deg, #e51e2b 0%, #ff4d5a 50%, #ffffff 100%); box-shadow: 0 0 10px rgba(229, 30, 43, 0.8); z-index: 9999; transition: width 0.08s ease-out; pointer-events: none; }
         .scroll-reveal {
           opacity: 0;
           transform: translateY(35px);
