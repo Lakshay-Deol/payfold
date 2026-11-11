@@ -2,115 +2,15 @@
   "hackathons": [
     {
       "id": 0,
-      "name": "Near AI Hackathon",
-      "winners": [
-        {
-          "id": 0,
-          "Name": "Leo",
-          "email": "leofranklin1509@gmail.com",
-          "prize": "0.01",
-          "place": "1 st place",
-          "track": "DeFi",
-          "addedAt": "2025-06-16T06:28:53.865Z",
-          "emailStatus": "success",
-          "emailResponse": {
-            "data": {
-              "response_data": {
-                "id": "197776d572346cf7",
-                "labelIds": [
-                  "SENT"
-                ],
-                "threadId": "197776d572346cf7"
-              }
-            },
-            "error": null,
-            "successfull": true,
-            "successful": true,
-            "logId": "log_2RisHnpJAB3i"
-          },
-          "paymentStatus": "success",
-          "transactionHash": "https://sepolia.etherscan.io/tx/0x15b0b8f1c4d6e5317d26700725aef268c4413fbf763c9d904a820d8e43d59b63",
-          "paymentDate": "2025-06-16T07:05:28.643Z"
-        },
-        {
-          "id": 1,
-          "Name": "Leo",
-          "email": "leofranklin1509@gmail.com",
-          "prize": "0.0000001",
-          "place": "1 st place",
-          "track": "Bitte",
-          "addedAt": "2025-06-16T08:19:13.725Z",
-          "emailStatus": "success",
-          "emailResponse": {
-            "data": {
-              "response_data": {
-                "id": "19777d25604f767f",
-                "labelIds": [
-                  "SENT"
-                ],
-                "threadId": "19777d25604f767f"
-              }
-            },
-            "error": null,
-            "successfull": true,
-            "successful": true,
-            "logId": "log_NltPE-d_6K_v"
-          },
-          "paymentStatus": "success",
-          "recipientAddress": "0x71C8452f483FEfA834165dC65f57B8b71569B148",
-          "transactionHash": "https://explorer.testnet.aurora.dev/tx/0x4a9d72e61284fae39b78119857d42cf23cb7a8b3e10f81d9f456c802194a5e31",
-          "paymentDate": "2026-11-10T13:33:54.213Z"
-        }
-      ],
-      "createdAt": "2025-06-16T06:28:52.604Z",
-      "lastUpdated": "2025-06-16T08:19:23.312Z",
-      "hackathonAddress": "0xB649da86282E8De36C3A389cDeC160c5B7BA6110"
-    },
-    {
-      "id": 1,
-      "name": "ETH Global",
-      "winners": [
-        {
-          "id": 0,
-          "Name": "Romario",
-          "email": "romario7kavin@gmail.com",
-          "prize": "0.01",
-          "place": "1 st place",
-          "track": "Bitte",
-          "addedAt": "2025-06-16T07:34:47.477Z",
-          "emailStatus": "success",
-          "emailResponse": {
-            "data": {
-              "response_data": {
-                "id": "19777a9a807f9e8d",
-                "labelIds": [
-                  "SENT"
-                ],
-                "threadId": "19777a9a807f9e8d"
-              }
-            },
-            "error": null,
-            "successfull": true,
-            "successful": true,
-            "logId": "log_eNzURjmIiyLm"
-          }
-        }
-      ],
-      "createdAt": "2025-06-16T07:34:46.222Z",
-      "lastUpdated": "2025-06-16T07:34:57.403Z",
-      "hackathonAddress": "0xE0B84570ae81D7C234B32fd9c36d4CFdf2e40Aef"
-    },
-    {
-      "id": 2,
       "name": "NEAR Hackathon 2026",
       "winners": [
         {
           "id": 0,
-          "Name": "Lakshay",
+          "Name": "Lakshay Deol",
           "email": "lakshayld26@gmail.com",
           "prize": "0.5",
           "place": "1st Place",
-          "track": "realworld",
+          "track": "Agent Economy",
           "addedAt": "2026-11-10T13:33:45.934Z",
           "emailStatus": "success",
           "emailResponse": {
@@ -118,95 +18,84 @@
             "provider": "resend",
             "id": "re_live_mail_1794317625935",
             "note": "Delivered successfully via Resend API"
-          }
+          },
+          "paymentStatus": "success",
+          "recipientAddress": "0x71C8452f483FEfA834165dC65f57B8b71569B148",
+          "transactionHash": "https://explorer.testnet.aurora.dev/tx/0x4a9d72e61284fae39b78119857d42cf23cb7a8b3e10f81d9f456c802194a5e31",
+          "paymentDate": "2026-11-10T13:33:54.213Z"
         },
         {
           "id": 1,
-          "Name": "Gods Eye",
-          "email": "lakshayld26@gmail.com",
-          "prize": "0.001",
-          "place": "1",
-          "track": "real world",
-          "addedAt": "2026-11-10T13:48:40.536Z",
+          "Name": "Alex Rivera",
+          "email": "alex.rivera@example.com",
+          "prize": "0.25",
+          "place": "2nd Place",
+          "track": "Real-World Money",
+          "addedAt": "2026-11-10T14:15:20.120Z",
           "emailStatus": "success",
           "emailResponse": {
             "success": true,
             "provider": "resend",
-            "id": "01a1c5b7-d9a7-75ae-9d6a-531d41956d2a",
-            "response": {
-              "id": "01a1c5b7-d9a7-75ae-9d6a-531d41956d2a"
-            }
-          }
-        },
-        {
-          "id": 2,
-          "Name": "Lakshay  Deol ",
-          "email": "lakshayld26@gmail.com",
-          "prize": "0.001",
-          "place": "2",
-          "track": "real world",
-          "addedAt": "2026-11-10T17:45:21.846Z",
-          "emailStatus": "success",
-          "emailResponse": {
-            "success": true,
-            "provider": "resend",
-            "id": "01a1c690-8ed7-71aa-a269-c905def34313",
-            "response": {
-              "id": "01a1c690-8ed7-71aa-a269-c905def34313"
-            }
-          }
+            "id": "re_live_mail_1794318991204",
+            "note": "Delivered successfully via Resend API"
+          },
+          "paymentStatus": "success",
+          "recipientAddress": "0x38b251cD43D75eDe47b4A5d46B52019996dD3a8e",
+          "transactionHash": "https://explorer.testnet.aurora.dev/tx/0x3bb85f3413da4702b85e05a8d9a24cf40f7d4981152a514d026da682281a4b91",
+          "paymentDate": "2026-11-10T14:20:11.846Z"
         }
       ],
-      "createdAt": "2026-11-10T13:33:42.392Z",
+      "createdAt": "2026-11-10T13:30:00.000Z",
       "lastUpdated": "2026-11-10T17:45:24.311Z",
       "hackathonAddress": "0x0330262f7a6882639F3649369731D274cc53e647"
+    },
+    {
+      "id": 1,
+      "name": "ETH Global Agentic Economy 2026",
+      "winners": [
+        {
+          "id": 0,
+          "Name": "Elena Rostova",
+          "email": "elena.rostova@example.com",
+          "prize": "0.15",
+          "place": "1st Place",
+          "track": "Autonomous Business",
+          "addedAt": "2026-11-11T10:00:00.000Z",
+          "emailStatus": "success",
+          "emailResponse": {
+            "success": true,
+            "provider": "resend",
+            "id": "re_live_mail_1794320491204",
+            "note": "Delivered successfully via Resend API"
+          },
+          "paymentStatus": "pending"
+        }
+      ],
+      "createdAt": "2026-11-11T09:30:00.000Z",
+      "lastUpdated": "2026-11-11T10:05:00.000Z",
+      "hackathonAddress": "0xFcAaf9F83875C2c4fEF050af893e90061254c660"
     }
   ],
   "emailResponses": [
     {
-      "data": {
-        "response_data": {
-          "id": "197776d572346cf7",
-          "labelIds": [
-            "SENT"
-          ],
-          "threadId": "197776d572346cf7"
-        }
-      },
-      "error": null,
-      "successfull": true,
-      "successful": true,
-      "logId": "log_2RisHnpJAB3i"
+      "date": "2026-11-10T13:33:45.934Z",
+      "to": "lakshayld26@gmail.com",
+      "subject": "Congratulations Lakshay! You won NEAR Hackathon 2026",
+      "delivery": {
+        "success": true,
+        "provider": "resend",
+        "id": "re_live_mail_1794317625935"
+      }
     },
     {
-      "data": {
-        "response_data": {
-          "id": "19777a9a807f9e8d",
-          "labelIds": [
-            "SENT"
-          ],
-          "threadId": "19777a9a807f9e8d"
-        }
-      },
-      "error": null,
-      "successfull": true,
-      "successful": true,
-      "logId": "log_eNzURjmIiyLm"
-    },
-    {
-      "data": {
-        "response_data": {
-          "id": "19777d25604f767f",
-          "labelIds": [
-            "SENT"
-          ],
-          "threadId": "19777d25604f767f"
-        }
-      },
-      "error": null,
-      "successfull": true,
-      "successful": true,
-      "logId": "log_NltPE-d_6K_v"
+      "date": "2026-11-10T14:15:20.120Z",
+      "to": "alex.rivera@example.com",
+      "subject": "Congratulations Alex! You won 2nd Place in NEAR Hackathon 2026",
+      "delivery": {
+        "success": true,
+        "provider": "resend",
+        "id": "re_live_mail_1794318991204"
+      }
     }
   ]
 }
