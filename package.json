@@ -10,6 +10,8 @@
     "build": "next build --webpack",
     "start": "next start",
     "test": "ava",
+    "video:dev": "npm --prefix video run dev",
+    "video:render": "npm --prefix video run build",
     "phala:test": "phala cvms create --name payfold --compose ./docker-compose.yaml --env-file ./.env.development.local",
     "docker:test": "docker build -t payfold . && docker run -p 3000:3000 --env-file .env.development.local --rm -e PORT=3000 payfold",
     "docker:prune": "docker system prune",

@@ -11,6 +11,7 @@
   - `privacy` (Private AI: confidential execution with NEAR TEE / Phala Cloud)
 - **Repository**: [https://github.com/Lakshay-Deol/payfold](https://github.com/Lakshay-Deol/payfold)
 - **Demo Video**: [https://youtu.be/payfold-demo](https://youtu.be/payfold-demo) *(link placeholder to be updated)*
+- **Remotion Pitch Film**: `public/PayFold-Pitch.mp4` (100-second 1080p cinematic launch video authored with Remotion & React)
 
 ## 2. The Problem & Solution
 - **The Problem**: Hackathons, grant programs, and DAO bounties lose weeks manually collecting winner wallet addresses through Google Forms and spreadsheets, chasing email threads, verifying identities, and executing individual wallet transfers.
@@ -33,4 +34,6 @@
    - **See**: JSON response listing all hackathon vaults, escrow addresses, and winner settlement statuses.
 6. **Do**: `POST /api/webhook` with `{"sender": "lakshayld26@gmail.com", "text": "Here is my Aurora address: 0x71C8452f483FEfA834165dC65f57B8b71569B148"}`
    - **See**: Autonomous settlement completed with `nearDetails` showing `lakshay-payfold.testnet` and `v1.signer-prod.testnet` threshold MPC co-signing.
+7. **Do**: `yarn video:render`
+   - **See**: Remotion compiles 8 scenes and produces `public/PayFold-Pitch.mp4` (100 seconds @ 30 FPS).
 

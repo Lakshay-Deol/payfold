@@ -229,6 +229,33 @@ Open [http://localhost:3000](http://localhost:3000) in your browser.
 
 ---
 
+## Remotion Cinematic Pitch Video
+
+PayFold features a custom-engineered 100-second (3000 frames @ 30 FPS, 1920x1080) cinematic product launch film authored using **Remotion**, **React**, and **TypeScript**.
+
+### Story & Narrative Arc
+The film chronicles the journey of **Rob**, an overwhelmed Web3 hackathon organizer:
+1. **Rob's Nightmare**: 50+ winners across 12 timezones, messy spreadsheets, missing addresses, and weeks of payout delay.
+2. **PayFold Arrival**: PayFold's autonomous payment rail sweeps across the screen.
+3. **Escrow Lock**: Rob connects his wallet, selects NEAR Hackathon 2026, and locks prize funds in `PayFoldEscrow.sol`.
+4. **AI Outreach**: Google Gemini drafts personalized winner emails and dispatches them via Resend.
+5. **Intelligent Extraction**: Winner Lakshay replies with text, and PayFold extracts and validates the 0x address with zero human intervention.
+6. **The NEAR Hero Stack**: 3-layer architecture visualizes NEAR Chain Signatures (MPC), Shade Agent / Phala TEE, and Aurora EVM without any server private keys.
+7. **Instant Payout**: 0.5 ETH settled autonomously with live Aurora Testnet Explorer receipts.
+8. **Closing**: *Announce. Automate. Distribute.* Built for NEAR Hackathon 2026 by Lakshay Deol.
+
+### Video Commands
+```bash
+# Preview interactive Remotion Studio in browser
+yarn video:dev
+
+# Render production-quality MP4 video
+yarn video:render
+```
+Rendered artifact is saved directly to `public/PayFold-Pitch.mp4`.
+
+---
+
 ## License
 
 Licensed under the Apache License, Version 2.0. See [LICENSE](LICENSE) for details.
