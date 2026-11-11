@@ -13,6 +13,7 @@
 - **Demo Video**: [https://youtu.be/5SJBNoVdxaU](https://youtu.be/5SJBNoVdxaU)
 - **Remotion Pitch Film**: `public/PayFold-Pitch.mp4` (131-second 1080p cinematic launch video authored with Remotion & React)
 - **Official Thumbnail**: `public/thumbnail.png`
+- **Animated Pitch Loop**: `public/preview.gif`
 
 ## 2. The Problem & Solution
 - **The Problem**: Hackathons, grant programs, and DAO bounties lose weeks manually collecting winner wallet addresses through Google Forms and spreadsheets, chasing email threads, verifying identities, and executing individual wallet transfers.

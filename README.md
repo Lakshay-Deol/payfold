@@ -9,6 +9,10 @@
 > *Built for **NEAR HACKATHON 2026***  
 > **Links**: [GitHub Repository](https://github.com/Lakshay-Deol/payfold) | [Demo Video Walkthrough](https://youtu.be/5SJBNoVdxaU)
 
+<p align="center">
+  <img src="public/preview.gif" alt="PayFold Pitch Animation" width="720" />
+</p>
+
 ---
 
 ## Overview
