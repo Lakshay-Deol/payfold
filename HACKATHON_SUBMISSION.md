@@ -30,12 +30,12 @@
    - **See**: Next.js production build completes with all static and dynamic routes compiled.
 3. **Do**: `yarn dev`
    - **See**: Web application serves on `http://localhost:3000` with RainbowKit wallet connect, Announce Winner console, and interactive NEAR Chain Signatures Live Playground.
-4. **Do**: `POST /api/getHackathonId` with `{"hackathonName": "NEAR Hackathon 2026"}`
+4. **Do**: `POST /api/getHackathonId` with `{"hackathonName": "Near AI Hackathon"}`
    - **See**: JSON response `{"hackathonId": 0}` from local ledger.
 5. **Do**: `GET /api/getHackathons`
    - **See**: JSON response listing all hackathon vaults, escrow addresses, and winner settlement statuses.
 6. **Do**: `POST /api/webhook` with `{"sender": "lakshayld26@gmail.com", "text": "Here is my Aurora address: 0x71C8452f483FEfA834165dC65f57B8b71569B148"}`
    - **See**: Autonomous settlement completed with `nearDetails` showing `lakshay-payfold.testnet` and `v1.signer-prod.testnet` threshold MPC co-signing.
 7. **Do**: `yarn video:render`
-   - **See**: Remotion compiles 8 scenes and produces `public/PayFold-Pitch.mp4` (131 seconds @ 30 FPS).
+   - **See**: Remotion compiles 8 scenes and produces `public/PayFold-Pitch.mp4` (100 seconds @ 30 FPS).
 

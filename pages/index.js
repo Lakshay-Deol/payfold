@@ -1421,6 +1421,8 @@ NEAR_MPC.sign({
           background: #050507;
           display: flex;
           flex-direction: column;
+          width: 100%;
+          overflow-x: hidden;
         }
 
         /* Ambient Bioluminescent Red Background Glows */
@@ -1750,8 +1752,10 @@ NEAR_MPC.sign({
 
         .payout-creature {
           position: relative;
-          width: 420px;
-          height: 500px;
+          width: 100%;
+          max-width: 420px;
+          height: auto;
+          aspect-ratio: 420/500;
           animation: folderFloat 6s ease-in-out infinite alternate;
           filter: drop-shadow(0 0 40px rgba(255, 35, 50, 0.45));
         }
@@ -1768,6 +1772,7 @@ NEAR_MPC.sign({
         .payout-svg {
           width: 100%;
           height: 100%;
+          display: block;
           overflow: visible;
         }
 
@@ -2998,104 +3003,11 @@ NEAR_MPC.sign({
           border-color: rgba(255, 255, 255, 0.3);
         }
 
-        @media (max-width: 1024px) {
-          .near-tech-strip {
-            grid-template-columns: 1fr 1fr;
-          }
-          .sim-target-banner {
-            grid-template-columns: 1fr 1fr;
-          }
-        }
-
-        @media (max-width: 640px) {
-          .near-tech-strip {
-            grid-template-columns: 1fr;
-          }
-          .sim-target-banner {
-            grid-template-columns: 1fr;
-          }
-          .playground-header-row {
-            flex-direction: column;
-          }
-          .ledger-toolbar {
-            flex-direction: column;
-            align-items: flex-start;
-          }
-        }
-
-        /* 9. FOOTER */
-        .universe-footer {
-          max-width: 1280px;
-          margin: 6rem auto 2.5rem;
-          padding: 2rem;
-          width: 100%;
-          border-top: 1px solid rgba(255, 255, 255, 0.06);
-        }
-
-        .footer-content {
-          display: flex;
-          justify-content: space-between;
-          align-items: center;
-          gap: 1.5rem;
-          flex-wrap: wrap;
-        }
-
-        .footer-left {
-          display: flex;
-          flex-direction: column;
-          gap: 0.35rem;
-        }
-
-        .footer-brand-lockup {
-          display: flex;
-          align-items: center;
-          gap: 0.65rem;
-        }
-
-        .footer-logo-img {
-          width: 26px;
-          height: 26px;
-          object-fit: contain;
-          border-radius: 6px;
-          box-shadow: 0 0 10px rgba(255, 45, 60, 0.5);
-        }
-
-        .footer-brand {
-          font-size: 1.15rem;
-          font-weight: 800;
-          color: #ffffff;
-        }
-
-        .footer-sub {
-          font-size: 0.75rem;
-          color: #71717a;
-        }
-
-        .footer-center {
-          font-size: 0.78rem;
-          color: #71717a;
-        }
-
-        .footer-links {
-          display: flex;
-          gap: 1.25rem;
-        }
-
-        .footer-links a {
-          color: #a1a1aa;
-          text-decoration: none;
-          font-size: 0.82rem;
-          transition: all 0.2s ease;
-        }
-
-        .footer-links a:hover {
-          color: #ff3344;
-        }
-
-        /* Responsive */
+        /* 9. RESPONSIVE DESIGN FOR TABLET & MOBILE VIEWPORTS */
         @media (max-width: 1024px) {
           .hero-grid {
             grid-template-columns: 1fr;
+            gap: 2.5rem;
           }
 
           .hero-right {
@@ -3104,35 +3016,523 @@ NEAR_MPC.sign({
 
           .proof-grid {
             grid-template-columns: 1fr;
+            gap: 1.5rem;
           }
 
           .services-main-grid {
             grid-template-columns: 1fr;
+            gap: 2.5rem;
           }
 
           .statement-container {
             grid-template-columns: 1fr;
           }
+
+          .near-tech-strip {
+            grid-template-columns: 1fr 1fr;
+          }
+
+          .sim-target-banner {
+            grid-template-columns: 1fr 1fr;
+          }
+        }
+
+        @media (max-width: 860px) {
+          .top-nav {
+            padding: 1rem 1rem 0.6rem;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+            justify-content: space-between;
+          }
+
+          .nav-brand {
+            order: 1;
+          }
+
+          .nav-actions {
+            order: 2;
+            gap: 0.5rem;
+            display: flex;
+            align-items: center;
+          }
+
+          .center-capsule {
+            order: 3;
+            width: 100%;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+            scrollbar-width: none;
+            padding: 0.35rem 0.5rem;
+            margin-top: 0.35rem;
+            display: flex;
+            justify-content: flex-start;
+          }
+
+          .center-capsule::-webkit-scrollbar {
+            display: none;
+          }
+
+          .capsule-btn {
+            flex-shrink: 0;
+            white-space: nowrap;
+            padding: 0.4rem 0.85rem;
+            font-size: 0.8rem;
+          }
         }
 
         @media (max-width: 640px) {
-          .top-nav {
+          .glow-top,
+          .glow-jelly,
+          .glow-mid {
+            width: 280px;
+            height: 280px;
+            filter: blur(75px);
+          }
+
+          .hero-section {
+            padding: 0 1rem;
+            margin-top: 0.75rem;
+          }
+
+          .hero-headline {
+            font-size: clamp(2.1rem, 7.8vw, 2.9rem);
+            letter-spacing: -1px;
+            line-height: 1.1;
+            margin-bottom: 1.15rem;
+          }
+
+          .from-launch-pill {
+            display: inline-block;
+            font-size: 0.65rem;
+            padding-left: 0.4rem;
+            margin-left: 0.35rem;
+            border-left: 1px solid rgba(255, 255, 255, 0.2);
+            vertical-align: middle;
+          }
+
+          .hero-tagline {
+            font-size: 0.92rem;
+            line-height: 1.55;
+            margin-bottom: 1.5rem;
+          }
+
+          .hero-cta-group {
             flex-direction: column;
-            gap: 1rem;
+            width: 100%;
+            gap: 0.75rem;
+            margin-bottom: 2rem;
+          }
+
+          .btn-red-pill,
+          .btn-ghost-pill {
+            width: 100%;
+            text-align: center;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 0.85rem 1.25rem;
           }
 
           .stat-cards-triad {
             flex-direction: column;
+            gap: 0.75rem;
+            width: 100%;
+          }
+
+          .hero-stat-card {
+            padding: 0.9rem 1rem;
+            width: 100%;
+          }
+
+          .big-stat-val {
+            font-size: 1.3rem;
+          }
+
+          .payout-stage {
+            min-height: 300px;
+          }
+
+          .payout-creature {
+            width: 88%;
+            max-width: 320px;
+            margin: 0 auto;
+          }
+
+          /* Statement */
+          .statement-strip {
+            margin: 3.5rem auto 0;
+            padding: 0 1rem;
+          }
+
+          .statement-quote {
+            font-size: clamp(1.25rem, 5.2vw, 1.75rem);
+            line-height: 1.35;
+            letter-spacing: -0.5px;
+          }
+
+          /* Proof / Architecture */
+          .proof-zone {
+            margin: 3.5rem auto 0;
+            padding: 0 1rem;
+          }
+
+          .proof-grid {
+            gap: 1.25rem;
+          }
+
+          .proof-card {
+            padding: 1.35rem 1.15rem;
+            border-radius: 1.25rem;
+          }
+
+          .card-primary-title {
+            font-size: 1.35rem;
+            margin-bottom: 1rem;
+          }
+
+          .terminal-body {
+            font-size: 0.72rem;
+            padding: 0.75rem;
+            max-height: 220px;
+          }
+
+          .near-benefit-item {
+            padding: 0.85rem 1rem;
+            gap: 0.75rem;
+            border-radius: 0.85rem;
+          }
+
+          .benefit-icon-badge {
+            width: 28px;
+            height: 28px;
+            font-size: 0.7rem;
+          }
+
+          .benefit-text-wrap h4 {
+            font-size: 0.88rem;
+          }
+
+          .benefit-text-wrap p {
+            font-size: 0.75rem;
+          }
+
+          /* Ticker */
+          .ticker-strip {
+            margin: 3rem auto 0;
+            padding: 0 1rem;
+          }
+
+          .ticker-inner {
+            flex-direction: column;
+            gap: 0.85rem;
+            text-align: center;
+            padding: 1.15rem 0;
+          }
+
+          .ticker-logos {
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 0.65rem 0.85rem;
+          }
+
+          .brand-logo-text {
+            font-size: 0.74rem;
+          }
+
+          /* Services & Console */
+          .services-section {
+            margin: 3.5rem auto 0;
+            padding: 0 1rem;
+          }
+
+          .services-title {
+            font-size: clamp(1.85rem, 6.5vw, 2.4rem);
+            margin-bottom: 1rem;
+          }
+
+          .services-desc {
+            font-size: 0.92rem;
+            margin-bottom: 1.5rem;
+          }
+
+          .service-feature-card {
+            padding: 1.35rem 1.15rem;
+            border-radius: 1.25rem;
+          }
+
+          .chain-info-row {
+            flex-wrap: wrap;
+            gap: 0.25rem;
+            word-break: break-all;
+          }
+
+          .interactive-console-card {
+            padding: 1.35rem 1.15rem;
+            border-radius: 1.25rem;
+          }
+
+          .console-title-group h3 {
+            font-size: 1.15rem;
+          }
+
+          .console-sub {
+            font-size: 0.8rem;
+            margin-bottom: 1.25rem;
+          }
+
+          .form-row input {
+            font-size: 16px;
+            padding: 0.75rem 0.85rem;
+            width: 100%;
           }
 
           .form-grid-two,
           .form-grid-three {
             grid-template-columns: 1fr;
+            gap: 0.85rem;
+          }
+
+          .btn-submit-glow {
+            width: 100%;
+            padding: 0.9rem;
+            font-size: 0.95rem;
+          }
+
+          /* NEAR Live Playground & Ledger */
+          .playground-section {
+            margin: 3.5rem auto 0;
+            padding: 0 1rem;
+          }
+
+          .playground-header-row {
+            flex-direction: column;
+            align-items: stretch;
+            gap: 1rem;
+          }
+
+          .btn-refresh-pill {
+            width: 100%;
+            text-align: center;
+            padding: 0.75rem;
+            justify-content: center;
+          }
+
+          .near-tech-strip {
+            grid-template-columns: 1fr;
+            gap: 0.75rem;
+            margin: 1.5rem 0;
+          }
+
+          .tech-metric-card {
+            padding: 1rem 1.15rem;
+            border-radius: 1rem;
+          }
+
+          .ledger-toolbar {
+            flex-direction: column;
+            align-items: stretch;
+            gap: 0.85rem;
+          }
+
+          .filter-pill-group {
+            width: 100%;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+            scrollbar-width: none;
+            padding: 0.25rem;
+            justify-content: flex-start;
+          }
+
+          .filter-pill-group::-webkit-scrollbar {
+            display: none;
+          }
+
+          .filter-tab-btn {
+            flex-shrink: 0;
+            white-space: nowrap;
+            padding: 0.4rem 0.85rem;
+            font-size: 0.78rem;
+          }
+
+          .toolbar-hint {
+            text-align: center;
+            font-size: 0.75rem;
+          }
+
+          .vault-hackathon-card {
+            padding: 1.15rem;
+            border-radius: 1.25rem;
+          }
+
+          .vault-card-header {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 0.65rem;
+          }
+
+          .vault-name {
+            font-size: 1.15rem;
+          }
+
+          .vault-address-code {
+            word-break: break-all;
+            font-size: 0.7rem;
+          }
+
+          .vault-table-wrap {
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+            margin: 0 -0.5rem;
+            padding: 0 0.5rem;
+          }
+
+          .vault-table {
+            min-width: 600px;
+          }
+
+          /* Modals */
+          .modal-backdrop {
+            padding: 1rem 0.75rem;
+            align-items: center;
+          }
+
+          .modal-glass {
+            padding: 1.35rem 1.15rem;
+            border-radius: 1.25rem;
+            max-width: 96vw;
+            max-height: 90vh;
+            overflow-y: auto;
+          }
+
+          .modal-title {
+            font-size: 1.25rem;
+          }
+
+          .modal-code {
+            font-size: 0.75rem;
+            padding: 0.65rem;
+            word-break: break-all;
+          }
+
+          .modal-button-row {
+            flex-direction: column;
+            gap: 0.65rem;
+          }
+
+          .modal-button-row button {
+            width: 100%;
+          }
+
+          .sim-modal {
+            max-width: 96vw;
+            padding: 1.35rem 1.15rem;
+            border-radius: 1.25rem;
+            max-height: 92vh;
+            overflow-y: auto;
+          }
+
+          .sim-modal-title-group h3 {
+            font-size: 1.15rem;
+          }
+
+          .sim-target-banner {
+            grid-template-columns: 1fr;
+            gap: 0.5rem;
+            padding: 0.75rem;
+          }
+
+          .sim-textarea {
+            font-size: 16px;
+            min-height: 90px;
+          }
+
+          .sim-terminal-box .sim-terminal-body {
+            max-height: 120px;
+            font-size: 0.72rem;
+          }
+
+          .sim-modal-actions {
+            flex-direction: column-reverse;
+            gap: 0.65rem;
+          }
+
+          .sim-modal-actions button {
+            width: 100%;
+            text-align: center;
+            padding: 0.8rem;
+          }
+
+          /* Footer */
+          .universe-footer {
+            margin: 4rem auto 1.5rem;
+            padding: 1.5rem 1rem;
           }
 
           .footer-content {
             flex-direction: column;
             text-align: center;
+            gap: 1.25rem;
+          }
+
+          .footer-left {
+            align-items: center;
+          }
+
+          .footer-links {
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 1rem;
+          }
+        }
+
+        @media (max-width: 480px) {
+          .nav-link-btn {
+            display: none;
+          }
+
+          .brand-title {
+            font-size: 1.1rem;
+          }
+
+          .brand-logo-img {
+            width: 28px;
+            height: 28px;
+          }
+
+          .hero-headline {
+            font-size: clamp(1.9rem, 7.5vw, 2.4rem);
+          }
+
+          .payout-stage {
+            min-height: 270px;
+          }
+
+          .payout-creature {
+            max-width: 280px;
+          }
+        }
+
+        @media (max-width: 380px) {
+          .hero-headline {
+            font-size: 1.75rem;
+          }
+
+          .payout-stage {
+            min-height: 240px;
+          }
+
+          .payout-creature {
+            max-width: 240px;
+          }
+
+          .stat-flex {
+            flex-direction: column;
+            align-items: flex-start;
+          }
+
+          .avatar-stack {
+            margin-left: 0;
+            margin-top: 0.35rem;
           }
         }
       `}</style>
