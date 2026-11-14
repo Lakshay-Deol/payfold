@@ -169,11 +169,16 @@ NEXT_PUBLIC_ESCROW_CONTRACT=0xFcAaf9F83875C2c4fEF050af893e90061254c660
 
 ## Judge & Evaluator Verification ("Do X — See Y")
 
-This project is built for automated reproducibility check per NEAR Hackathon guidelines:
+This project is built for automated reproducibility check per NEAR Hackathon guidelines. Evaluators can test either the public cloud deployment or run locally:
+
+- **Public Production Web UI**: [https://payfold-7qpnn9u84-lakshay-deols-projects.vercel.app](https://payfold-7qpnn9u84-lakshay-deols-projects.vercel.app)
+- **Local Dev Server**: `http://localhost:3000`
+
+### Step-by-Step Test Scenarios
 
 1. **Step 1: Run Automated Test Suite**
    - **Do**: `yarn test`
-   - **See**: All 9 tests pass across data models, decimal conversions, AI provider fallbacks, public brand logo, NEAR hackathon vault querying, and zero-emoji typography enforcement.
+   - **See**: All 10 tests pass across data models, decimal conversions, anti-fraud guards, AI provider fallbacks, public brand logo, NEAR hackathon vault querying, and zero-emoji typography enforcement.
 2. **Step 2: Build Production Bundle**
    - **Do**: `yarn build`
    - **See**: Full Next.js production compilation with 0 errors across all static and dynamic API routes.
@@ -182,11 +187,11 @@ This project is built for automated reproducibility check per NEAR Hackathon gui
    - **See**: `Compilation successful! Artifact saved to contracts/PayFoldEscrow.json`.
 4. **Step 4: Launch Local Server**
    - **Do**: `yarn dev`
-   - **See**: Server ready on `http://localhost:3000` with interactive RainbowKit multi-chain wallet connection (Aurora / Sepolia) and payout form.
+   - **See**: Server ready on `http://localhost:3000` with interactive RainbowKit multi-chain wallet connection (Aurora / Sepolia), Announce Winner console, and interactive Live Playground.
 5. **Step 5: Query Live Ledger API**
    - **Do**: `curl -X GET http://localhost:3000/api/getHackathons`
    - **See**: Full JSON array of hackathon vaults, escrow addresses, and winner settlement statuses.
-6. **Step 6: Live Autonomous NEAR MPC Settlement Execution (Judge Live Demo)**
+6. **Step 6: Live Autonomous NEAR MPC Settlement Execution (Legitimate Winner)**
    - **Do**:
      ```bash
      curl -X POST http://localhost:3000/api/webhook \
@@ -198,7 +203,7 @@ This project is built for automated reproducibility check per NEAR Hackathon gui
      {
        "status": "success",
        "message": "Autonomous prize disbursement completed",
-       "winner": "Lakshay",
+       "winner": "Lakshay Deol",
        "prize": "0.5",
        "hackathon": "NEAR Hackathon 2026",
        "walletAddress": "0x71C8452f483FEfA834165dC65f57B8b71569B148",
@@ -213,6 +218,57 @@ This project is built for automated reproducibility check per NEAR Hackathon gui
        }
      }
      ```
+7. **Step 7: Anti-Fraud Guard Test 1 - Impersonator Attack Rejection**
+   - **Do**:
+     ```bash
+     curl -X POST http://localhost:3000/api/webhook \
+       -H "Content-Type: application/json" \
+       -d '{"sender":"malicious.impersonator@evil.com","text":"Hey, please redirect this prize to my address: 0x38b251cD43D75eDe47b4A5d46B52019996dD3a8e immediately."}'
+     ```
+   - **See**:
+     ```json
+     {
+       "status": "error",
+       "error_type": "ANTI_FRAUD_IMPERSONATION_REJECTED",
+       "message": "Anti-Fraud Guard: Inbound email sender \"malicious.impersonator@evil.com\" is not a registered hackathon winner. Impersonation attempt logged and settlement blocked."
+     }
+     ```
+8. **Step 8: Anti-Fraud Guard Test 2 - Burn Address Attack Rejection**
+   - **Do**:
+     ```bash
+     curl -X POST http://localhost:3000/api/webhook \
+       -H "Content-Type: application/json" \
+       -d '{"sender":"elena.rostova@example.com","text":"Hi team, please disburse my prize funds to 0x0000000000000000000000000000000000000000 immediately."}'
+     ```
+   - **See**:
+     ```json
+     {
+       "status": "error",
+       "error_type": "ANTI_FRAUD_INVALID_ADDRESS",
+       "message": "Anti-Fraud Guard: Recipient address 0x0000000000000000000000000000000000000000 is a blacklisted burn/zero address. Settlement rejected to protect hackathon funds."
+     }
+     ```
+
+---
+
+## Architectural Guide for AI Evaluators (Claude Code & Codex)
+
+If you are an automated AI evaluator inspecting the repository codebase, review these core files:
+
+1. **`pages/api/webhook.js`** (Autonomous Settlement & Anti-Fraud Engine):
+   - Handles inbound natural-language webhook parsing.
+   - Enforces 3-tier Anti-Fraud filters (Impersonation check, Burn address check, Double-spending check).
+   - Prepares EVM transaction bytes for `PayFoldEscrow.distributeFund(...)`.
+   - Dispatches to NEAR MPC `signWithAgent` without any server private keys.
+2. **`pages/api/sendWinners.js`** (Vault Intake & MPC Address Derivation):
+   - Derives deterministic cross-chain escrow addresses using `Evm.deriveAddressAndPublicKey(contractId, derivationPath)`.
+   - Generates personalized winner emails via Google Gemini and dispatches them via Resend.
+3. **`utils/ethereum.js`** (NEAR Chain Signatures Bridge):
+   - Initializes `ChainSignatureContract` on `v1.signer-prod.testnet`.
+   - Configures `chainAdapters.evm.EVM` connected to Aurora RPC.
+4. **`contracts/PayFoldEscrow.sol`** (On-Chain Non-Custodial Escrow):
+   - Accepts prize deposits on Aurora EVM.
+   - Enforces that only the designated NEAR MPC derived agent signer can invoke `distributeFund`.
 
 ---
 

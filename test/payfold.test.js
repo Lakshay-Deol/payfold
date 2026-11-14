@@ -52,6 +52,16 @@ test('api/getHackathons.js endpoint file exists and handles vault query', (t) =>
   t.true(content.includes('hackathons'), 'endpoint must return hackathons array');
 });
 
+test('api/webhook.js contains anti-fraud impersonation and burn-address guards', (t) => {
+  const webhookPath = path.join(__dirname, '..', 'pages', 'api', 'webhook.js');
+  t.true(fs.existsSync(webhookPath), 'pages/api/webhook.js must exist');
+
+  const content = fs.readFileSync(webhookPath, 'utf-8');
+  t.true(content.includes('BLACKLISTED_BURN_ADDRESSES'), 'must contain burn address blacklist');
+  t.true(content.includes('ANTI_FRAUD_IMPERSONATION_REJECTED'), 'must contain impersonation rejection guard');
+  t.true(content.includes('ANTI_FRAUD_DOUBLE_SETTLEMENT_PREVENTED'), 'must contain double settlement prevention guard');
+});
+
 test('codebase typography has zero emojis across UI and documentation', (t) => {
   const emojiRegex = /\p{Extended_Pictographic}/u;
   const filesToCheck = [

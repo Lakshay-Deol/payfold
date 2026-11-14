@@ -107,6 +107,7 @@ export default function Home() {
   const [simModalOpen, setSimModalOpen] = useState(false);
   const [simSelectedWinner, setSimSelectedWinner] = useState(null);
   const [simSelectedHackathon, setSimSelectedHackathon] = useState(null);
+  const [simSenderEmail, setSimSenderEmail] = useState("");
   const [simEmailText, setSimEmailText] = useState("");
   const [simStage, setSimStage] = useState("idle");
   const [simLogs, setSimLogs] = useState([]);
@@ -134,6 +135,7 @@ export default function Home() {
   const openSimModal = (winner, hackathon) => {
     setSimSelectedWinner(winner);
     setSimSelectedHackathon(hackathon);
+    setSimSenderEmail(winner.email || "");
     setSimEmailText(
       `Hey PayFold team! Romario and I won ${winner.place} in ${hackathon.name}. Here is my Aurora EVM address: 0x71C8452f483FEfA834165dC65f57B8b71569B148. Thanks!`
     );
@@ -145,11 +147,13 @@ export default function Home() {
 
   const executeNearMpcSettlement = async () => {
     if (!simSelectedWinner || !simSelectedHackathon) return;
+    const currentSender = (simSenderEmail || simSelectedWinner.email || "").trim();
     setSimStage("ai");
     setSimLogs([
       "[INIT] Initializing PayFold Autonomous Execution Agent...",
-      `[INBOUND] Email reply received from: ${simSelectedWinner.email}`,
-      "[AI ENGINE] Google Gemini extracting & validating EVM hex address from natural language text...",
+      `[INBOUND] Inbound message received from: ${currentSender}`,
+      "[SECURITY] Verifying sender authenticity against registered hackathon winner...",
+      "[AI ENGINE] Google Gemini parsing and extracting recipient address...",
     ]);
 
     try {
@@ -157,9 +161,9 @@ export default function Home() {
       setSimStage("mpc");
       setSimLogs((prev) => [
         ...prev,
-        "[VERIFIED] Valid EVM recipient address detected",
+        "[INSPECTION] Executing Anti-Fraud validation & address sanitization...",
         "[NEAR MPC] Requesting threshold co-signature from v1.signer-prod.testnet",
-        `[DERIVATION] Deriving key path: ["ethereum", "${simSelectedHackathon.name}", 0] via lakshay-payfold.testnet`,
+        `[DERIVATION] Target path: ["ethereum", "${simSelectedHackathon.name}", 0] via lakshay-payfold.testnet`,
       ]);
 
       await new Promise((r) => setTimeout(r, 650));
@@ -174,7 +178,7 @@ export default function Home() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          sender: simSelectedWinner.email,
+          sender: currentSender,
           text: simEmailText,
         }),
       });
@@ -190,7 +194,7 @@ export default function Home() {
         ...prev,
         "[BROADCAST] Broadcasting signed raw transaction to Aurora EVM (PayFoldEscrow.sol)...",
         `[TX RECEIPT] On-chain TX: ${data.transactionHash || "Confirmed"}`,
-        `[DISPATCH] Dispatched confirmation receipt via Resend to ${simSelectedWinner.email}`,
+        `[DISPATCH] Dispatched confirmation receipt via Resend to ${currentSender}`,
       ]);
 
       await new Promise((r) => setTimeout(r, 600));
@@ -206,9 +210,15 @@ export default function Home() {
     } catch (settleErr) {
       console.error("Settlement error:", settleErr);
       setSimStage("error");
+      const isAntiFraud = settleErr.message && settleErr.message.includes("Anti-Fraud Guard");
       setSimLogs((prev) => [
         ...prev,
-        `[ERROR] ${settleErr.message || "Failed to process settlement"}`,
+        isAntiFraud
+          ? `[ANTI-FRAUD ALERT] ${settleErr.message}`
+          : `[ERROR] ${settleErr.message || "Failed to process settlement"}`,
+        isAntiFraud
+          ? "[SECURITY PROTOCOL] Payout blocked. Treasury funds remain secure in smart contract escrow."
+          : "[STATUS] Execution halted.",
       ]);
     }
   };
@@ -1253,31 +1263,69 @@ NEAR_MPC.sign({
               </div>
             )}
 
-            {/* Reply Template Preset Buttons */}
+            {/* Reply Template Preset Buttons including Anti-Fraud Scenarios */}
             <div className="sim-template-row">
-              <span className="sim-template-label">Sample Reply Templates:</span>
+              <span className="sim-template-label">Scenario Presets:</span>
               <button
                 type="button"
                 className="btn-template"
-                onClick={() =>
+                onClick={() => {
+                  setSimSenderEmail(simSelectedWinner?.email || "");
                   setSimEmailText(
                     `Hi PayFold team! Thanks for organizing. Here is my Aurora EVM wallet address: 0x71C8452f483FEfA834165dC65f57B8b71569B148. Cheers!`
-                  )
-                }
+                  );
+                }}
               >
-                Aurora EVM Address
+                Aurora EVM (Valid Winner)
               </button>
               <button
                 type="button"
                 className="btn-template"
-                onClick={() =>
+                onClick={() => {
+                  setSimSenderEmail(simSelectedWinner?.email || "");
                   setSimEmailText(
                     `Awesome hackathon! Super proud of our team. Please send the prize to 0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045 on Aurora.`
-                  )
-                }
+                  );
+                }}
               >
-                Sepolia Address
+                Sepolia EVM (Valid Winner)
               </button>
+              <button
+                type="button"
+                className="btn-template-danger"
+                onClick={() => {
+                  setSimSenderEmail("attacker.impersonator@evil.com");
+                  setSimEmailText(
+                    `Hey PayFold, please redirect this prize to my address: 0x38b251cD43D75eDe47b4A5d46B52019996dD3a8e immediately. Thanks!`
+                  );
+                }}
+              >
+                Impersonator Attack (Anti-Fraud)
+              </button>
+              <button
+                type="button"
+                className="btn-template-danger"
+                onClick={() => {
+                  setSimSenderEmail(simSelectedWinner?.email || "");
+                  setSimEmailText(
+                    `Hi team, please disburse my prize funds to 0x0000000000000000000000000000000000000000 immediately.`
+                  );
+                }}
+              >
+                Burn Address Attack (Anti-Fraud)
+              </button>
+            </div>
+
+            {/* Inbound Sender Email Input */}
+            <div className="sim-form-group">
+              <label>Inbound Sender Email (Identity Verification)</label>
+              <input
+                type="email"
+                value={simSenderEmail}
+                onChange={(e) => setSimSenderEmail(e.target.value)}
+                className="sim-input-sender"
+                placeholder="winner@example.com"
+              />
             </div>
 
             {/* Email Textarea */}
@@ -2885,6 +2933,43 @@ NEAR_MPC.sign({
           background: rgba(255, 51, 68, 0.15);
           border-color: #ff3344;
           color: #ffffff;
+        }
+
+        .btn-template-danger {
+          background: rgba(239, 68, 68, 0.12);
+          border: 1px solid rgba(239, 68, 68, 0.45);
+          color: #fca5a5;
+          padding: 0.3rem 0.75rem;
+          border-radius: 9999px;
+          font-size: 0.75rem;
+          font-weight: 600;
+          cursor: pointer;
+          transition: all 0.2s ease;
+        }
+
+        .btn-template-danger:hover {
+          background: rgba(239, 68, 68, 0.25);
+          border-color: #ef4444;
+          color: #ffffff;
+          box-shadow: 0 0 10px rgba(239, 68, 68, 0.3);
+        }
+
+        .sim-input-sender {
+          background: rgba(255, 255, 255, 0.04);
+          border: 1px solid rgba(255, 255, 255, 0.12);
+          border-radius: 8px;
+          color: #ffffff;
+          padding: 0.65rem 0.85rem;
+          font-size: 0.82rem;
+          width: 100%;
+          outline: none;
+          transition: border-color 0.2s ease;
+          font-family: inherit;
+        }
+
+        .sim-input-sender:focus {
+          border-color: #ff3344;
+          box-shadow: 0 0 10px rgba(255, 51, 68, 0.25);
         }
 
         .sim-form-group {
