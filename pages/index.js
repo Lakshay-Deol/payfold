@@ -3003,6 +3003,86 @@ NEAR_MPC.sign({
           border-color: rgba(255, 255, 255, 0.3);
         }
 
+        /* 9. UNIVERSE FOOTER */
+        .universe-footer {
+          margin: 6rem auto 2.5rem;
+          max-width: 1240px;
+          padding: 2.5rem 1.5rem 1.5rem;
+          border-top: 1px solid rgba(255, 255, 255, 0.08);
+          position: relative;
+          z-index: 10;
+        }
+
+        .footer-content {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          flex-wrap: wrap;
+          gap: 1.5rem;
+        }
+
+        .footer-left {
+          display: flex;
+          flex-direction: column;
+          gap: 0.35rem;
+        }
+
+        .footer-brand-lockup {
+          display: flex;
+          align-items: center;
+          gap: 0.65rem;
+        }
+
+        .footer-logo-img {
+          width: 28px;
+          height: 28px;
+          object-fit: contain;
+          border-radius: 6px;
+          filter: drop-shadow(0 0 10px rgba(255, 45, 60, 0.6));
+        }
+
+        .footer-brand {
+          font-size: 1.15rem;
+          font-weight: 800;
+          letter-spacing: -0.02em;
+          background: linear-gradient(135deg, #ffffff 40%, #ff4d5a 100%);
+          -webkit-background-clip: text;
+          -webkit-text-fill-color: transparent;
+        }
+
+        .footer-sub {
+          font-size: 0.8rem;
+          color: #71717a;
+          max-width: 420px;
+          line-height: 1.4;
+        }
+
+        .footer-center {
+          font-size: 0.82rem;
+          color: #a1a1aa;
+        }
+
+        .footer-center span {
+          display: inline-block;
+        }
+
+        .footer-links {
+          display: flex;
+          align-items: center;
+          gap: 1.25rem;
+        }
+
+        .footer-links a {
+          font-size: 0.84rem;
+          color: #a1a1aa;
+          text-decoration: none;
+          transition: color 0.2s ease;
+        }
+
+        .footer-links a:hover {
+          color: #ff3344;
+        }
+
         /* 9. RESPONSIVE DESIGN FOR TABLET & MOBILE VIEWPORTS */
         @media (max-width: 1024px) {
           .hero-grid {

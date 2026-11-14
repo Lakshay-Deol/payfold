@@ -11,7 +11,7 @@
   - `privacy` (Private AI: confidential execution with NEAR TEE / Phala Cloud)
 - **Repository**: [https://github.com/Lakshay-Deol/payfold](https://github.com/Lakshay-Deol/payfold)
 - **Demo Video**: [https://youtu.be/5SJBNoVdxaU](https://youtu.be/5SJBNoVdxaU)
-- **Remotion Pitch Film**: `public/PayFold-Pitch.mp4` (131-second 1080p cinematic launch video authored with Remotion & React)
+- **Pitch Video**: `public/PayFold-Pitch.mp4` (1080p product launch video)
 - **Official Thumbnail**: `public/thumbnail.png`
 - **Animated Pitch Loop**: `public/preview.gif`
 
@@ -19,11 +19,21 @@
 - **The Problem**: Hackathons, grant programs, and DAO bounties lose weeks manually collecting winner wallet addresses through Google Forms and spreadsheets, chasing email threads, verifying identities, and executing individual wallet transfers.
 - **The Solution**: PayFold automates the entire payout lifecycle. The organizer announces the winner and places prize funds in escrow. An AI agent emails the winner, intelligently extracts their wallet address from natural language replies, and triggers a NEAR Chain Signature (MPC) smart contract call to release funds on Aurora/Ethereum.
 - **Brand & Interface**: Featuring the official geometric PayFold card-fold emblem, high-performance scroll-reveal transitions, and clean non-custodial architecture.
-- **NEAR's Concrete Role**:
-  - **NEAR Chain Signatures (MPC)**: Deterministically derives hackathon escrow addresses and executes cross-chain transfers without managing hot private keys.
-  - **Phala Cloud / TEE Integration**: Runs autonomous agent logic inside a confidential virtual machine (DStack / TDX) ensuring tamper-proof payout decisions.
 
-## 3. Machine-Readable "Do X - See Y" Verification
+## 3. Key Benefits of PayFold
+- **Immediate Payout Settlement**: Replaces the standard 30-to-60 day payout wait with automated disbursement triggered within seconds of winner reply.
+- **Guaranteed On-Chain Escrow**: Prize capital is locked in smart contract escrow upon announcement, providing cryptographic proof of funding to participants.
+- **Zero Friction for Winners**: Winners never register for new portals or connect unfamiliar wallets; they simply reply to an email with their address.
+- **Elimination of Human Error**: Autonomous address extraction and strict regex validation eliminate manual spreadsheet typos and address spoofing.
+- **Serverless Security**: Zero server-side private keys are stored. All signature generation is delegated to decentralized threshold validators.
+
+## 4. How PayFold Uses NEAR More Effectively
+- **NEAR Chain Signatures (MPC)**: Deterministically derives hackathon escrow addresses and executes cross-chain transfers without managing hot private keys (`v1.signer-prod.testnet`).
+- **Chain Abstraction Orchestration**: Uses a single NEAR account (`lakshay-payfold.testnet`) as the universal co-signer across Aurora and EVM chains.
+- **Aurora High-Throughput Settlement**: Deploys the escrow engine on Aurora for 1-second finality and sub-cent fees, anchored to NEAR consensus.
+- **Confidential AI Enclaves**: Integrates NEAR Shade Agent with Phala Cloud (Intel TDX / DStack) ensuring tamper-proof decision execution.
+
+## 5. Machine-Readable "Do X - See Y" Verification
 1. **Do**: `yarn test`
    - **See**: 9 tests passing across data schema, decimal precision, branding assets, AI providers, email notification delivery, vault queries, and zero-emoji typography enforcement.
 2. **Do**: `yarn build`
@@ -36,6 +46,6 @@
    - **See**: JSON response listing all hackathon vaults, escrow addresses, and winner settlement statuses.
 6. **Do**: `POST /api/webhook` with `{"sender": "lakshayld26@gmail.com", "text": "Here is my Aurora address: 0x71C8452f483FEfA834165dC65f57B8b71569B148"}`
    - **See**: Autonomous settlement completed with `nearDetails` showing `lakshay-payfold.testnet` and `v1.signer-prod.testnet` threshold MPC co-signing.
-7. **Do**: `yarn video:render`
-   - **See**: Remotion compiles 8 scenes and produces `public/PayFold-Pitch.mp4` (100 seconds @ 30 FPS).
+7. **Do**: `GET /` and scroll to Live Playground
+   - **See**: Interactive consensus terminal simulating live NEAR MPC co-signing and Aurora settlement.
 

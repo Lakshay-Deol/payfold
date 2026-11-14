@@ -29,6 +29,17 @@ With PayFold:
 
 ---
 
+## Key Benefits of PayFold
+
+- **Eliminating the 30-to-60-Day Payout Delay**: Hackathons and bounty programs notoriously take weeks or months to disburse rewards. PayFold shortens this to seconds the moment a winner replies with their address.
+- **Trustless Non-Custodial Escrow**: Prize capital is locked in the smart contract from the start. Hackers and grant recipients have guaranteed cryptographic assurance that prizes are funded and reserved.
+- **Frictionless Winner Experience**: Winners never need to sign up for new accounts, authenticate through third-party portals, or install unfamiliar extensions. They simply reply to their congratulatory email with an address in plain text.
+- **Zero Human Bottleneck & Zero Spreadsheet Leaks**: Eliminates manual Google Sheets, Discord DMs, and fragmented email tracking. No manual copy-pasting of addresses means no human error, lost funds, or address spoofing.
+- **Tamper-Proof Agentic Execution**: Decision logic is executed inside hardware-isolated confidential enclaves (Phala TEE / NEAR Shade Agent), ensuring malicious prompts or server compromise cannot alter recipient addresses.
+- **Full On-Chain Auditability**: Every step—escrow deposit, winner announcement, MPC derivation, and settlement transfer—is publicly verifiable on-chain with block explorer transaction links.
+
+---
+
 ## How NEAR is Utilized in PayFold (NEAR Hackathon Architecture)
 
 PayFold is architected around NEAR Protocol's core capabilities: **Chain Signatures (MPC)**, **Shade Agents (TEE)**, and **Aurora EVM**.
@@ -38,33 +49,30 @@ If you build an autonomous AI agent to disburse prize money, **where do you stor
 * **Server-side private keys**: Any server breach or memory dump compromises the entire hackathon treasury.
 * **Manual human execution**: Slow, error-prone, and defeats the purpose of autonomous agency.
 
-### 2. Concrete Role of NEAR Technologies
+PayFold resolves this by leveraging NEAR's validator network as a decentralized Hardware Security Module.
 
-#### A. NEAR Chain Signatures (Decentralized Multi-Party Computation)
-* PayFold uses **NEAR Chain Signatures** (`chainsig.js`) via NEAR's MPC network (`v1.signer-prod.testnet`).
-* Your single NEAR account (`lakshay-payfold.testnet`) controls unlimited deterministic addresses across any blockchain (Aurora, Ethereum, Arbitrum, Bitcoin).
-* In [`pages/api/sendWinners.js`](pages/api/sendWinners.js), PayFold derives a dedicated escrow bot address for each hackathon:
+### 2. How PayFold Uses NEAR More Effectively
+
+#### A. Decentralized Multi-Party Computation via NEAR Chain Signatures
+* PayFold uses **NEAR Chain Signatures** (`chainsig.js`) powered by the NEAR validator MPC network (`v1.signer-prod.testnet`).
+* A single NEAR account (`lakshay-payfold.testnet`) deterministically derives and controls unhosted, cross-chain vault addresses across Aurora, Ethereum, Arbitrum, or Bitcoin without holding private keys.
+* When winner payout occurs in [`pages/api/sendWinners.js`](pages/api/sendWinners.js), PayFold queries NEAR MPC nodes to co-sign the EVM transaction:
   ```javascript
   const { address } = await Evm.deriveAddressAndPublicKey(contractId, payload.Hackathon);
-  ```
-* When an AI email arrives with the winner's address, PayFold requests NEAR's validator threshold network to co-sign the EVM transfer using:
-  ```javascript
   const signRes = await signWithAgent(path, payloadHash);
   ```
-* **Zero private keys are stored on our servers.** The keys exist purely as distributed mathematical shares across NEAR validators.
+* **No hot keys exist on our servers.** Keys exist only as mathematical secret shares across decentralized NEAR network validators.
 
-#### B. NEAR Shade Agent & TEE Enclaves (Confidential Computing)
-* PayFold uses `@neardefi/shade-agent-js` and Phala Cloud DStack/TDX (Intel Trusted Execution Environment).
-* The autonomous webhook decision logic runs inside a hardware-isolated enclave, guaranteeing that neither cloud providers nor malicious actors can tamper with the agent's code or redirect payouts.
+#### B. Eliminating Centralized Relayers with Chain Abstraction
+* Traditional Web3 bots rely on centralized backend relayers with custodial keys. PayFold uses NEAR Chain Abstraction so that user identity and signing authority are anchored in NEAR's threshold cryptography, while actual settlement executes on the destination chain.
 
-#### C. Aurora (EVM Engine on NEAR)
+#### C. Sub-Cent Gas and 1-Second Finality on Aurora
 * PayFold's smart contract [`PayFoldEscrow.sol`](contracts/PayFoldEscrow.sol) is deployed on **Aurora**, NEAR's Ethereum Virtual Machine.
-* This provides **1-second finality** and **sub-cent gas fees**, settling directly onto NEAR consensus.
+* Aurora provides **1-second finality** and **sub-cent gas fees**, settling directly onto NEAR consensus. This makes multi-winner prize disbursements economically viable even for micro-bounties.
 
-#### D. Chain Abstraction
-* **Organizers** connect standard EVM wallets (MetaMask/Rainbow) and deposit funds.
-* **Winners** receive an email and reply with their address.
-* **NEAR** invisibly handles cross-chain identity, cryptographic signing, and verification behind the scenes.
+#### D. Confidential Computing with NEAR Shade Agents & Phala TEE
+* PayFold integrates `@neardefi/shade-agent-js` and Phala Cloud DStack/TDX (Intel Trusted Execution Environment).
+* The autonomous webhook decision pipeline runs in a hardware-isolated enclave, guaranteeing that neither cloud providers, server admins, nor prompt injections can alter recipient addresses or divert funds.
 
 ---
 
@@ -233,30 +241,10 @@ Open [http://localhost:3000](http://localhost:3000) in your browser.
 
 ---
 
-## Remotion Cinematic Pitch Video
+## Pitch Video & Demonstration
 
-PayFold features a custom-engineered 100-second (3000 frames @ 30 FPS, 1920x1080) cinematic product launch film authored using **Remotion**, **React**, and **TypeScript**.
-
-### Story & Narrative Arc
-The film chronicles the journey of **Rob**, an overwhelmed Web3 hackathon organizer:
-1. **Rob's Nightmare**: 50+ winners across 12 timezones, messy spreadsheets, missing addresses, and weeks of payout delay.
-2. **PayFold Arrival**: PayFold's autonomous payment rail sweeps across the screen.
-3. **Escrow Lock**: Rob connects his wallet, selects NEAR Hackathon 2026, and locks prize funds in `PayFoldEscrow.sol`.
-4. **AI Outreach**: Google Gemini drafts personalized winner emails and dispatches them via Resend.
-5. **Intelligent Extraction**: Winner Lakshay replies with text, and PayFold extracts and validates the 0x address with zero human intervention.
-6. **The NEAR Hero Stack**: 3-layer architecture visualizes NEAR Chain Signatures (MPC), Shade Agent / Phala TEE, and Aurora EVM without any server private keys.
-7. **Instant Payout**: 0.5 ETH settled autonomously with live Aurora Testnet Explorer receipts.
-8. **Closing**: *Announce. Automate. Distribute.* Built for NEAR Hackathon 2026 by Lakshay Deol.
-
-### Video Commands
-```bash
-# Preview interactive Remotion Studio in browser
-yarn video:dev
-
-# Render production-quality MP4 video
-yarn video:render
-```
-Rendered artifact is saved directly to `public/PayFold-Pitch.mp4`.
+- **Official Demo Video**: [https://youtu.be/5SJBNoVdxaU](https://youtu.be/5SJBNoVdxaU)
+- **High-Definition Pitch Film**: Available in repository at `public/PayFold-Pitch.mp4`
 
 ---
 
